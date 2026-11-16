@@ -45,8 +45,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         </div>
         <div class="rw-stats">${stats.map(([v, l]) => `<span><b>${esc(v)}</b>${esc(l)}</span>`).join('')}</div>
         <div class="rw-actions">
-          <button class="rw-btn primary" id="rw-home"><span class="ms filled">savings</span>Collect</button>
-          <button class="rw-btn" id="rw-again"><span class="ms">replay</span>Again</button>
+          <button class="rw-btn primary ripple" id="rw-home"><span class="ms filled">check</span>Collect</button>
+          <button class="rw-btn ripple" id="rw-again"><span class="ms">replay</span>Again</button>
         </div>
       </div>
     </div>`;

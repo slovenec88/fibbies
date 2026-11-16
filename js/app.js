@@ -608,8 +608,8 @@ function renderDone() {
         <h1>So close!</h1>
         <p>Finish at least half of a routine to unlock a chest, earn fibers and keep your streak alive.</p>
         <div class="rw-actions">
-          <button class="rw-btn primary" id="rw-again"><span class="ms filled">replay</span>Try again</button>
-          <button class="rw-btn" id="rw-home"><span class="ms">home</span></button>
+          <button class="rw-btn primary ripple" id="rw-again"><span class="ms filled">replay</span>Try again</button>
+          <button class="rw-btn ripple" id="rw-home" aria-label="Home"><span class="ms">home</span></button>
         </div>
       </div></div>`;
     $('#rw-again').onclick = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
