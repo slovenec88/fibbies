@@ -1,5 +1,6 @@
 // Synthesized sound cues (Web Audio) + spoken guidance (Speech Synthesis).
 let ctx = null;
+let music = null;
 let master = null;
 
 export function unlockAudio() {
@@ -103,6 +104,42 @@ export const fx = {
   },
   coins() { if (this.on) { for (let i = 0; i < 7; i++) bell(1800 + Math.random() * 1200, i * 0.05 + Math.random() * 0.03, 0.18, 0.07); } },
   boing() { if (this.on) { sweep(300, 900, 0, 0.18, 0.25); sweep(900, 1400, 0.16, 0.2, 0.18); bell(1760, 0.32, 0.6, 0.12); } },
+  charge() {
+    if (!this.on) return;
+    sweep(140, 1400, 0, 0.95, 0.12, 'triangle');
+    noise(0, 0.95, 0.18, 200, 5000);
+    for (let i = 0; i < 9; i++) bell(330 + i * 70, i * 0.1, 0.07, 0.07, 'square');
+  },
+  boom() {
+    if (!this.on) return;
+    sweep(260, 38, 0, 0.6, 0.55);
+    noise(0, 0.6, 0.35, 5000, 250);
+  },
+  pop() { if (this.on) { noise(0, 0.25, 0.18, 3000, 600); bell(1800 + Math.random() * 900, 0.02, 0.4, 0.06); } },
+  /** Looping chiptune treasure jingle while the numbers roll. */
+  musicStart(tier = 0) {
+    if (!this.on || !ctx || music) return;
+    const root = [1, 1.122, 1.26, 1.335][tier] || 1;
+    const lead = [523, 659, 784, 1047, 784, 659, 587, 740, 880, 1175, 880, 740, 659, 784, 988, 1319].map((f) => f * root);
+    const bass = [131, 147, 165, 147].map((f) => f * root);
+    let i = 0;
+    const tick = () => {
+      if (!fx.on || document.hidden) { fx.musicStop(); return; }
+      bell(lead[i % lead.length], 0, 0.11, 0.05, 'square');
+      if (i % 2 === 0) bell(lead[(i + 2) % lead.length] * 2, 0.04, 0.06, 0.02, 'triangle');
+      if (i % 4 === 0) bell(bass[(i / 4) % bass.length | 0], 0, 0.3, 0.12, 'triangle');
+      i++;
+    };
+    tick();
+    music = setInterval(tick, 105);
+  },
+  musicStop() { clearInterval(music); music = null; },
+  fanfare() {
+    if (!this.on) return;
+    const chords = [[523, 659, 784], [587, 740, 880], [659, 831, 988, 1319]];
+    chords.forEach((ch, k) => ch.forEach((f) => bell(f, k * 0.16, k === 2 ? 1.6 : 0.2, 0.11, k === 2 ? 'triangle' : 'square')));
+    [1568, 1760, 2093, 2637].forEach((f, i) => bell(f, 0.32 + i * 0.06, 0.5, 0.07));
+  },
   levelUp() {
     if (!this.on) return;
     [523, 659, 784, 1047].forEach((f, i) => bell(f, i * 0.09, 0.4, 0.18, 'triangle'));

@@ -746,6 +746,13 @@ function route() {
 
 // ---------- Boot ----------
 applySettings();
+// One-time notice: the level curve got steeper, so existing players may see a lower level.
+try {
+  if (!localStorage.getItem('limber.levels-v2')) {
+    localStorage.setItem('limber.levels-v2', '1');
+    if (loadProfile().xp > 0) setTimeout(() => snackbar('Levels rebalanced: leveling up is slower now and worth more. Your fibers and friends are safe.'), 1200);
+  }
+} catch { /* ignore */ }
 setSoundIcon();
 route();
 

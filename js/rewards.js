@@ -38,8 +38,10 @@ export function saveProfile(p) {
 }
 
 // ---------- Levels ----------
-// Cumulative XP to reach level L: 250k * (L-1) * L / 2  ->  L2 250k, L3 750k, L4 1.5M, L5 2.5M ...
-export const levelStart = (L) => 250000 * ((L - 1) * L) / 2;
+// Cumulative XP to reach level L: 1M * (L-1)^2.2, rounded to 10k.
+// L2 1M, L3 4.6M, L4 11M, L5 21M, L10 125M, L20 650M. A typical session pays 0.5-2M,
+// so early levels come within days and later ones take weeks of daily stretching.
+export const levelStart = (L) => (L <= 1 ? 0 : Math.round((1e6 * Math.pow(L - 1, 2.2)) / 1e4) * 1e4);
 export function levelOf(xp) {
   let L = 1;
   while (xp >= levelStart(L + 1)) L++;

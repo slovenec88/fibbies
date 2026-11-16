@@ -23,10 +23,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     <div class="reward" data-tier="${rw.tier}">
       <div class="rw-beams" aria-hidden="true"></div>
       <div class="rw-fx" aria-hidden="true"></div>
+      <div class="rw-flash" aria-hidden="true"></div>
+      <div class="rw-banner" aria-hidden="true"></div>
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
-        <button class="rw-chest" aria-label="Open chest">${chestSVG(rw.tier)}</button>
-        <div class="rw-tap">Tap to open!</div>
+        <button class="rw-chest" aria-label="Open chest"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
+        <div class="rw-tap"><span class="ms filled">touch_app</span>Tap the chest!</div>
         <div class="rw-count">
           <div class="rw-label">Muscle fibers stretched</div>
           <div class="rw-big" aria-live="polite">0</div>
@@ -56,14 +58,110 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   $('#rw-home').onclick = () => { stop(); onHome(); };
   $('#rw-again').onclick = () => { stop(); onAgain(); };
 
+  // Pause the jingle when the app goes to the background; resume if still counting.
+  let musicWanted = false;
+  const onVis = () => {
+    if (document.hidden) fx.musicStop();
+    else if (alive && musicWanted) fx.musicStart(rw.tier);
+  };
+  document.addEventListener('visibilitychange', onVis);
+
   function stop() {
     alive = false;
+    musicWanted = false;
+    document.removeEventListener('visibilitychange', onVis);
+    fx.musicStop();
+    clearInterval(ambient);
     for (const id of timers) clearTimeout(id);
+  }
+
+  let ambient = null;
+  const PRAISE = ['JOB WELL DONE!', 'STRETCH LEGEND!', 'FLEXCELLENT!', 'UNSTOPPABLE!', 'LIMBER LORD!', 'LEGS OF STEEL!', 'YOU ROCK!'];
+
+  function flash(strong = true) {
+    if (reduce) return;
+    const f = $('.rw-flash');
+    f.classList.remove('go', 'soft');
+    void f.offsetWidth;
+    f.classList.add('go');
+    if (!strong) f.classList.add('soft');
+  }
+
+  /** Coins arc up out of the chest and rain down past the bottom of the screen. */
+  const MAX_PARTICLES = 80; // keeps low-end phones smooth
+  const room = (n) => Math.max(0, Math.min(n, MAX_PARTICLES - fxLayer.childElementCount));
+
+  function fountain(n) {
+    if (reduce) return;
+    n = room(n);
+    if (!n) return;
+    const fr = $('.rw-chest').getBoundingClientRect();
+    const wr = wrap.getBoundingClientRect();
+    const cx = fr.left + fr.width / 2 - wr.left;
+    const cy = fr.top + fr.height * 0.45 - wr.top;
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement('i');
+      p.className = `pt fall ${Math.random() < 0.75 ? 'coin' : Math.random() < 0.5 ? 'star' : 'gem'}`;
+      p.style.left = `${cx}px`;
+      p.style.top = `${cy}px`;
+      p.style.setProperty('--tx', `${(Math.random() - 0.5) * wr.width * 1.1}px`);
+      p.style.setProperty('--peak', `${-60 - Math.random() * 140}px`);
+      p.style.setProperty('--fall', `${wr.height - cy + 40}px`);
+      p.style.setProperty('--r', `${Math.random() * 1080 - 540}deg`);
+      p.style.setProperty('--s', `${0.7 + Math.random() * 0.8}`);
+      p.style.animationDuration = `${1.3 + Math.random() * 0.9}s`;
+      fxLayer.appendChild(p);
+      setTimeout(() => p.remove(), 2400);
+    }
+  }
+
+  function fireworks(count) {
+    if (reduce) return;
+    const wr = wrap.getBoundingClientRect();
+    for (let k = 0; k < count; k++) {
+      const id = setTimeout(() => {
+        timers.delete(id);
+        if (!alive) return;
+        const x = wr.width * (0.15 + Math.random() * 0.7);
+        const y = wr.height * (0.12 + Math.random() * 0.35);
+        const hue = Math.floor(Math.random() * 360);
+        const sparks = Math.max(6, room(14));
+        for (let i = 0; i < sparks; i++) {
+          const p = document.createElement('i');
+          p.className = 'pt spark fw';
+          const ang = (i / sparks) * Math.PI * 2;
+          const d = 70 + Math.random() * 50;
+          p.style.left = `${x}px`;
+          p.style.top = `${y}px`;
+          p.style.background = `hsl(${hue + Math.random() * 60} 100% 65%)`;
+          p.style.boxShadow = `0 0 10px hsl(${hue} 100% 65%)`;
+          p.style.setProperty('--tx', `${Math.cos(ang) * d}px`);
+          p.style.setProperty('--ty', `${Math.sin(ang) * d}px`);
+          p.style.setProperty('--r', '0deg');
+          p.style.setProperty('--s', '1');
+          p.style.animationDuration = `${0.9 + Math.random() * 0.4}s`;
+          fxLayer.appendChild(p);
+          setTimeout(() => p.remove(), 1500);
+        }
+        fx.pop();
+      }, k * 380);
+      timers.add(id);
+    }
+  }
+
+  function stamp(text) {
+    const b = $('.rw-banner');
+    b.textContent = text;
+    b.classList.remove('go');
+    void b.offsetWidth;
+    b.classList.add('go');
   }
 
   // ---- particles ----
   function burst(fromEl, n, kinds = ['coin', 'star', 'spark']) {
     if (reduce) return;
+    n = room(n);
+    if (!n) return;
     const fr = fromEl.getBoundingClientRect();
     const wr = wrap.getBoundingClientRect();
     const cx = fr.left + fr.width / 2 - wr.left;
@@ -103,7 +201,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         const p = Math.max(0, Math.min(1, (now - t0) / ms));
         const e = 1 - Math.pow(1 - p, 3);
         big.textContent = fmt(from + (to - from) * e);
-        if (now - lastTick > 55 && p < 1) { lastTick = now; fx.count(p); haptics.buzz(5); }
+        if (now - lastTick > 55 && p < 1) { lastTick = now; fx.count(p); haptics.buzz(5); fountain(2); }
         if (p >= 1 || fast) { big.textContent = fmt(to); res(); } else requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -119,30 +217,33 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz(40);
     await sleep(300);
     if (!alive) return;
+    wrap.classList.remove('dropping'); // otherwise the drop animation replays when the halo stops
     wrap.classList.add('ready');
 
-    // 2. wait for tap (auto-open after a moment)
+    // 2. the chest waits until you open it
     await new Promise((res) => {
       const chest = $('.rw-chest');
-      const go = () => { chest.removeEventListener('click', go); res(); };
-      chest.addEventListener('click', go);
-      const id = setTimeout(go, fast ? 0 : 3200);
-      timers.add(id);
+      chest.addEventListener('click', res, { once: true });
     });
     if (!alive) return;
 
-    // 3. open
+    // 3. charge up... then BOOM
     wrap.classList.add('opening');
-    fx.rattle();
-    haptics.buzz([20, 40, 20, 40, 20]);
-    await sleep(480);
+    fx.charge();
+    haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
+    await sleep(950);
     if (!alive) return;
-    wrap.classList.add('opened', 'collapse');
+    flash();
+    wrap.classList.add('opened', 'collapse', 'party');
+    fx.boom();
     fx.open();
-    haptics.buzz(120);
+    haptics.buzz(160);
     shake();
-    burst($('.rw-chest'), rw.tier >= 2 ? 46 : 30);
+    burst($('.rw-chest'), rw.tier >= 2 ? 60 : 40, ['coin', 'star', 'spark', 'gem']);
+    fountain(rw.tier >= 2 ? 30 : 18);
     voiceGuide.say(`${TIERS[rw.tier].name} chest!`);
+    musicWanted = true;
+    fx.musicStart(rw.tier);
 
     // fast-forward on any tap from here on
     wrap.addEventListener('pointerdown', (e) => { if (!e.target.closest('.rw-actions')) fast = true; });
@@ -165,8 +266,10 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       pill.innerHTML = `<span class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${m.x}</b>`;
       ml.appendChild(pill);
       fx.slam(m.hot);
-      haptics.buzz(60);
+      haptics.buzz(m.hot ? [40, 30, 80] : 60);
       shake();
+      flash(false);
+      fountain(m.hot ? 16 : 8);
       big.classList.remove('bump');
       void big.offsetWidth;
       big.classList.add('bump');
@@ -178,9 +281,18 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(200);
     if (!alive) return;
     big.classList.add('final');
+    musicWanted = false;
+    fx.musicStop();
+    fx.fanfare();
     fx.coins();
-    burst(big, 24, ['coin', 'spark']);
-    haptics.buzz([30, 30, 60]);
+    flash();
+    burst(big, 34, ['coin', 'spark', 'gem']);
+    fountain(30);
+    stamp(PRAISE[Math.floor(Math.random() * PRAISE.length)]);
+    fireworks(rw.tier + 2);
+    haptics.buzz([30, 30, 60, 30, 120]);
+    await sleep(900);
+    if (!alive) return;
 
     // 6. loot
     await sleep(650);
@@ -213,6 +325,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(200);
     if (!alive) return;
     wrap.classList.add('done');
+    if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) fountain(1); }, 450);
     const act = $('.rw-actions');
     if (act.getBoundingClientRect().bottom > innerHeight) act.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
   }
