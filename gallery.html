@@ -13,10 +13,17 @@
 </head>
 <body>
   <h1 style="font-size:20px;margin-bottom:12px">Pose gallery (dev)</h1>
+  <div class="grid" id="c" style="margin-bottom:16px"></div>
   <div class="grid" id="g"></div>
   <script type="module">
     import { STRETCHES } from './js/data.js';
     import { Figure } from './js/figure.js';
+    import { FIBBIES } from './js/rewards.js';
+    import { critterSVG, chestSVG } from './js/critter.js';
+    const cg = document.getElementById('c');
+    for (const f of FIBBIES) cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(f)}${f.name}</div>`);
+    cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(FIBBIES[0], { locked: true })}locked</div>`);
+    for (let t = 0; t < 4; t++) cg.insertAdjacentHTML('beforeend', `<div class="cell">${chestSVG(t)}chest ${t}</div>`);
     const g = document.getElementById('g');
     const t = Number(new URLSearchParams(location.search).get('t') ?? -1);
     const figs = [];

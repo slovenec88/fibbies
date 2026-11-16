@@ -3,6 +3,9 @@ import { Figure } from './figure.js';
 import { unlockAudio, sfx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, FIBBIES, QUESTS } from './rewards.js';
+import { critterSVG, chestSVG } from './critter.js';
+import { playReward } from './reward-screen.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -89,8 +92,10 @@ function animate(fig, opts = {}) {
   return a;
 }
 
+// Only sessions at least half completed count toward streaks, quests and bonuses.
+const counts = (h) => (h.ratio ?? 1) >= 0.5;
 function streak() {
-  const days = new Set(log.map((h) => h.day));
+  const days = new Set(log.filter(counts).map((h) => h.day));
   let n = 0;
   const d = new Date();
   if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
@@ -143,6 +148,9 @@ let activeCat = store.get('limber.cat', 'all');
 
 function suggestion() {
   const h = new Date().getHours();
+  const done = todaysCats(log, dayKey());
+  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: 'Back from your run? Run Sandwich ×2!' };
+  if (done.has('after') && !done.has('evening') && h >= 18) return { r: routineById('top5-evening'), why: 'Finish the day strong' };
   if (h < 11) return { r: routineById('top5-before'), why: 'Morning run? Warm up first' };
   if (h < 16) return { r: routineById('five-minute-fix'), why: 'A quick midday reset' };
   if (h < 20) return { r: routineById('top5-after'), why: 'Just finished a run?' };
@@ -178,6 +186,8 @@ function renderHome() {
     </div>
     <div class="week-dots" aria-label="This week">${dots}</div>`;
 
+  renderProgress();
+
   // Hero
   const { r, why } = suggestion();
   const hero = $('#hero');
@@ -199,6 +209,8 @@ function renderHome() {
     startRoutine(r.id);
   });
 
+  renderCollection();
+
   // Chips
   $('#chips').innerHTML = CATEGORIES.map((c) => `
     <button class="chip ripple" role="tab" aria-selected="${c.id === activeCat}" data-cat="${c.id}">
@@ -207,6 +219,47 @@ function renderHome() {
 
   renderList();
 }
+
+function renderProgress() {
+  const p = loadProfile();
+  const lp = levelProgress(p.xp);
+  const buddy = FIBBIES.find((f) => f.id === p.buddy) || FIBBIES[0];
+  const done = todaysCats(log, dayKey());
+  const owned = Object.keys(p.fibbies).length;
+  $('#progress-card').innerHTML = `
+    <div class="pc-top">
+      <div class="pc-buddy">${critterSVG(buddy, { locked: !p.buddy })}</div>
+      <div>
+        <div class="pc-line"><b>Level ${lp.level}</b><small>${fmtBig(p.fibers)} fibers stretched</small></div>
+        <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
+        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${p.chests} chests · ${owned}/${FIBBIES.length} friends</small></div>
+      </div>
+    </div>
+    <div class="quests" aria-label="Today's quests">
+      ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}"><span class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span>${q.label}</div>`).join('')}
+    </div>
+    <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>Warm up <b>and</b> cool down on the same day for a <b>Run Sandwich ×2</b> and better chests.</span></div>`;
+}
+
+function renderCollection() {
+  const p = loadProfile();
+  const owned = FIBBIES.filter((f) => p.fibbies[f.id]).length;
+  $('#collection').innerHTML = `
+    <div class="col-head"><h2>Fibbie friends</h2><small>${owned}/${FIBBIES.length}</small></div>
+    <div class="col-row">${[...FIBBIES].sort((x, y) => (p.fibbies[y.id] ? 1 : 0) - (p.fibbies[x.id] ? 1 : 0)).map((f) => {
+      const e = p.fibbies[f.id];
+      return `<button class="col-item${e ? ' owned' : ''}" data-fib="${f.id}">${critterSVG(f, { locked: !e })}<span>${e ? esc(f.name) : '???'}</span>${e ? `<span class="lv">Lv ${e.count}</span>` : ''}</button>`;
+    }).join('')}</div>`;
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-fib]');
+  if (!b) return;
+  const f = FIBBIES.find((x) => x.id === b.dataset.fib);
+  const e2 = loadProfile().fibbies[f.id];
+  const rar = ['Common', 'Rare', 'Epic', 'Legendary'][f.rarity];
+  snackbar(e2 ? `${f.name} · ${rar} · Lv ${e2.count}. ${f.blurb}` : `A ${rar.toLowerCase()} friend is hiding in a chest somewhere…`);
+});
 
 function renderList() {
   const list = $('#routine-list');
@@ -483,6 +536,10 @@ $('#dlg-end-ok').onclick = () => dlgEnd.close('end');
 
 function leavePlayer() {
   clearTimeout(doneTimer);
+  if (lastResult && !lastResult.shown && lastResult.reward) {
+    lastResult.shown = true;
+    setTimeout(() => snackbar(`Chest banked: +${fmtBig(lastResult.reward.total)} fibers and ${lastResult.reward.fibbie.name}!`), 400);
+  }
   session?.destroy();
   session = null;
   wakeLock.off();
@@ -501,15 +558,31 @@ document.addEventListener('keydown', (e) => {
   else if (e.code === 'Escape') confirmEnd();
 });
 
-// ---------- Done ----------
+// ---------- Done: rewards ----------
 let lastResult = null;
 let doneTimer = null;
+let rewardPlayer = null;
 function finish(s) {
   const secs = Math.round(s.activeSeconds());
-  log.push({ day: dayKey(), id: s.routine.id, secs, at: Date.now() });
+  const day = dayKey();
+  const ratio = Math.max(0, Math.min(1, s.activeSeconds() / Math.max(1, s.total * 0.9)));
+  const priorToday = todaysCats(log, day);
+  const firstToday = !log.some((h) => h.day === day && counts(h));
+  log.push({ day, id: s.routine.id, cat: s.routine.cat, secs, ratio: Math.round(ratio * 100) / 100, at: Date.now() });
   log = log.slice(-500);
-  store.set("limber.history", log);
-  lastResult = { routine: s.routine, secs, moves: s.routine.items.length };
+  store.set('limber.history', log);
+  const profile = loadProfile();
+  const reward = ratio < 0.5 ? null : computeReward({
+    routine: s.routine,
+    holdSecs: s.moves.reduce((acc, m) => acc + m.secs, 0),
+    ratio, skips: s.skips, scale: s.scale, priorToday, firstToday,
+    streak: streak(), profile,
+  });
+  if (reward) {
+    applyReward(profile, reward);
+    saveProfile(profile);
+  }
+  lastResult = { routine: s.routine, secs, moves: s.routine.items.length, reward, shown: false };
   wakeLock.off();
   clearTimeout(doneTimer);
   doneTimer = setTimeout(() => {
@@ -524,51 +597,30 @@ function finish(s) {
 function renderDone() {
   const v = $('#view-done');
   const res = lastResult;
-  if (!res) { replace('#/'); return; }
+  if (!res || res.shown) { replace('#/'); return; }
+  res.shown = true;
   const r = res.routine;
-  v.dataset.hue = '';
-  v.style.setProperty('--h', r.hue);
-  const st = streak();
-  const blob = 'M100 6 C116 6 124 22 138 26 C152 30 170 26 178 40 C186 54 176 70 180 84 C184 98 196 108 194 122 C192 136 176 144 170 158 C164 172 166 190 152 196 C138 202 124 190 110 192 C96 194 82 206 68 200 C54 194 50 176 38 168 C26 160 8 156 6 140 C4 124 18 112 16 98 C14 84 2 70 8 56 C14 42 32 40 44 30 C56 20 64 6 80 6 C88 6 94 6 100 6Z';
-  v.innerHTML = `
-    <div class="done-wrap">
-      <div class="done-badge"><svg viewBox="0 0 200 200"><path d="${blob}"/></svg><span class="ms filled">check</span></div>
-      <h1>Nice work!</h1>
-      <p>${esc(r.title)} complete. Your legs thank you.</p>
-      <div class="done-stats">
-        <div class="done-stat"><b>${fmtTime(res.secs)}</b><small>active time</small></div>
-        <div class="done-stat"><b>${res.moves}</b><small>stretches</small></div>
-        <div class="done-stat"><b>${st}</b><small>day streak</small></div>
-      </div>
-      <div class="done-actions">
-        <button class="btn filled ripple" id="dn-home"><span class="ms">home</span>Back home</button>
-        <button class="btn tonal ripple" id="dn-again"><span class="ms">replay</span>Do it again</button>
-      </div>
-    </div>`;
-  $('#dn-home').onclick = () => { replace('#/'); };
-  $('#dn-again').onclick = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
-  confetti();
-}
-
-function confetti() {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const c = document.createElement('div');
-  c.className = 'confetti';
-  const cs = getComputedStyle($('#view-done'));
-  const colors = ['--primary', '--tertiary', '--primary-container', '--tertiary-container', '--secondary'].map((k) => cs.getPropertyValue(k));
-  for (let i = 0; i < 70; i++) {
-    const p = document.createElement('i');
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.background = colors[i % colors.length];
-    p.style.setProperty('--dx', `${(Math.random() - 0.5) * 160}px`);
-    p.style.setProperty('--r', `${Math.random() * 900 - 450}deg`);
-    p.style.animationDuration = `${2.2 + Math.random() * 1.8}s`;
-    p.style.animationDelay = `${Math.random() * 0.5}s`;
-    if (i % 3 === 0) p.style.borderRadius = '50%';
-    c.appendChild(p);
+  rewardPlayer?.stop();
+  if (!res.reward) {
+    v.innerHTML = `
+      <div class="reward" data-tier="0"><div class="rw-inner rw-nochest">
+        <div class="rw-chest">${chestSVG(0)}</div>
+        <h1>So close!</h1>
+        <p>Finish at least half of a routine to unlock a chest, earn fibers and keep your streak alive.</p>
+        <div class="rw-actions">
+          <button class="rw-btn primary" id="rw-again"><span class="ms filled">replay</span>Try again</button>
+          <button class="rw-btn" id="rw-home"><span class="ms">home</span></button>
+        </div>
+      </div></div>`;
+    $('#rw-again').onclick = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
+    $('#rw-home').onclick = () => replace('#/');
+    return;
   }
-  document.body.appendChild(c);
-  setTimeout(() => c.remove(), 5000);
+  rewardPlayer = playReward(v, res.reward, {
+    stats: [[fmtTime(res.secs), 'active'], [String(res.moves), 'stretches'], [`${streak()}🔥`, 'day streak']],
+    onHome: () => replace('#/'),
+    onAgain: () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); },
+  });
 }
 
 // ---------- Settings sheet ----------
@@ -665,6 +717,7 @@ function route() {
     return;
   }
   allowLeave = false;
+  if (view !== 'done' && rewardPlayer) { rewardPlayer.stop(); rewardPlayer = null; voiceGuide.stop(); }
 
   if (view === 'r' && routineById(id)) {
     if (session) { session.destroy(); session = null; wakeLock.off(); }

@@ -44,6 +44,73 @@ function bell(freq, at = 0, dur = 0.6, gain = 0.22, type = 'sine') {
   }
 }
 
+function noise(at = 0, dur = 0.5, gain = 0.25, from = 400, to = 4000) {
+  if (!ctx) return;
+  const t0 = ctx.currentTime + at;
+  const len = Math.ceil(ctx.sampleRate * dur);
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const f = ctx.createBiquadFilter();
+  f.type = 'bandpass';
+  f.Q.value = 1.2;
+  f.frequency.setValueAtTime(from, t0);
+  f.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+  const v = ctx.createGain();
+  v.gain.setValueAtTime(0.0001, t0);
+  v.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.3);
+  v.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  src.connect(f).connect(v).connect(master);
+  src.start(t0);
+  src.stop(t0 + dur + 0.05);
+}
+
+function sweep(fromF, toF, at = 0, dur = 0.3, gain = 0.2, type = 'sine') {
+  if (!ctx) return;
+  const t0 = ctx.currentTime + at;
+  const o = ctx.createOscillator();
+  const v = ctx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(fromF, t0);
+  o.frequency.exponentialRampToValueAtTime(toF, t0 + dur);
+  v.gain.setValueAtTime(0.0001, t0);
+  v.gain.exponentialRampToValueAtTime(gain, t0 + 0.01);
+  v.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(v).connect(master);
+  o.start(t0);
+  o.stop(t0 + dur + 0.05);
+}
+
+/** Reward-screen sounds (slot-machine / treasure vibes). */
+export const fx = {
+  get on() { return sfx.enabled; },
+  chestLand() { if (this.on) { sweep(180, 60, 0, 0.25, 0.35); noise(0, 0.15, 0.12, 300, 200); } },
+  rattle() { if (this.on) { for (let i = 0; i < 4; i++) bell(300 + i * 40, i * 0.09, 0.08, 0.1, 'square'); } },
+  open() {
+    if (!this.on) return;
+    noise(0, 0.7, 0.3, 300, 6000);
+    [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => bell(f, 0.08 + i * 0.05, 0.9, 0.14));
+  },
+  count(p) { if (this.on) bell(500 + p * 1300, 0, 0.06, 0.07, 'triangle'); },
+  slam(big) {
+    if (!this.on) return;
+    sweep(220, 50, 0, 0.3, 0.4);
+    noise(0, 0.12, 0.15, 2000, 800);
+    bell(big ? 1568 : 1175, 0.02, 0.5, 0.15);
+    if (big) bell(2093, 0.1, 0.6, 0.12);
+  },
+  coins() { if (this.on) { for (let i = 0; i < 7; i++) bell(1800 + Math.random() * 1200, i * 0.05 + Math.random() * 0.03, 0.18, 0.07); } },
+  boing() { if (this.on) { sweep(300, 900, 0, 0.18, 0.25); sweep(900, 1400, 0.16, 0.2, 0.18); bell(1760, 0.32, 0.6, 0.12); } },
+  levelUp() {
+    if (!this.on) return;
+    [523, 659, 784, 1047].forEach((f, i) => bell(f, i * 0.09, 0.4, 0.18, 'triangle'));
+    bell(1568, 0.38, 1.2, 0.2);
+    bell(2093, 0.38, 1.2, 0.12);
+  },
+};
+
 document.addEventListener('visibilitychange', () => {
   if (ctx && document.visibilityState === 'visible' && ctx.state !== 'running') ctx.resume().catch?.(() => {});
 });

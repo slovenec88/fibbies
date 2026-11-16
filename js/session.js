@@ -23,6 +23,8 @@ export class Session {
     this.finished = false;
     this.timer = null;
     this.activeMs = 0; // real time spent un-paused
+    this.skips = 0;
+    this.scale = scale;
   }
 
   get step() { return this.steps[this.i]; }
@@ -147,6 +149,7 @@ export class Session {
   }
 
   next() {
+    if (this.step.kind === 'hold') this.skips++;
     // jump to next hold
     let j = this.i + 1;
     while (j < this.steps.length && this.steps[j].kind !== 'hold') j++;
