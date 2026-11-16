@@ -148,13 +148,12 @@ export const STRETCHES = {
 
   lyingHam: {
     name: 'Lying Hamstring Stretch', target: 'Hamstrings', view: 'side', sided: true, limb: 'leg', period: 8,
-    props: [{ strap: true }],
-    a: { h: [104, 172], t: 180, n: 180, hN: [88, 140], hF: [86, 142], fN: [122, 98], fF: [180, 176] },
-    b: { h: [104, 172], t: 180, n: 180, hN: [92, 136], hF: [90, 138], fN: [108, 97], fF: [180, 176] },
+    a: { h: [104, 172], t: 192, n: 188, hN: [108, 140], hF: [106, 142], fN: [120, 98], fF: [180, 176], ft: [-100, 0] },
+    b: { h: [104, 172], t: 194, n: 190, hN: [104, 134], hF: [102, 136], fN: [106, 97], fF: [180, 176], ft: [-110, 0] },
     cues: [
-      'On your back, loop a towel or strap around one foot.',
-      'Straighten the leg toward the ceiling with a gentle pull.',
-      'Keep the other leg long on the floor.',
+      'On your back, lift one leg and hold behind your thigh with both hands.',
+      'Gently draw the leg toward you. A soft bend in the knee is fine.',
+      'Keep the other leg long on the floor and your head relaxed.',
     ],
   },
 
@@ -449,7 +448,7 @@ export const ROUTINES = [
   },
   {
     id: 'long-run-recovery', hero: 'lyingHam', title: 'Long Run Recovery', cat: 'after', hue: 140, icon: 'landscape',
-    blurb: 'Long, slow floor stretches for big-mileage days. Grab a mat and a towel.',
+    blurb: 'Long, slow floor stretches for big-mileage days. All you need is a bit of floor and a wall.',
     items: [['legsUpWall', 60], ['lyingHam', 40], ['bridge', 30], ['happyBaby', 40], ['pigeon', 45], ['itband', 25], ['cobra', 30], ['child', 45], ['twist', 35]],
   },
   {

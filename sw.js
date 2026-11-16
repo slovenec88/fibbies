@@ -1,5 +1,5 @@
 // Offline support: network-first for the app shell, cache-first for fonts.
-const CACHE = 'limber-v2';
+const CACHE = 'limber-v3';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest',
   'js/app.js', 'js/data.js', 'js/figure.js', 'js/audio.js', 'js/session.js', 'js/wakelock.js',
