@@ -1,4 +1,5 @@
-// Synthesized sound cues (Web Audio) + spoken guidance (Speech Synthesis).
+// Synthesized sound cues (Web Audio) + spoken guidance (Speech Synthesis, or native TTS in the app).
+import { native } from './native.js';
 let ctx = null;
 let music = null;
 let master = null;
@@ -195,7 +196,9 @@ function primeVoice() {
 export const voiceGuide = {
   enabled: true,
   say(text, { interrupt = true } = {}) {
-    if (!this.enabled || !('speechSynthesis' in window) || !text) return;
+    if (!this.enabled || !text) return;
+    if (native.speak(text, interrupt)) return;
+    if (!('speechSynthesis' in window)) return;
     try {
       if (interrupt) speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -208,14 +211,21 @@ export const voiceGuide = {
     } catch { /* ignore */ }
   },
   stop() {
+    native.stopSpeaking();
     try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch { /* ignore */ }
   },
 };
 
 export const haptics = {
   enabled: true,
+  stop() {
+    native.cancelHaptics();
+    try { if (navigator.vibrate) navigator.vibrate(0); } catch { /* ignore */ }
+  },
   buzz(pattern) {
-    if (this.enabled && navigator.vibrate) {
+    if (!this.enabled) { this.stop(); return; }
+    if (native.haptic(pattern)) return;
+    if (navigator.vibrate) {
       try { navigator.vibrate(pattern); } catch { /* ignore */ }
     }
   },

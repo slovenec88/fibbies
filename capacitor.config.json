@@ -1,0 +1,22 @@
+{
+  "appId": "io.github.slovenec88.fibbies",
+  "appName": "Fibbies",
+  "webDir": "www",
+  "backgroundColor": "#00594a",
+  "android": {
+    "backgroundColor": "#00594a"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "launchAutoHide": false,
+      "backgroundColor": "#00594a",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    },
+    "SystemBars": {
+      "insetsHandling": "css",
+      "initialViewportFitValueHint": "cover"
+    }
+  }
+}

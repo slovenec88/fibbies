@@ -1,11 +1,14 @@
 // Keeps the screen on during a session. Re-acquires after tab visibility changes.
+// In the native app the KeepAwake plugin does this instead of the Screen Wake Lock API.
+import { native } from './native.js';
+let nativeOn = false;
 let sentinel = null;
 let pending = null;
 let wanted = false;
 const listeners = new Set();
 
 function emit() {
-  for (const fn of listeners) fn(!!sentinel);
+  for (const fn of listeners) fn(!!sentinel || nativeOn);
 }
 
 function acquire() {
@@ -33,10 +36,13 @@ export const wakeLock = {
   supported: 'wakeLock' in navigator,
   on() {
     wanted = true;
+    if (native.keepAwake(true)) { nativeOn = true; emit(); return Promise.resolve(); }
     return acquire();
   },
   async off() {
-    wanted = false; // a still-pending request releases itself when it resolves
+    wanted = false;
+    if (nativeOn) { native.keepAwake(false); nativeOn = false; emit(); return; }
+    // a still-pending web request releases itself when it resolves
     const s = sentinel;
     sentinel = null;
     try { await s?.release(); } catch { /* ignore */ }

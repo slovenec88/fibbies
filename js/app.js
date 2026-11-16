@@ -6,6 +6,7 @@ import { Session } from './session.js';
 import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, FIBBIES, QUESTS } from './rewards.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
+import { native, isNative } from './native.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -36,6 +37,11 @@ function applySettings() {
 function updateThemeColor() {
   // Resolve the surface color to rgb for <meta name="theme-color">
   const view = $('.view.active');
+  if (view && view.id === 'view-done') {
+    $('meta[name="theme-color"]').setAttribute('content', '#140e26');
+    native.statusBar('#140e26', true);
+    return;
+  }
   const opaque = (c) => c && c !== 'transparent' && !/rgba\(.*,\s*0\)$/.test(c) && !/\/\s*0\)$/.test(c);
   let c = view ? getComputedStyle(view).backgroundColor : '';
   if (!opaque(c)) c = getComputedStyle(document.body).backgroundColor;
@@ -47,6 +53,8 @@ function updateThemeColor() {
   x.fillRect(0, 0, 1, 1);
   const [r, g, b] = x.getImageData(0, 0, 1, 1).data;
   $('meta[name="theme-color"]').setAttribute('content', `rgb(${r},${g},${b})`);
+  const hex = `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+  native.statusBar(hex, (r * 299 + g * 587 + b * 114) / 1000 < 128);
 }
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => requestAnimationFrame(updateThemeColor));
 
@@ -714,7 +722,7 @@ function route() {
     return;
   }
   allowLeave = false;
-  if (view !== 'done' && rewardPlayer) { rewardPlayer.stop(); rewardPlayer = null; voiceGuide.stop(); }
+  if (view !== 'done' && rewardPlayer) { rewardPlayer.stop(); rewardPlayer = null; voiceGuide.stop(); haptics.stop(); }
 
   if (view === 'r' && routineById(id)) {
     if (session) { session.destroy(); session = null; wakeLock.off(); }
@@ -742,6 +750,7 @@ function route() {
 }
 
 // ---------- Boot ----------
+if (isNative) document.documentElement.classList.add('native');
 applySettings();
 // One-time notice: the level curve got steeper, so existing players may see a lower level.
 try {
@@ -754,11 +763,23 @@ setSoundIcon();
 $('.brand-mark').innerHTML = critterSVG(FIBBIES[0]);
 route();
 window.__booted = true;
+native.hideSplash();
+
+// Android hardware back: close dialogs first, confirm before leaving a session, exit from home.
+native.onBackButton(() => {
+  const open = document.querySelector('dialog[open]');
+  if (open) { open.close(); return; }
+  if (currentView === 'player' && session && !session.finished) { confirmEnd(); return; }
+  if (currentView === 'home') { native.exit(); return; }
+  if (currentView === 'done') { replace('#/'); return; }
+  back();
+});
 $('#boot-fail').hidden = true; // in case the safety net fired during a slow load
 
 // Service worker: offline + atomic updates. When a new version takes over, reload once
 // so the page never runs a mix of old and new files. Skipped on localhost for development.
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+// The native app ships its files inside the APK, so it needs no service worker.
+if (!isNative && 'serviceWorker' in navigator && location.protocol.startsWith('http')) {
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
   if (local) {
     navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});

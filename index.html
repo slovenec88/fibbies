@@ -178,6 +178,8 @@
     (function () {
       var failed = function () {
         if (window.__booted) return;
+        // In the Android app, drop the native splash so this card is visible.
+        try { var C = window.Capacitor; if (C && C.Plugins && C.Plugins.SplashScreen) C.Plugins.SplashScreen.hide(); } catch (e) {}
         var el = document.getElementById('boot-fail');
         if (el) el.hidden = false;
       };

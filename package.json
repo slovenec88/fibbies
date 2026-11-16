@@ -1,0 +1,26 @@
+{
+  "name": "fibbies",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fibbies: stretch & loot. Web app (GitHub Pages) and Android app (Capacitor) from one codebase.",
+  "type": "module",
+  "scripts": {
+    "build:web": "node scripts/build-web.mjs",
+    "sync": "npm run build:web && npx cap sync android",
+    "android:debug": "npm run sync && node scripts/gradle.mjs assembleDebug",
+    "android:run": "npm run sync && npx cap run android",
+    "android:open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor-community/keep-awake": "^8.0.1",
+    "@capacitor-community/text-to-speech": "^8.0.2",
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/splash-screen": "^8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2"
+  }
+}

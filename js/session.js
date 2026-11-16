@@ -64,6 +64,7 @@ export class Session {
     this.paused = true;
     clearInterval(this.timer);
     voiceGuide.stop();
+    haptics.stop();
     this.onTick?.(this);
   }
 
@@ -74,6 +75,7 @@ export class Session {
     this.paused = true;
     this.finished = true;
     voiceGuide.stop();
+    haptics.stop();
   }
 
   /** Jump to step index, resetting its clock. */

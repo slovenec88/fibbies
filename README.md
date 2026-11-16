@@ -32,6 +32,32 @@ Then open http://localhost:5173. ES modules need an HTTP server, so opening `ind
 
 `gallery.html` is a dev page that renders every pose for checking the figures.
 
+## Android app (Capacitor)
+
+The Android app is built from the same web code. Capacitor wraps it in a native shell and uses native features where they work better than the browser version:
+- text-to-speech for the voice;
+- crisp haptics;
+- keep-awake;
+- edge-to-edge system bars;
+- the hardware back button;
+- a critter splash screen.
+
+These live in `js/native.js` and do nothing on the web.
+
+**Setup (once):**
+1. Install Node.js LTS, JDK 21 and the Android SDK (`ANDROID_HOME`).
+2. Run `npm install`.
+
+**Common commands:**
+
+| Command | What it does |
+|---|---|
+| `npm run android:debug` | Copy the web app into `www/`, sync it to `android/`, and build `android/app/build/outputs/apk/debug/app-debug.apk` |
+| `npm run android:run` | Build and launch on a connected phone or emulator |
+| `npm run android:open` | Open the project in Android Studio |
+
+Change the web code at the repo root, then run `npm run sync`. Don't edit `www/` or `android/app/src/main/assets`; both are generated.
+
 ## Deploy
 
 **Before every push, bump `VERSION` in `sw.js`.** The service worker serves the app cache-first, so returning users only get changes when the version changes.

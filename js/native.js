@@ -1,0 +1,63 @@
+// Native bridge for the Android/iOS app (Capacitor). Every call is a safe no-op on the web,
+// and the plugins are reached through Capacitor's global, so the web app needs no bundler.
+const Cap = window.Capacitor;
+export const isNative = !!(Cap && typeof Cap.isNativePlatform === 'function' && Cap.isNativePlatform());
+const plugin = (name) => (isNative && Cap.Plugins && Cap.Plugins[name]) || null;
+const quiet = (p) => { if (p && typeof p.catch === 'function') p.catch(() => {}); };
+let hapticTimers = [];
+
+export const native = {
+  isNative,
+
+  /** Vibration pattern [on, off, on, ...] mapped to crisp native haptic taps. Returns true if handled. */
+  haptic(pattern) {
+    const H = plugin('Haptics');
+    if (!H) return false;
+    native.cancelHaptics(); // a new pattern replaces any still-running one
+    const steps = Array.isArray(pattern) ? pattern : [pattern];
+    let t = 0;
+    steps.forEach((ms, i) => {
+      if (i % 2 === 0) {
+        // Short pulses become crisp taps; long ones stay real buzzes.
+        const fire = ms >= 100
+          ? () => quiet(H.vibrate({ duration: ms }))
+          : () => quiet(H.impact({ style: ms >= 60 ? 'HEAVY' : ms >= 30 ? 'MEDIUM' : 'LIGHT' }));
+        if (t === 0) fire(); else hapticTimers.push(setTimeout(fire, t));
+      }
+      t += ms;
+    });
+    return true;
+  },
+  cancelHaptics() { hapticTimers.forEach(clearTimeout); hapticTimers = []; },
+
+  /** Android WebView has no reliable speechSynthesis, so voice goes through native text-to-speech. */
+  speak(text, interrupt = true) {
+    const T = plugin('TextToSpeech');
+    if (!T) return false;
+    // queueStrategy 0 = flush (interrupts current speech), 1 = add to the queue.
+    quiet(T.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, queueStrategy: interrupt ? 0 : 1 }));
+    return true;
+  },
+  stopSpeaking() { const T = plugin('TextToSpeech'); if (T) quiet(T.stop()); },
+
+  /** Keep the screen on during a session. Returns true if handled natively. */
+  keepAwake(on) {
+    const K = plugin('KeepAwake');
+    if (!K) return false;
+    quiet(on ? K.keepAwake() : K.allowSleep());
+    return true;
+  },
+
+  /** The app draws edge-to-edge, so the page shows through the system bars; we only flip the
+   *  bar icon colour to stay readable. dark = dark background, so light icons. */
+  statusBar(color, dark) {
+    const S = plugin('SystemBars');
+    if (!S) return;
+    quiet(S.setStyle({ style: dark ? 'DARK' : 'LIGHT' }));
+  },
+
+  onBackButton(handler) { const A = plugin('App'); if (A) A.addListener('backButton', handler); },
+  onResume(handler) { const A = plugin('App'); if (A) A.addListener('resume', handler); },
+  exit() { const A = plugin('App'); if (A) quiet(A.exitApp()); },
+  hideSplash() { const S = plugin('SplashScreen'); if (S) quiet(S.hide({ fadeOutDuration: 300 })); },
+};

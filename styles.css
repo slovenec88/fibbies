@@ -880,3 +880,8 @@ dialog::backdrop { background: var(--scrim); animation: fade .25s both; }
   animation: spin 9s linear infinite;
 }
 .rw-card[data-rarity="3"]::before { background: repeating-conic-gradient(#ffd60a55 0 10deg, transparent 10deg 20deg, #ff5fa255 20deg 30deg, transparent 30deg 40deg); }
+
+/* ========= Native app (Capacitor) ========= */
+html.native, html.native body { overscroll-behavior: none; }
+html.native body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+html.native input, html.native textarea { -webkit-user-select: text; user-select: text; }
