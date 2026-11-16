@@ -158,10 +158,7 @@ function suggestion() {
 }
 
 function renderHome() {
-  const h = new Date().getHours();
-  $('#greeting').textContent = h < 5 ? 'Late night' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
   const st = streak();
-  $('#greeting-sub').textContent = st > 1 ? `${st} days in a row. Keep it going!` : 'Ready to loosen up?';
 
   // Week strip
   const days = new Set(log.map((x) => x.day));
