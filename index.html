@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Limber · Stretches for runners</title>
+  <meta name="description" content="Follow-along 5–10 minute stretching routines for runners, with voice cues, timers and a screen that stays awake.">
+  <meta name="theme-color" content="#f4fbf8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Limber">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,300..900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0&display=block">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Apply saved theme before first paint to avoid a flash.
+    try {
+      const s = JSON.parse(localStorage.getItem('limber.settings') || '{}');
+      if (s.hue != null) document.documentElement.style.setProperty('--h', s.hue);
+      if (s.mode && s.mode !== 'system') document.documentElement.dataset.theme = s.mode;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="app">
+    <!-- HOME -->
+    <section id="view-home" class="view" data-view="home" aria-label="Home">
+      <header class="top-bar large">
+        <div class="top-bar-row">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"><span class="ms filled">self_improvement</span></span>
+            <span class="brand-name">Limber</span>
+          </div>
+          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings"><span class="ms">tune</span></button>
+        </div>
+        <h1 class="display" id="greeting">Good evening</h1>
+        <p class="subtitle" id="greeting-sub">Ready to loosen up?</p>
+      </header>
+
+      <div class="week-card" id="week-card"></div>
+
+      <div class="section-label">Suggested now</div>
+      <div id="hero"></div>
+
+      <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+      <div class="routine-list" id="routine-list"></div>
+      <p class="footnote">Stretch gently. Mild tension is good, pain is not.</p>
+    </section>
+
+    <!-- DETAIL -->
+    <section id="view-detail" class="view" data-view="detail" aria-label="Routine"></section>
+
+    <!-- PLAYER -->
+    <section id="view-player" class="view" data-view="player" aria-label="Session">
+      <div class="player" id="player" data-kind="prep">
+        <header class="player-top">
+          <button class="icon-btn ripple" id="pl-close" aria-label="End session"><span class="ms">close</span></button>
+          <div class="player-title">
+            <span id="pl-routine">Routine</span>
+            <span class="awake-chip" id="pl-awake" hidden><span class="ms filled">light_mode</span>Screen on</span>
+          </div>
+          <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice"><span class="ms">volume_up</span></button>
+        </header>
+        <div class="segments" id="pl-segments" aria-hidden="true"></div>
+
+        <div class="stage" id="pl-stage">
+          <div class="stage-badge" id="pl-badge">Get ready</div>
+          <div class="stage-side" id="pl-side" hidden></div>
+          <div class="stage-fig" id="pl-fig"></div>
+          <div class="paused-veil" id="pl-veil"><span class="ms filled">pause</span>Paused</div>
+        </div>
+
+        <div class="player-info">
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="ring-track" cx="60" cy="60" r="52"/>
+              <circle class="ring-bar" id="pl-ring" cx="60" cy="60" r="52"/>
+            </svg>
+            <div class="ring-time" id="pl-time" aria-live="off">0:00</div>
+          </div>
+          <div class="info-text">
+            <div class="move-target" id="pl-target"></div>
+            <h2 class="move-name" id="pl-name">Stretch</h2>
+            <p class="move-cue" id="pl-cue"></p>
+          </div>
+        </div>
+
+        <div class="player-controls">
+          <button class="icon-btn tonal big ripple" id="pl-prev" aria-label="Previous stretch"><span class="ms filled">skip_previous</span></button>
+          <button class="play-btn ripple" id="pl-play" aria-label="Pause"><span class="ms filled" id="pl-play-icon">pause</span></button>
+          <button class="icon-btn tonal big ripple" id="pl-next" aria-label="Next stretch"><span class="ms filled">skip_next</span></button>
+        </div>
+
+        <div class="up-next" id="pl-upnext"></div>
+      </div>
+    </section>
+
+    <!-- DONE -->
+    <section id="view-done" class="view" data-view="done" aria-label="Finished"></section>
+  </div>
+
+  <!-- Settings sheet -->
+  <dialog class="sheet" id="sheet-settings" aria-label="Settings">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <h2 class="sheet-title">Settings</h2>
+    <div class="list">
+      <label class="list-item">
+        <span class="ms li-icon">record_voice_over</span>
+        <span class="li-text"><b>Voice guidance</b><small>Spoken names, tips and side switches</small></span>
+        <input type="checkbox" class="switch" id="set-voice">
+      </label>
+      <label class="list-item">
+        <span class="ms li-icon">notifications_active</span>
+        <span class="li-text"><b>Sound cues</b><small>Chimes and 3-2-1 countdown beeps</small></span>
+        <input type="checkbox" class="switch" id="set-sound">
+      </label>
+      <label class="list-item">
+        <span class="ms li-icon">vibration</span>
+        <span class="li-text"><b>Vibration</b><small>Haptic taps on supported phones</small></span>
+        <input type="checkbox" class="switch" id="set-haptics">
+      </label>
+    </div>
+    <div class="set-group">
+      <div class="set-label">Hold length</div>
+      <div class="segmented" id="set-scale" role="radiogroup">
+        <button data-v="0.8" role="radio">Shorter</button>
+        <button data-v="1" role="radio">Standard</button>
+        <button data-v="1.25" role="radio">Longer</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <div class="set-label">Appearance</div>
+      <div class="segmented" id="set-mode" role="radiogroup">
+        <button data-v="system" role="radio"><span class="ms">brightness_auto</span>Auto</button>
+        <button data-v="light" role="radio"><span class="ms">light_mode</span>Light</button>
+        <button data-v="dark" role="radio"><span class="ms">dark_mode</span>Dark</button>
+      </div>
+    </div>
+    <div class="set-group">
+      <div class="set-label">Color</div>
+      <div class="swatches" id="set-hue"></div>
+    </div>
+    <button class="btn filled ripple sheet-done" id="set-close">Done</button>
+  </dialog>
+
+  <!-- Confirm dialog -->
+  <dialog class="dialog" id="dlg-end">
+    <span class="ms dialog-icon">self_improvement</span>
+    <h2>End this session?</h2>
+    <p>Your progress in this routine won't be saved.</p>
+    <div class="dialog-actions">
+      <button class="btn text ripple" id="dlg-keep">Keep going</button>
+      <button class="btn text ripple" id="dlg-end-ok">End</button>
+    </div>
+  </dialog>
+
+  <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

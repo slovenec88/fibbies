@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Limber · Pose gallery</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { padding: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .cell { background: var(--surface-container); border-radius: 20px; padding: 8px; font-size: 12px; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1 style="font-size:20px;margin-bottom:12px">Pose gallery (dev)</h1>
+  <div class="grid" id="g"></div>
+  <script type="module">
+    import { STRETCHES } from './js/data.js';
+    import { Figure } from './js/figure.js';
+    const g = document.getElementById('g');
+    const t = Number(new URLSearchParams(location.search).get('t') ?? -1);
+    const figs = [];
+    for (const [id, s] of Object.entries(STRETCHES)) {
+      const c = document.createElement('div');
+      c.className = 'cell';
+      const f = new Figure(s);
+      c.appendChild(f.svg);
+      c.append(id);
+      g.appendChild(c);
+      figs.push(f);
+    }
+    if (t >= 0) figs.forEach((f) => f.draw(t, Math.PI * 2 * t));
+    else {
+      const start = performance.now();
+      const loop = (ts) => { figs.forEach((f) => f.animate((ts - start) / 1000)); requestAnimationFrame(loop); };
+      requestAnimationFrame(loop);
+    }
+  </script>
+</body>
+</html>
