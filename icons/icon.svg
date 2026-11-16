@@ -1,12 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="0" fill="#006b58"/>
-  <circle cx="256" cy="256" r="196" fill="#9df2d6"/>
-  <g fill="none" stroke="#00382c" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="312" cy="138" r="30" fill="#00382c" stroke="none"/>
-    <path d="M296 182 Q 262 236 232 300" stroke-width="40"/>
-    <path d="M232 300 L 300 330 L 316 404" stroke-width="26"/>
-    <path d="M232 300 L 176 352 L 112 336" stroke-width="26"/>
-    <path d="M290 196 L 352 222 L 402 196" stroke-width="24"/>
-    <path d="M286 200 L 232 232 L 196 200" stroke-width="24"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs><radialGradient id="bg" cx="50%" cy="42%" r="72%"><stop offset="0" stop-color="#2fbf98"/><stop offset="1" stop-color="#00594a"/></radialGradient></defs>
+  <rect width="120" height="120" rx="26" fill="url(#bg)"/>
+  <g transform="translate(9 7) scale(.85)">
+    <path d="M36 64 Q22 48 18 36 M84 64 Q98 48 102 36" stroke="#3fa65a" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <circle cx="18" cy="36" r="6.5" fill="#93df9f"/><circle cx="102" cy="36" r="6.5" fill="#93df9f"/>
+    <ellipse cx="46" cy="106" rx="10" ry="6" fill="#3fa65a"/><ellipse cx="74" cy="106" rx="10" ry="6" fill="#3fa65a"/>
+    <rect x="26" y="34" width="68" height="72" rx="34" fill="#93df9f"/>
+    <ellipse cx="60" cy="78.6" rx="22" ry="17.3" fill="#fff" opacity=".28"/>
+    <ellipse cx="47" cy="64" rx="9" ry="10.5" fill="#fff"/><ellipse cx="73" cy="64" rx="9" ry="10.5" fill="#fff"/>
+    <circle cx="48" cy="66" r="6.4" fill="#2b2233"/><circle cx="74" cy="66" r="6.4" fill="#2b2233"/>
+    <circle cx="50.5" cy="62.5" r="2.6" fill="#fff"/><circle cx="76.5" cy="62.5" r="2.6" fill="#fff"/>
+    <ellipse cx="35" cy="77" rx="6.5" ry="3.8" fill="#ff8fab" opacity=".75"/><ellipse cx="85" cy="77" rx="6.5" ry="3.8" fill="#ff8fab" opacity=".75"/>
+    <path d="M53.5 76 q3.25 4.2 6.5 0 q3.25 4.2 6.5 0" stroke="#2b2233" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <rect x="27" y="42" width="66" height="9" rx="4.5" fill="#ff5d73"/>
+    <path d="M92 46 l12 -6 l-2 10 z M92 47 l13 4 l-8 7 z" fill="#ff5d73"/>
   </g>
 </svg>

@@ -751,8 +751,32 @@ try {
   }
 } catch { /* ignore */ }
 setSoundIcon();
+$('.brand-mark').innerHTML = critterSVG(FIBBIES[0]);
 route();
+window.__booted = true;
+$('#boot-fail').hidden = true; // in case the safety net fired during a slow load
 
+// Service worker: offline + atomic updates. When a new version takes over, reload once
+// so the page never runs a mix of old and new files. Skipped on localhost for development.
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  if (local) {
+    navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+  } else {
+    // On a first visit the initial claim is not an update, so skip exactly that one.
+    let skipNext = !navigator.serviceWorker.controller;
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (skipNext) { skipNext = false; return; }
+      if (reloaded || session) return; // never interrupt a running session
+      reloaded = true;
+      location.reload();
+    });
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then((reg) => {
+        // Installed apps can stay open for days: check for a new version when brought back.
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+      }).catch(() => {});
+    });
+  }
 }

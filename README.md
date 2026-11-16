@@ -1,6 +1,6 @@
-# Limber: stretches for runners
+# Fibbies: stretch & loot
 
-A phone-first web app with follow-along stretching routines for runners. Every routine runs 5–10 minutes and comes with voice guidance, sound cues, an on-screen timer and animated figures that show each pose. The screen stays awake while you stretch.
+A phone-first web app with follow-along stretching routines for runners, wrapped in a treasure-chest reward loop. Every routine runs 5–10 minutes and comes with voice guidance, sound cues, an on-screen timer and animated figures that show each pose. The screen stays awake while you stretch.
 
 ## Features
 
@@ -20,6 +20,8 @@ A phone-first web app with follow-along stretching routines for runners. Every r
 - Hold length setting (short / standard / long), plus an opt-in **Flex 60s** mode that brings every static hold to 60 s per side for flexibility gains, vibration, a streak counter and a weekly tracker
 - No build step and no dependencies, just static HTML, CSS and ES modules
 
+See [TODO.md](TODO.md) for planned ideas.
+
 ## Run locally
 
 ```bash
@@ -31,6 +33,8 @@ Then open http://localhost:5173. ES modules need an HTTP server, so opening `ind
 `gallery.html` is a dev page that renders every pose for checking the figures.
 
 ## Deploy
+
+**Before every push, bump `VERSION` in `sw.js`.** The service worker serves the app cache-first, so returning users only get changes when the version changes.
 
 Everything is static. GitHub Pages serves it straight from the `main` branch root.
 
