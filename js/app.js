@@ -1,4 +1,4 @@
-import { STRETCHES, CATEGORIES, ROUTINES, RANKINGS, routineSeconds, buildTimeline, sideLabel } from './data.js';
+import { STRETCHES, CATEGORIES, ROUTINES, RANKINGS, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
 import { Figure } from './figure.js';
 import { unlockAudio, sfx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
@@ -305,6 +305,7 @@ function renderDetail(r) {
         <span class="stat-pill"><span class="ms">schedule</span>${fmtTime(total)}</span>
         <span class="stat-pill"><span class="ms">format_list_bulleted</span>${r.items.length} stretches</span>
         ${moves.some((m) => m.side) ? '<span class="stat-pill"><span class="ms">swap_horiz</span>Both sides</span>' : ''}
+        ${settings.scale === 'flex' ? '<span class="stat-pill"><span class="ms">self_improvement</span>Flexibility holds</span>' : ''}
       </div>
       <div class="detail-fig"></div>
     </div>
@@ -319,7 +320,7 @@ function renderDetail(r) {
   const ml = v.querySelector('.move-list');
   for (const [id, secs] of r.items) {
     const s = STRETCHES[id];
-    const d = Math.max(10, Math.round(secs * settings.scale));
+    const d = holdSecs(s, secs, settings.scale);
     const row = document.createElement('div');
     row.className = 'move-row';
     row.innerHTML = `
@@ -578,9 +579,19 @@ function openSettings() {
   $('#set-sound').checked = settings.sound;
   $('#set-haptics').checked = settings.haptics;
   syncSeg('#set-scale', String(settings.scale));
+  setScaleNote();
   syncSeg('#set-mode', settings.mode);
   $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="Color ${h}"></button>`).join('');
   sheet.showModal();
+}
+const SCALE_NOTES = {
+  0.8: 'Shorter holds (×0.8) for when you are in a hurry.',
+  1: 'Recommended. 25–50 s holds keep every routine at 5–10 minutes.',
+  1.25: 'Holds 25% longer. Some routines go a little past 10 minutes.',
+  flex: 'Every static hold becomes at least 60 s per side, the amount guidelines suggest for getting more flexible over time. Warm-up drills stay the same. Routines run about 5–14 minutes.',
+};
+function setScaleNote() {
+  $('#set-scale-note').textContent = SCALE_NOTES[String(settings.scale)] || SCALE_NOTES[1];
 }
 function syncSeg(sel, val) {
   document.querySelectorAll(`${sel} button`).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === val));
@@ -606,7 +617,8 @@ $('#set-sound').onchange = (e) => { settings.sound = e.target.checked; saveSetti
 $('#set-haptics').onchange = (e) => { settings.haptics = e.target.checked; saveSettings(); applySettings(); haptics.buzz(40); };
 $('#set-scale').onclick = (e) => {
   const b = e.target.closest('button'); if (!b) return;
-  settings.scale = Number(b.dataset.v); saveSettings(); syncSeg('#set-scale', b.dataset.v);
+  settings.scale = b.dataset.v === 'flex' ? 'flex' : Number(b.dataset.v); saveSettings(); syncSeg('#set-scale', b.dataset.v);
+  setScaleNote();
   if (session && !session.finished) snackbar('Hold length applies from your next session');
 };
 $('#set-mode').onclick = (e) => {

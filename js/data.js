@@ -484,12 +484,12 @@ export const ROUTINES = [
   {
     id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', hue: 235, icon: 'workspace_premium', top: true,
     blurb: 'Short on time? The five stretches with the biggest payoff for runners, in about five minutes.',
-    items: [['lunge', 30], ['calf', 25], ['quad', 25], ['downdog', 40], ['worlds', 30]],
+    items: [['lunge', 30], ['calf', 30], ['quad', 30], ['downdog', 40], ['worlds', 30]],
   },
   {
     id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', hue: 100, icon: 'healing',
     blurb: 'Calves and Achilles feeling cranky? A focused lower-leg session.',
-    items: [['calfRaises', 30], ['calf', 30], ['downdog', 40], ['squat', 30], ['fold', 30], ['inchworm', 40], ['lyingHam', 25]],
+    items: [['calfRaises', 30], ['calf', 30], ['downdog', 40], ['squat', 30], ['fold', 30], ['inchworm', 40], ['lyingHam', 30]],
   },
   {
     id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', hue: 70, icon: 'chair',
@@ -507,11 +507,21 @@ export function getStretch(id) {
 }
 
 /** Expand a routine into a playable timeline of steps. */
+/**
+ * Hold length for one stretch. `scale` is a multiplier (0.8, 1, 1.25) or 'flex':
+ * Flexibility mode brings every static hold up to 60 s per side (ACSM's ~60 s per
+ * muscle group) and leaves moving warm-up drills at their normal length.
+ */
+export function holdSecs(stretch, secs, scale = 1) {
+  if (scale === 'flex') return stretch.dynamic ? secs : Math.max(60, secs);
+  return Math.max(10, Math.round(secs * (Number(scale) || 1)));
+}
+
 export function buildTimeline(routine, scale = 1) {
   const moves = [];
   routine.items.forEach(([id, secs]) => {
     const s = STRETCHES[id];
-    const dur = Math.max(10, Math.round(secs * scale));
+    const dur = holdSecs(s, secs, scale);
     if (s.sided) {
       moves.push({ id, stretch: s, side: 'L', secs: dur });
       moves.push({ id, stretch: s, side: 'R', secs: dur });

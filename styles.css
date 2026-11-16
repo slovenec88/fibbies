@@ -522,6 +522,7 @@ dialog::backdrop { background: var(--scrim); animation: fade .25s both; }
 .li-text b { display: block; font-weight: 600; }
 .li-text small { color: var(--on-surface-variant); font-size: 13px; }
 .set-group { margin-top: 16px; }
+.set-note { color: var(--on-surface-variant); font-size: 13px; margin-top: 8px; line-height: 1.4; }
 .set-label { font-size: 14px; font-weight: 600; color: var(--on-surface-variant); margin-bottom: 8px; }
 .sheet-done { width: 100%; margin-top: 24px; height: 52px; }
 

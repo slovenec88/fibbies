@@ -11,7 +11,7 @@ A phone-first web app with follow-along stretching routines for runners. Every r
 - **Screen Wake Lock**, so the phone doesn't go to sleep mid-stretch
 - **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices
 - **Installable PWA** that works offline after the first visit
-- Hold length setting (shorter / standard / longer), vibration, a streak counter and a weekly tracker
+- Hold length setting (short / standard / long), plus an opt-in **Flex 60s** mode that brings every static hold to 60 s per side for flexibility gains, vibration, a streak counter and a weekly tracker
 - No build step and no dependencies, just static HTML, CSS and ES modules
 
 ## Run locally
