@@ -4,8 +4,9 @@ A phone-first web app with follow-along stretching routines for runners. Every r
 
 ## Features
 
-- **10 routines in 4 groups**: After run, Before run, Evening at home and Quick
-- **29 stretches**, each with an animated figure drawn from joint targets (two-bone IK)
+- **11 routines in 4 groups** (After run, Before run, Evening, Quick), each led by a research-ranked **Top 5** routine
+- **Top 10 rankings** for each group, ranked by effectiveness versus simplicity (see [RANKINGS.md](RANKINGS.md))
+- **32 stretches**, each with an animated figure drawn from joint targets (two-bone IK)
 - **Audio**: synthesized chimes, a 3-2-1 countdown, halfway and switch-sides cues, plus spoken names and tips through the Web Speech API
 - **Screen Wake Lock**, so the phone doesn't go to sleep mid-stretch
 - **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices

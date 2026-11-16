@@ -1,4 +1,4 @@
-import { STRETCHES, CATEGORIES, ROUTINES, routineSeconds, buildTimeline, sideLabel } from './data.js';
+import { STRETCHES, CATEGORIES, ROUTINES, RANKINGS, routineSeconds, buildTimeline, sideLabel } from './data.js';
 import { Figure } from './figure.js';
 import { unlockAudio, sfx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
@@ -143,10 +143,10 @@ let activeCat = store.get('limber.cat', 'all');
 
 function suggestion() {
   const h = new Date().getHours();
-  if (h < 11) return { r: routineById('dynamic-warmup'), why: 'Morning run? Warm up first' };
+  if (h < 11) return { r: routineById('top5-before'), why: 'Morning run? Warm up first' };
   if (h < 16) return { r: routineById('five-minute-fix'), why: 'A quick midday reset' };
-  if (h < 20) return { r: routineById('post-run-reset'), why: 'Just finished a run?' };
-  return { r: routineById('evening-unwind'), why: 'Wind down for the night' };
+  if (h < 20) return { r: routineById('top5-after'), why: 'Just finished a run?' };
+  return { r: routineById('top5-evening'), why: 'Wind down for the night' };
 }
 
 function renderHome() {
@@ -222,12 +222,47 @@ function renderList() {
       <div class="rc-thumb"></div>
       <div>
         <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta"><span class="rc-cat">${catOf(r.cat).label}</span>· ${r.items.length} stretches</div>
+        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>·`} ${r.items.length} stretches</div>
       </div>
       <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
     list.appendChild(b);
   }
+  renderRanking();
+}
+
+function renderRanking() {
+  const box = $('#ranking');
+  const cat = catOf(activeCat);
+  if (activeCat === 'all') {
+    box.innerHTML = `<div class="rank-hint"><span class="ms">leaderboard</span><span>Pick a category above to see the <b>Top 10 stretches</b> for it, ranked by how well they work versus how simple they are.</span></div>`;
+    return;
+  }
+  const rows = RANKINGS[activeCat];
+  const top = ROUTINES.find((r) => r.cat === activeCat && r.top);
+  box.innerHTML = `
+    <div class="rank-head" data-hue style="--h:${cat.hue}">
+      <div><h2>Top 10 · ${esc(cat.label)}</h2><p>Ranked by effectiveness for runners versus simplicity. The top 5 make up the <b>${esc(top.title)}</b> routine.</p></div>
+    </div>
+    <ol class="rank-list" data-hue style="--h:${cat.hue}"></ol>`;
+  const ol = box.querySelector('.rank-list');
+  rows.forEach(([id, why], i) => {
+    const s = STRETCHES[id];
+    const li = document.createElement('li');
+    li.className = `rank-row${i < 5 ? ' is-top' : ''}`;
+    li.innerHTML = `
+      <span class="rank-n">${i + 1}</span>
+      <div class="rank-thumb"></div>
+      <div class="rank-text"><b>${esc(s.name)}</b><small>${esc(why)}</small></div>`;
+    li.querySelector('.rank-thumb').appendChild(staticFig(s, 0.5));
+    ol.appendChild(li);
+    if (i === 4) {
+      const sep = document.createElement('li');
+      sep.className = 'rank-sep';
+      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span class="ms filled">play_arrow</span>Play the Top 5 · ${minutes(top)} min</button>`;
+      ol.appendChild(sep);
+    }
+  });
 }
 
 $('#chips').addEventListener('click', (e) => {
@@ -244,6 +279,8 @@ $('#chips').addEventListener('click', (e) => {
 });
 
 document.addEventListener('click', (e) => {
+  const pl = e.target.closest('[data-play]');
+  if (pl) { startRoutine(pl.dataset.play); return; }
   const o = e.target.closest('[data-open]');
   if (o) go(`#/r/${o.dataset.open}`);
 });

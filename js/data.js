@@ -336,6 +336,40 @@ export const STRETCHES = {
       'Keep your legs as straight as feels good.',
     ],
   },
+
+  soleus: {
+    name: 'Bent-Knee Calf Stretch', target: 'Soleus · Achilles', view: 'side', sided: true, limb: 'leg', period: 7,
+    props: [{ wall: 188 }],
+    a: { h: [100, 118], t: -54, n: -48, hN: [184, 62], hF: [184, 70], fN: [74, 180], fF: [120, 180] },
+    b: { h: [102, 125], t: -52, n: -46, hN: [184, 62], hF: [184, 70], fN: [74, 180], fF: [120, 180] },
+    cues: [
+      'Hands on the wall. Step one foot back and bend that back knee.',
+      'Keep the back heel down and sink your hips. You will feel it low in the calf.',
+      "This one targets the soleus and Achilles, the runner's workhorse.",
+    ],
+  },
+
+  kneeToChest: {
+    name: 'Knee to Chest', target: 'Glutes · Lower back', view: 'side', sided: true, limb: 'leg', period: 8,
+    a: { h: [104, 172], t: 182, n: 184, hN: [86, 128], hF: [84, 130], fN: [90, 110], fF: [180, 176], ft: [-60, 0] },
+    b: { h: [104, 172], t: 184, n: 188, hN: [82, 124], hF: [80, 126], fN: [86, 106], fF: [180, 176], ft: [-60, 0] },
+    cues: [
+      'Lie on your back and hug one knee toward your chest.',
+      'Keep the other leg long and relaxed on the floor.',
+      'Let your lower back melt into the floor as you breathe out.',
+    ],
+  },
+
+  figureFour: {
+    name: 'Lying Figure Four', target: 'Glutes · Piriformis', view: 'side', sided: true, limb: 'leg', period: 8,
+    a: { h: [104, 172], t: 186, n: 184, hN: [110, 150], hF: [112, 152], fN: [124, 142], fF: [138, 180], kb: [-1, -1] },
+    b: { h: [104, 172], t: 188, n: 186, hN: [104, 140], hF: [106, 142], fN: [116, 128], fF: [128, 158], kb: [-1, -1] },
+    cues: [
+      'On your back, cross one ankle over the opposite knee.',
+      'Draw the bottom leg toward you until you feel the outer hip open.',
+      'A gentler pigeon. Perfect for sore glutes and bedtime.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
@@ -346,17 +380,72 @@ export const CATEGORIES = [
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
 ];
 
+// Research-based rankings: effectiveness for runners weighed against simplicity
+// (no equipment, easy to learn, safe to do alone). Sources are listed in RANKINGS.md.
+export const RANKINGS = {
+  after: [
+    ['quad', 'Quads take a beating on every stride. Standing, no gear, and every physio list includes it.'],
+    ['calf', 'Calves and Achilles absorb each landing. A wall is all you need.'],
+    ['lunge', 'Undoes tight hip flexors from running and sitting. PTs call this one out every time.'],
+    ['fold', 'Hamstrings and lower back in one simple standing move.'],
+    ['pigeon', 'The physio favourite for glutes and outer hips, key for stability.'],
+    ['soleus', 'Bent-knee version reaches the deep calf that a straight-leg stretch misses.'],
+    ['downdog', 'Calves, hamstrings and shoulders together. Great if you can get on the floor.'],
+    ['butterfly', 'Opens the groin and inner thighs, with easy control over the intensity.'],
+    ['itband', 'Outer hip and IT band relief, standing, anywhere.'],
+    ['child', 'A calm finish for the back and hips that brings your breathing down.'],
+  ],
+  before: [
+    ['swingFront', 'Most-recommended pre-run drill. Opens the hips through the exact running motion.'],
+    ['lungeReach', 'Fires the glutes and stretches the hip flexors while teaching knee tracking.'],
+    ['swingSide', 'Wakes up the adductors and hip stabilisers that keep you running straight.'],
+    ['highKnees', 'Raises your heart rate and grooves a strong knee drive.'],
+    ['buttKicks', 'Dynamic quad stretch that warms the hamstrings too.'],
+    ['worlds', 'Hits hips, hamstrings and the upper back in one flowing move.'],
+    ['hipCircles', 'Loosens the hip joint gently. Zero learning curve.'],
+    ['calfRaises', 'Primes the calves and Achilles for impact.'],
+    ['inchworm', 'Full-body warm-up for hamstrings, core and shoulders.'],
+    ['bridge', 'Switches the glutes on so they share the load.'],
+  ],
+  evening: [
+    ['child', 'The classic wind-down for the back, glutes and hips. Breathe slow and let go.'],
+    ['lyingHam', 'Long hamstring stretch you can do lying down. A bedtime staple.'],
+    ['twist', 'Releases the spine and glutes and helps the whole body relax.'],
+    ['kneeToChest', 'Simple, gentle release for the lower back and glutes.'],
+    ['catcow', 'Moves the spine with your breath to settle the nervous system.'],
+    ['figureFour', 'A gentler pigeon on your back. Ideal for sore glutes at night.'],
+    ['legsUpWall', 'Rests tired legs and helps you calm down before sleep.'],
+    ['butterfly', 'Easy inner-hip opener you can do sitting on the bed.'],
+    ['happyBaby', 'Opens the hips and groin while easing the lower back.'],
+    ['pigeon', 'A deeper glute release when you have a little more time.'],
+  ],
+  quick: [
+    ['lunge', 'Biggest payoff in the least time for runners who also sit a lot.'],
+    ['calf', 'The fastest relief for tight calves and Achilles.'],
+    ['quad', 'Standing, anywhere, in 30 seconds a side.'],
+    ['downdog', 'Calves, hamstrings and back all at once.'],
+    ['worlds', 'Hips, hamstrings and spine in one move. Maximum coverage.'],
+    ['fold', 'Quick hamstring and back release with no setup.'],
+    ['soleus', 'Gets the deep calf that runners often miss.'],
+    ['itband', 'Outer hip relief, standing.'],
+    ['squat', 'Opens the hips and ankles together.'],
+    ['sideBend', 'Lengthens the side body after hunching over a desk.'],
+  ],
+};
+
+export const topFive = (cat) => RANKINGS[cat].slice(0, 5).map(([id]) => id);
+
 // items: [stretchId, seconds per side]
 export const ROUTINES = [
   {
-    id: 'post-run-reset', hero: 'lunge', title: 'Post-Run Reset', cat: 'after', hue: 165, icon: 'directions_run',
-    blurb: 'The full cooldown. Quads, calves, hips and hamstrings, all the spots a run leaves tight.',
-    items: [['quad', 30], ['calf', 30], ['fold', 40], ['lunge', 35], ['pigeon', 40], ['seatedFold', 45], ['twist', 30], ['child', 40]],
+    id: 'top5-after', hero: 'quad', title: 'Top 5 After Run', cat: 'after', hue: 165, icon: 'workspace_premium', top: true,
+    blurb: 'The five most effective, simplest post-run stretches, as ranked from physical therapist and coaching advice. Hold each about 30 seconds while your muscles are still warm.',
+    items: [['quad', 30], ['calf', 30], ['lunge', 30], ['fold', 40], ['pigeon', 35]],
   },
   {
-    id: 'cooldown-express', hero: 'quad', title: 'Cooldown Express', cat: 'after', hue: 190, icon: 'speed',
-    blurb: 'Six minutes to bring your heart rate down and loosen your legs before you get on with your day.',
-    items: [['quad', 30], ['calf', 30], ['fold', 40], ['lunge', 30], ['seatedFold', 40], ['child', 40]],
+    id: 'post-run-reset', hero: 'lunge', title: 'Post-Run Reset', cat: 'after', hue: 165, icon: 'directions_run',
+    blurb: 'The full cooldown: the Top 5, then the deep calf, down dog and a calm finish.',
+    items: [['quad', 30], ['calf', 30], ['lunge', 35], ['fold', 40], ['pigeon', 40], ['soleus', 30], ['downdog', 30], ['child', 40]],
   },
   {
     id: 'long-run-recovery', hero: 'lyingHam', title: 'Long Run Recovery', cat: 'after', hue: 140, icon: 'landscape',
@@ -364,29 +453,39 @@ export const ROUTINES = [
     items: [['legsUpWall', 60], ['lyingHam', 40], ['bridge', 30], ['happyBaby', 40], ['pigeon', 45], ['itband', 25], ['cobra', 30], ['child', 45], ['twist', 35]],
   },
   {
-    id: 'dynamic-warmup', hero: 'highKnees', title: 'Dynamic Warm-Up', cat: 'before', hue: 45, icon: 'bolt',
-    blurb: 'Wake your legs up with movement, not holds. Do this right before you head out the door.',
-    items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['hipCircles', 30], ['buttKicks', 30], ['calfRaises', 30], ['worlds', 30], ['lungeReach', 40], ['armCircles', 30]],
+    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Run', cat: 'before', hue: 45, icon: 'workspace_premium', top: true,
+    blurb: 'Moving stretches only. Research shows long static holds before a run can slightly reduce performance, while dynamic moves warm you up without that cost.',
+    items: [['swingFront', 30], ['lungeReach', 60], ['swingSide', 30], ['highKnees', 45], ['buttKicks', 45]],
+  },
+  {
+    id: 'dynamic-warmup', hero: 'highKnees', title: 'Dynamic Warm-Up', cat: 'before', hue: 30, icon: 'bolt',
+    blurb: 'The Top 5 warm-up, plus hips, calves and a full-body inchworm. Do this right before you head out the door.',
+    items: [['swingFront', 20], ['lungeReach', 40], ['swingSide', 20], ['highKnees', 30], ['buttKicks', 30], ['worlds', 30], ['hipCircles', 30], ['calfRaises', 30], ['inchworm', 40]],
   },
   {
     id: 'race-day-primer', hero: 'worlds', title: 'Race Day Primer', cat: 'before', hue: 15, icon: 'flag',
     blurb: 'A sharp five minutes for the start corral. Gets you loose without tiring you out.',
-    items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['worlds', 25], ['calfRaises', 30], ['armCircles', 20]],
+    items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['worlds', 30], ['calfRaises', 30], ['armCircles', 20]],
   },
   {
-    id: 'evening-unwind', hero: 'pigeon', title: 'Evening Unwind', cat: 'evening', hue: 290, icon: 'bedtime',
-    blurb: 'Ten slow minutes on the floor. Let the day go and give your legs some love.',
-    items: [['catcow', 40], ['child', 45], ['lunge', 40], ['pigeon', 45], ['butterfly', 45], ['lyingHam', 35], ['twist', 35], ['happyBaby', 40], ['legsUpWall', 45]],
+    id: 'top5-evening', hero: 'child', title: 'Top 5 Evening', cat: 'evening', hue: 290, icon: 'workspace_premium', top: true,
+    blurb: 'The five gentlest, most effective wind-down stretches. All on the floor, all easy. Do them half an hour before bed.',
+    items: [['child', 50], ['lyingHam', 40], ['twist', 40], ['kneeToChest', 35], ['catcow', 45]],
+  },
+  {
+    id: 'evening-unwind', hero: 'pigeon', title: 'Evening Unwind', cat: 'evening', hue: 270, icon: 'bedtime',
+    blurb: 'Ten slow minutes on the floor: the Top 5 evening stretches, then glutes, hips and tired legs.',
+    items: [['child', 45], ['lyingHam', 35], ['twist', 35], ['kneeToChest', 30], ['catcow', 40], ['figureFour', 35], ['butterfly', 40], ['legsUpWall', 50]],
   },
   {
     id: 'bedtime-hips', hero: 'butterfly', title: 'Bedtime Hips', cat: 'evening', hue: 320, icon: 'nights_stay',
     blurb: 'Gentle hip openers to undo hours of sitting and running. Great right before bed.',
-    items: [['squat', 40], ['butterfly', 45], ['pigeon', 45], ['happyBaby', 45], ['twist', 40], ['child', 45], ['legsUpWall', 60]],
+    items: [['squat', 40], ['butterfly', 45], ['figureFour', 40], ['happyBaby', 45], ['twist', 40], ['child', 45], ['legsUpWall', 60]],
   },
   {
-    id: 'five-minute-fix', hero: 'calf', title: '5-Minute Fix', cat: 'quick', hue: 235, icon: 'timer',
-    blurb: 'Short on time? Hit the essentials: quads, calves, hamstrings and hips.',
-    items: [['quad', 25], ['calf', 25], ['fold', 30], ['lunge', 25], ['itband', 20], ['downdog', 30]],
+    id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', hue: 235, icon: 'workspace_premium', top: true,
+    blurb: 'Short on time? The five stretches with the biggest payoff for runners, in about five minutes.',
+    items: [['lunge', 30], ['calf', 25], ['quad', 25], ['downdog', 40], ['worlds', 30]],
   },
   {
     id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', hue: 100, icon: 'healing',
