@@ -17,3 +17,28 @@ Consider shipping Fibbies as a native Android/iOS app so it can pair with a Garm
   - check the Connect IQ developer terms;
   - check app-store name availability for "Fibbies";
   - consider a trademark search.
+
+### Research notes (2026-11-16)
+
+- **Watch ↔ phone:** the Connect IQ Companion SDK for Android ([garmin/connectiq-android-sdk](https://github.com/garmin/connectiq-android-sdk)) relays messages through the Garmin Connect app. Forum reports flag a few things to plan for:
+  - flaky messaging between some SDK versions;
+  - Android killing the companion app in the background.
+  So design sync to be retry-safe: queue sessions on the watch and send them when connected.
+- **Runs → app:** Garmin Connect can write workouts/exercise sessions to Android **Health Connect** (user must grant the permission). The app could read finished runs from there to auto-suggest a cooldown or detect a Run Sandwich. This needs no Garmin partner approval; the Garmin Health API does need it.
+- **Stretches → Garmin Connect:** a Connect IQ watch app can record a session as an activity (e.g. Yoga/flexibility), so stretches show up in the Garmin Connect history.
+
+### Proposed sync model
+
+- One progress store on the phone. The phone owns the rewards, so chests open on the phone.
+- The watch app runs routines (timer + vibration cues) and sends a "session done" record: routine, duration, completion ratio and a unique id. The phone dedupes by id, so it doesn't matter whether a session was done on the watch or in the app.
+- Phone + web or multiple phones would need an account and a small backend (separate step).
+
+### Rough effort
+
+| Step | Effort |
+|---|---|
+| Capacitor wrap of the web app (Android) | 2–4 days |
+| Read runs via Health Connect | 3–5 days |
+| Connect IQ watch app MVP (Monkey C) | 2–4 weeks |
+| Watch ↔ phone sync | 1–2 weeks |
+| iOS version (HealthKit instead of Health Connect) | +1–2 weeks |
