@@ -31,13 +31,26 @@ export const native = {
   cancelHaptics() { hapticTimers.forEach(clearTimeout); hapticTimers = []; },
 
   /** Android WebView has no reliable speechSynthesis, so voice goes through native text-to-speech. */
-  speak(text, interrupt = true) {
+  speak(text, interrupt = true, lang = 'en-US') {
     const T = plugin('TextToSpeech');
     if (!T) return false;
     // queueStrategy 0 = flush (interrupts current speech), 1 = add to the queue.
-    quiet(T.speak({ text, lang: 'en-US', rate: 1.0, pitch: 1.0, volume: 1.0, queueStrategy: interrupt ? 0 : 1 }));
+    quiet(T.speak({ text, lang, rate: 1.0, pitch: 1.0, volume: 1.0, queueStrategy: interrupt ? 0 : 1 }));
     return true;
   },
+  /** true if the device's speech engine lists this language (e.g. 'sl-SI'), null if unknown. */
+  async ttsSupports(lang) {
+    const T = plugin('TextToSpeech');
+    if (!T) return null;
+    try {
+      // Same check speak() uses on Android, so the hint matches what will actually be spoken.
+      const { supported } = await T.isLanguageSupported({ lang });
+      return !!supported;
+    } catch { return null; }
+  },
+  /** Opens Android's "install voice data" screen. */
+  canInstallVoice: isNative && typeof Cap.getPlatform === 'function' && Cap.getPlatform() === 'android',
+  openTtsInstall() { const T = plugin('TextToSpeech'); if (T) quiet(T.openInstall()); },
   stopSpeaking() { const T = plugin('TextToSpeech'); if (T) quiet(T.stop()); },
 
   /** Keep the screen on during a session. Returns true if handled natively. */

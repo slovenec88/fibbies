@@ -2,11 +2,11 @@
 // Every deploy bumps VERSION. A new worker downloads the whole app shell fresh
 // (bypassing the HTTP cache) before it takes over, and pages are always served
 // from one consistent cache, so old and new files can never be mixed.
-const VERSION = 'fibbies-v14';
+const VERSION = 'fibbies-v15';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest',
   'js/app.js', 'js/data.js', 'js/figure.js', 'js/audio.js', 'js/session.js', 'js/wakelock.js',
-  'js/rewards.js', 'js/critter.js', 'js/reward-screen.js', 'js/native.js',
+  'js/rewards.js', 'js/critter.js', 'js/reward-screen.js', 'js/native.js', 'js/i18n.js', 'js/localize.js',
   'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
 ];
 const FONTS = 'fibbies-fonts';

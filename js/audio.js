@@ -1,5 +1,6 @@
 // Synthesized sound cues (Web Audio) + spoken guidance (Speech Synthesis, or native TTS in the app).
 import { native } from './native.js';
+import { getLang, speechLang, onLangChange } from './i18n.js';
 let ctx = null;
 let music = null;
 let master = null;
@@ -168,12 +169,19 @@ export const sfx = {
 };
 
 // ---- Voice ----
+// Voice follows the app language. If the device has no voice for it, we still ask for
+// that language (some engines handle it without listing a voice) and settings shows a hint.
 let voice = null;
+const VOICE_PREFS = {
+  en: [/Google US English/i, /Samantha/i, /Ava/i, /Aria/i, /Jenny/i, /Natural/i, /Google UK English Female/i, /en-US/i],
+  sl: [/Natural/i, /Petra/i, /Google/i, /sl-SI/i],
+};
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
-  const vs = speechSynthesis.getVoices().filter((v) => /^en(-|_|$)/i.test(v.lang));
-  const prefs = [/Google US English/i, /Samantha/i, /Ava/i, /Aria/i, /Jenny/i, /Natural/i, /Google UK English Female/i, /en-US/i];
-  for (const re of prefs) {
+  const lang = getLang();
+  const re0 = new RegExp(`^${lang}(-|_|$)`, 'i');
+  const vs = speechSynthesis.getVoices().filter((v) => re0.test(v.lang));
+  for (const re of VOICE_PREFS[lang] || []) {
     const v = vs.find((x) => re.test(x.name) || re.test(x.lang));
     if (v) { voice = v; return; }
   }
@@ -183,6 +191,7 @@ if ('speechSynthesis' in window) {
   pickVoice();
   speechSynthesis.addEventListener?.('voiceschanged', pickVoice);
 }
+onLangChange(() => { voiceGuide.stop(); pickVoice(); });
 
 function primeVoice() {
   if (!('speechSynthesis' in window)) return;
@@ -197,18 +206,32 @@ export const voiceGuide = {
   enabled: true,
   say(text, { interrupt = true } = {}) {
     if (!this.enabled || !text) return;
-    if (native.speak(text, interrupt)) return;
+    if (native.speak(text, interrupt, speechLang())) return;
     if (!('speechSynthesis' in window)) return;
     try {
       if (interrupt) speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
-      u.lang = voice?.lang || 'en-US';
+      u.lang = voice?.lang || speechLang();
       u.rate = 1.0;
       u.pitch = 1.0;
       u.volume = 1;
       speechSynthesis.speak(u);
     } catch { /* ignore */ }
+  },
+  /** Resolves true/false for "this device has a voice for the app language", or null if unknown. */
+  async hasVoice() {
+    if (native.isNative) return native.ttsSupports(speechLang());
+    if (!('speechSynthesis' in window)) return false;
+    let vs = speechSynthesis.getVoices();
+    if (!vs.length) {
+      // Chrome loads voices lazily.
+      await new Promise((r) => { speechSynthesis.addEventListener?.('voiceschanged', r, { once: true }); setTimeout(r, 1500); });
+      vs = speechSynthesis.getVoices();
+      if (!vs.length) return null;
+    }
+    pickVoice();
+    return !!voice;
   },
   stop() {
     native.stopSpeaking();

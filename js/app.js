@@ -7,6 +7,8 @@ import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, level
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { native, isNative } from './native.js';
+import { t, LANGS, getLang, setLang, onLangChange, translateDom } from './i18n.js';
+import { localizeContent } from './localize.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -17,7 +19,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* ignore */ } },
 };
 const settings = Object.assign(
-  { voice: true, sound: true, haptics: true, scale: 1, mode: 'system', hue: 165 },
+  { voice: true, sound: true, haptics: true, scale: 1, mode: 'system', hue: 165, lang: getLang() },
   store.get('limber.settings', {}),
 );
 let log = store.get('limber.history', []);
@@ -157,12 +159,12 @@ let activeCat = store.get('limber.cat', 'all');
 function suggestion() {
   const h = new Date().getHours();
   const done = todaysCats(log, dayKey());
-  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: 'Back from your run? Run Sandwich ×2!' };
-  if (done.has('after') && !done.has('evening') && h >= 18) return { r: routineById('top5-evening'), why: 'Finish the day strong' };
-  if (h < 11) return { r: routineById('top5-before'), why: 'Morning run? Warm up first' };
-  if (h < 16) return { r: routineById('five-minute-fix'), why: 'A quick midday reset' };
-  if (h < 20) return { r: routineById('top5-after'), why: 'Just finished a run?' };
-  return { r: routineById('top5-evening'), why: 'Wind down for the night' };
+  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: t('sug.sandwich') };
+  if (done.has('after') && !done.has('evening') && h >= 18) return { r: routineById('top5-evening'), why: t('sug.evening') };
+  if (h < 11) return { r: routineById('top5-before'), why: t('sug.morning') };
+  if (h < 16) return { r: routineById('five-minute-fix'), why: t('sug.midday') };
+  if (h < 20) return { r: routineById('top5-after'), why: t('sug.after') };
+  return { r: routineById('top5-evening'), why: t('sug.night') };
 }
 
 function renderHome() {
@@ -173,7 +175,7 @@ function renderHome() {
   const today = new Date();
   const monday = new Date(today);
   monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-  const letters = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const letters = t('weekLetters');
   let dots = '';
   let weekCount = 0;
   for (let i = 0; i < 7; i++) {
@@ -187,9 +189,9 @@ function renderHome() {
   $('#week-card').innerHTML = `
     <div class="streak">
       <div class="streak-icon"><span class="ms filled">local_fire_department</span></div>
-      <div><b>${st} day${st === 1 ? '' : 's'}</b><small>${weekCount} this week</small></div>
+      <div><b>${t('days', { n: st })}</b><small>${t('thisWeek', { n: weekCount })}</small></div>
     </div>
-    <div class="week-dots" aria-label="This week">${dots}</div>`;
+    <div class="week-dots" aria-label="${t('thisWeekAria')}">${dots}</div>`;
 
   renderProgress();
 
@@ -201,8 +203,8 @@ function renderHome() {
       <div class="hero-body">
         <span class="hero-kicker"><span class="ms filled">${r.icon}</span>${esc(why)}</span>
         <span class="hero-title">${esc(r.title)}</span>
-        <span class="hero-meta">${minutes(r)} min · ${r.items.length} stretches</span>
-        <span class="hero-play"><span class="ms filled">play_arrow</span>Start</span>
+        <span class="hero-meta">${minutes(r)} min · ${t('stretches', { n: r.items.length })}</span>
+        <span class="hero-play"><span class="ms filled">play_arrow</span>${t('start')}</span>
       </div>
       <div class="hero-fig"></div>
     </button>`;
@@ -235,25 +237,25 @@ function renderProgress() {
     <div class="pc-top">
       <div class="pc-buddy">${critterSVG(buddy, { locked: !p.buddy })}</div>
       <div>
-        <div class="pc-line"><b>Level ${lp.level}</b><small>${fmtBig(p.fibers)} fibers stretched</small></div>
+        <div class="pc-line"><b>${t('level', { n: lp.level })}</b><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
         <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
-        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${p.chests} chests · ${owned}/${FIBBIES.length} friends</small></div>
+        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${t('chestsFriends', { c: p.chests, o: owned, t: FIBBIES.length })}</small></div>
       </div>
     </div>
-    <div class="quests" aria-label="Today's quests">
+    <div class="quests" aria-label="${esc(t('questsAria'))}">
       ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}"><span class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span>${q.label}</div>`).join('')}
     </div>
-    <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>Warm up <b>and</b> cool down on the same day for a <b>Run Sandwich ×2</b> and better chests.</span></div>`;
+    <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
 }
 
 function renderCollection() {
   const p = loadProfile();
   const owned = FIBBIES.filter((f) => p.fibbies[f.id]).length;
   $('#collection').innerHTML = `
-    <div class="col-head"><h2>Fibbie friends</h2><small>${owned}/${FIBBIES.length}</small></div>
+    <div class="col-head"><h2>${t('fibbieFriends')}</h2><small>${owned}/${FIBBIES.length}</small></div>
     <div class="col-row">${[...FIBBIES].sort((x, y) => (p.fibbies[y.id] ? 1 : 0) - (p.fibbies[x.id] ? 1 : 0)).map((f) => {
       const e = p.fibbies[f.id];
-      return `<button class="col-item${e ? ' owned' : ''}" data-fib="${f.id}">${critterSVG(f, { locked: !e })}<span>${e ? esc(f.name) : '???'}</span>${e ? `<span class="lv">Lv ${e.count}</span>` : ''}</button>`;
+      return `<button class="col-item${e ? ' owned' : ''}" data-fib="${f.id}">${critterSVG(f, { locked: !e })}<span>${e ? esc(f.name) : '???'}</span>${e ? `<span class="lv">${t('lv', { n: e.count })}</span>` : ''}</button>`;
     }).join('')}</div>`;
 }
 
@@ -262,8 +264,8 @@ document.addEventListener('click', (e) => {
   if (!b) return;
   const f = FIBBIES.find((x) => x.id === b.dataset.fib);
   const e2 = loadProfile().fibbies[f.id];
-  const rar = ['Common', 'Rare', 'Epic', 'Legendary'][f.rarity];
-  snackbar(e2 ? `${f.name} · ${rar} · Lv ${e2.count}. ${f.blurb}` : `A ${rar.toLowerCase()} friend is hiding in a chest somewhere…`);
+  const rar = t('rarity')[f.rarity];
+  snackbar(e2 ? t('fibInfo', { name: f.name, rar, n: e2.count, blurb: f.blurb }) : t('fibLocked', { rar }));
 });
 
 function renderList() {
@@ -280,7 +282,7 @@ function renderList() {
       <div class="rc-thumb"></div>
       <div>
         <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>·`} ${r.items.length} stretches</div>
+        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>·`} ${t('stretches', { n: r.items.length })}</div>
       </div>
       <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
@@ -293,14 +295,14 @@ function renderRanking() {
   const box = $('#ranking');
   const cat = catOf(activeCat);
   if (activeCat === 'all') {
-    box.innerHTML = `<div class="rank-hint"><span class="ms">leaderboard</span><span>Pick a category above to see the <b>Top 10 stretches</b> for it, ranked by how well they work versus how simple they are.</span></div>`;
+    box.innerHTML = `<div class="rank-hint"><span class="ms">leaderboard</span><span>${t('rankHint')}</span></div>`;
     return;
   }
   const rows = RANKINGS[activeCat];
   const top = ROUTINES.find((r) => r.cat === activeCat && r.top);
   box.innerHTML = `
     <div class="rank-head" data-hue style="--h:${cat.hue}">
-      <div><h2>Top 10 · ${esc(cat.label)}</h2><p>Ranked by effectiveness for runners versus simplicity. The top 5 make up the <b>${esc(top.title)}</b> routine.</p></div>
+      <div><h2>${esc(t('rankTitle', { cat: cat.label }))}</h2><p>${t('rankSub', { title: esc(top.title) })}</p></div>
     </div>
     <ol class="rank-list" data-hue style="--h:${cat.hue}"></ol>`;
   const ol = box.querySelector('.rank-list');
@@ -317,7 +319,7 @@ function renderRanking() {
     if (i === 4) {
       const sep = document.createElement('li');
       sep.className = 'rank-sep';
-      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span class="ms filled">play_arrow</span>Play the Top 5 · ${minutes(top)} min</button>`;
+      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span class="ms filled">play_arrow</span>${t('playTop5', { m: minutes(top) })}</button>`;
       ol.appendChild(sep);
     }
   });
@@ -352,8 +354,8 @@ function renderDetail(r) {
   v.style.setProperty('--h', r.hue);
   v.innerHTML = `
     <div class="detail-top">
-      <button class="icon-btn ripple" id="dt-back" aria-label="Back"><span class="ms">arrow_back</span></button>
-      <button class="icon-btn ripple" id="dt-settings" aria-label="Settings"><span class="ms">tune</span></button>
+      <button class="icon-btn ripple" id="dt-back" aria-label="${t('back')}"><span class="ms">arrow_back</span></button>
+      <button class="icon-btn ripple" id="dt-settings" aria-label="${t('settings')}"><span class="ms">tune</span></button>
     </div>
     <div class="detail-hero">
       <div class="kicker"><span class="ms filled">${r.icon}</span>${catOf(r.cat).label}</div>
@@ -361,16 +363,16 @@ function renderDetail(r) {
       <p>${esc(r.blurb)}</p>
       <div class="detail-stats">
         <span class="stat-pill"><span class="ms">schedule</span>${fmtTime(total)}</span>
-        <span class="stat-pill"><span class="ms">format_list_bulleted</span>${r.items.length} stretches</span>
-        ${moves.some((m) => m.side) ? '<span class="stat-pill"><span class="ms">swap_horiz</span>Both sides</span>' : ''}
-        ${settings.scale === 'flex' ? '<span class="stat-pill"><span class="ms">self_improvement</span>Flexibility holds</span>' : ''}
+        <span class="stat-pill"><span class="ms">format_list_bulleted</span>${t('stretches', { n: r.items.length })}</span>
+        ${moves.some((m) => m.side) ? `<span class="stat-pill"><span class="ms">swap_horiz</span>${t('bothSides')}</span>` : ''}
+        ${settings.scale === 'flex' ? `<span class="stat-pill"><span class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
       </div>
       <div class="detail-fig"></div>
     </div>
-    <div class="detail-tip"><span class="ms">volume_up</span><span>Turn your sound on. Voice cues tell you what's next and when to switch sides, so you don't need to watch the screen.</span></div>
-    <div class="move-list"><h3>What you'll do</h3></div>
+    <div class="detail-tip"><span class="ms">volume_up</span><span>${t('soundTip')}</span></div>
+    <div class="move-list"><h3>${t('whatYoullDo')}</h3></div>
     <div class="start-bar">
-      <button class="fab-ext ripple" id="dt-start"><span class="ms filled">play_arrow</span>Start · ${minutes(r)} min</button>
+      <button class="fab-ext ripple" id="dt-start"><span class="ms filled">play_arrow</span>${t('startMin', { m: minutes(r) })}</button>
     </div>`;
   const df = new Figure(firstStretch(r));
   v.querySelector('.detail-fig').appendChild(df.svg);
@@ -384,7 +386,7 @@ function renderDetail(r) {
     row.innerHTML = `
       <div class="mr-thumb"></div>
       <div><div class="mr-name">${esc(s.name)}</div><div class="mr-target">${esc(s.target)}</div></div>
-      <div class="mr-time">${d}s${s.sided ? '<small>each side</small>' : s.dynamic ? '<small>moving</small>' : '<small>hold</small>'}</div>`;
+      <div class="mr-time">${d}${t('sec')}<small>${t(s.sided ? 'eachSide' : s.dynamic ? 'moving' : 'holdShort')}</small></div>`;
     row.querySelector('.mr-thumb').appendChild(staticFig(s, 0.5));
     ml.appendChild(row);
   }
@@ -441,15 +443,15 @@ function renderStep(s) {
   stageFig.set(stretch, move.side === 'R');
   stageAnim.time = 0;
   const badge = $('#pl-badge');
-  if (st.kind === 'prep') badge.textContent = 'Get ready';
-  else if (st.kind === 'rest') badge.textContent = st.switchSides ? 'Switch sides' : 'Up next';
-  else badge.textContent = stretch.dynamic ? 'Keep moving' : 'Hold';
+  if (st.kind === 'prep') badge.textContent = t('getReady');
+  else if (st.kind === 'rest') badge.textContent = t(st.switchSides ? 'switchSides' : 'upNext');
+  else badge.textContent = t(stretch.dynamic ? 'keepMoving' : 'hold');
   const side = $('#pl-side');
   if (move.side) {
     side.hidden = false;
     side.innerHTML = `<span class="ms">${move.side === 'L' ? 'west' : 'east'}</span>${sideLabel(move)}`;
   } else side.hidden = true;
-  $('#pl-target').textContent = st.kind === 'hold' ? stretch.target : st.kind === 'prep' ? 'First up' : st.switchSides ? 'Other side' : 'Next up';
+  $('#pl-target').textContent = st.kind === 'hold' ? stretch.target : t(st.kind === 'prep' ? 'firstUp' : st.switchSides ? 'otherSide' : 'nextUp');
   $('#pl-name').textContent = stretch.name;
   $('#pl-cue').textContent = stretch.cues[0];
 
@@ -461,13 +463,13 @@ function renderStep(s) {
   }
   const un = $('#pl-upnext');
   if (st.kind === 'hold' && nextMove) {
-    un.innerHTML = `<div class="un-thumb"></div><span>Next: <b>${esc(nextMove.stretch.name)}</b>${nextMove.side ? ' · ' + sideLabel(nextMove) : ''}</span><span class="un-time">${nextMove.secs}s</span>`;
+    un.innerHTML = `<div class="un-thumb"></div><span>${t('nextLabel')} <b>${esc(nextMove.stretch.name)}</b>${nextMove.side ? ' · ' + sideLabel(nextMove) : ''}</span><span class="un-time">${nextMove.secs}${t('sec')}</span>`;
     nextFig = staticFig(nextMove.stretch, 0.5, { mirror: nextMove.side === 'R' });
     un.querySelector('.un-thumb').appendChild(nextFig);
   } else if (st.kind === 'hold') {
-    un.innerHTML = '<span class="ms filled" style="color:var(--primary);margin-left:8px">flag</span><span><b>Last one!</b> Finish strong.</span>';
+    un.innerHTML = '<span class="ms filled" style="color:var(--primary);margin-left:8px">flag</span><span>' + t('lastOne') + '</span>';
   } else {
-    un.innerHTML = `<span class="ms" style="margin-left:8px">timer</span><span>${esc(move.stretch.target)}</span><span class="un-time">${move.secs}s</span>`;
+    un.innerHTML = `<span class="ms" style="margin-left:8px">timer</span><span>${esc(move.stretch.target)}</span><span class="un-time">${move.secs}${t('sec')}</span>`;
   }
   // segments
   const segs = $('#pl-segments').children;
@@ -500,7 +502,7 @@ function renderTick(s) {
 function setPausedUI(p) {
   $('#player').classList.toggle('paused', p);
   $('#pl-play-icon').textContent = p ? 'play_arrow' : 'pause';
-  $('#pl-play').setAttribute('aria-label', p ? 'Resume' : 'Pause');
+  $('#pl-play').setAttribute('aria-label', t(p ? 'resume' : 'pause'));
 }
 
 $('#pl-play').onclick = () => {
@@ -543,7 +545,7 @@ function leavePlayer() {
   clearTimeout(doneTimer);
   if (lastResult && !lastResult.shown && lastResult.reward) {
     lastResult.shown = true;
-    setTimeout(() => snackbar(`Chest banked: +${fmtBig(lastResult.reward.total)} fibers and ${lastResult.reward.fibbie.name}!`), 400);
+    setTimeout(() => snackbar(t('chestBanked', { f: fmtBig(lastResult.reward.total), name: lastResult.reward.fibbie.name })), 400);
   }
   session?.destroy();
   session = null;
@@ -610,11 +612,11 @@ function renderDone() {
     v.innerHTML = `
       <div class="reward" data-tier="0"><div class="rw-inner rw-nochest">
         <div class="rw-chest">${chestSVG(0)}</div>
-        <h1>So close!</h1>
-        <p>Finish at least half of a routine to unlock a chest, earn fibers and keep your streak alive.</p>
+        <h1>${t('soClose')}</h1>
+        <p>${t('soCloseBody')}</p>
         <div class="rw-actions">
-          <button class="rw-btn primary ripple" id="rw-again"><span class="ms filled">replay</span>Try again</button>
-          <button class="rw-btn ripple" id="rw-home" aria-label="Home"><span class="ms">home</span></button>
+          <button class="rw-btn primary ripple" id="rw-again"><span class="ms filled">replay</span>${t('tryAgain')}</button>
+          <button class="rw-btn ripple" id="rw-home" aria-label="${t('home')}"><span class="ms">home</span></button>
         </div>
       </div></div>`;
     $('#rw-again').onclick = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
@@ -622,7 +624,7 @@ function renderDone() {
     return;
   }
   rewardPlayer = playReward(v, res.reward, {
-    stats: [[fmtTime(res.secs), 'active'], [String(res.moves), 'stretches'], [`${streak()}🔥`, 'day streak']],
+    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [`${streak()}🔥`, t('statStreak', { n: streak() })]],
     onHome: () => replace('#/'),
     onAgain: () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); },
   });
@@ -638,18 +640,41 @@ function openSettings() {
   syncSeg('#set-scale', String(settings.scale));
   setScaleNote();
   syncSeg('#set-mode', settings.mode);
-  $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="Color ${h}"></button>`).join('');
+  $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="${t('colorN', { h })}"></button>`).join('');
+  $('#set-lang').innerHTML = LANGS.map((l) => `<button data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}">${l.label}</button>`).join('');
+  checkVoice();
   sheet.showModal();
 }
-const SCALE_NOTES = {
-  0.8: 'Shorter holds (×0.8) for when you are in a hurry.',
-  1: 'Recommended. 25–50 s holds keep every routine at 5–10 minutes.',
-  1.25: 'Holds 25% longer. Some routines go a little past 10 minutes.',
-  flex: 'Every static hold becomes at least 60 s per side, the amount guidelines suggest for getting more flexible over time. Warm-up drills stay the same. Routines run about 5–14 minutes.',
-};
 function setScaleNote() {
-  $('#set-scale-note').textContent = SCALE_NOTES[String(settings.scale)] || SCALE_NOTES[1];
+  const k = ['0.8', '1', '1.25', 'flex'].includes(String(settings.scale)) ? String(settings.scale) : '1';
+  $('#set-scale-note').textContent = t(`scale.${k}`);
 }
+// Show a hint (and on Android an install button) when the device has no voice for the language.
+let voiceCheck = 0;
+async function checkVoice() {
+  const id = ++voiceCheck;
+  const note = $('#set-lang-note');
+  note.hidden = true;
+  if (getLang() === 'en') return;
+  const ok = await voiceGuide.hasVoice();
+  if (id !== voiceCheck) return;
+  note.hidden = ok !== false;
+  $('#set-lang-install').hidden = !native.canInstallVoice;
+}
+$('#set-lang-install').onclick = () => native.openTtsInstall();
+$('#set-lang').onclick = (e) => {
+  const b = e.target.closest('button'); if (!b || b.dataset.v === settings.lang) return;
+  settings.lang = b.dataset.v; saveSettings();
+  syncSeg('#set-lang', b.dataset.v);
+  setLang(b.dataset.v);
+};
+onLangChange(() => {
+  localizeContent();
+  translateDom();
+  setScaleNote();
+  checkVoice();
+  if (session && !session.finished) { $('#pl-routine').textContent = session.routine.title; renderStep(session); setPausedUI(session.paused); }
+});
 function syncSeg(sel, val) {
   document.querySelectorAll(`${sel} button`).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === val));
 }
@@ -668,7 +693,7 @@ sheet.addEventListener('close', () => {
 });
 $('#set-voice').onchange = (e) => {
   settings.voice = e.target.checked; saveSettings(); applySettings();
-  if (settings.voice) { unlockAudio(); voiceGuide.say('Voice guidance on.'); } else voiceGuide.stop();
+  if (settings.voice) { unlockAudio(); voiceGuide.say(t('say.voiceOn')); } else voiceGuide.stop();
 };
 $('#set-sound').onchange = (e) => { settings.sound = e.target.checked; saveSettings(); applySettings(); if (settings.sound) { unlockAudio(); sfx.go(); } };
 $('#set-haptics').onchange = (e) => { settings.haptics = e.target.checked; saveSettings(); applySettings(); haptics.buzz(40); };
@@ -676,7 +701,7 @@ $('#set-scale').onclick = (e) => {
   const b = e.target.closest('button'); if (!b) return;
   settings.scale = b.dataset.v === 'flex' ? 'flex' : Number(b.dataset.v); saveSettings(); syncSeg('#set-scale', b.dataset.v);
   setScaleNote();
-  if (session && !session.finished) snackbar('Hold length applies from your next session');
+  if (session && !session.finished) snackbar(t('holdNextSession'));
 };
 $('#set-mode').onclick = (e) => {
   const b = e.target.closest('button'); if (!b) return;
@@ -751,12 +776,15 @@ function route() {
 
 // ---------- Boot ----------
 if (isNative) document.documentElement.classList.add('native');
+if (settings.lang !== getLang()) setLang(settings.lang);
+localizeContent();
+translateDom();
 applySettings();
 // One-time notice: the level curve got steeper, so existing players may see a lower level.
 try {
   if (!localStorage.getItem('limber.levels-v2')) {
     localStorage.setItem('limber.levels-v2', '1');
-    if (loadProfile().xp > 0) setTimeout(() => snackbar('Levels rebalanced: leveling up is slower now and worth more. Your fibers and friends are safe.'), 1200);
+    if (loadProfile().xp > 0) setTimeout(() => snackbar(t('levelsRebalanced')), 1200);
   }
 } catch { /* ignore */ }
 setSoundIcon();

@@ -2,10 +2,10 @@
 import { TIERS, levelProgress, fmtBig } from './rewards.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { fx, voiceGuide, haptics } from './audio.js';
+import { t, getLang, numLocale } from './i18n.js';
 
-const RARITY = ['Common', 'Rare', 'Epic', 'Legendary'];
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const fmt = (n) => Math.round(n).toLocaleString(numLocale());
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -27,32 +27,33 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-banner" aria-hidden="true"></div>
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
-        <button class="rw-chest" aria-label="Open chest"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
-        <div class="rw-tap"><span class="ms filled">touch_app</span>Tap the chest!</div>
+        <button class="rw-chest" aria-label="${t('openChest')}"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
+        <div class="rw-tap"><span class="ms filled">touch_app</span>${t('tapChest')}</div>
         <div class="rw-count">
-          <div class="rw-label">Muscle fibers stretched</div>
+          <div class="rw-label">${t('fibersLabel')}</div>
           <div class="rw-big" aria-live="polite">0</div>
           <div class="rw-mults"></div>
         </div>
         <div class="rw-loot"></div>
         <div class="rw-level">
           <div class="rw-lv-row">
-            <span class="rw-lv" id="rw-lv">Lv ${rw.levelBefore}</span>
+            <span class="rw-lv" id="rw-lv">${t('lv', { n: rw.levelBefore })}</span>
             <div class="rw-bar"><i id="rw-fill"></i></div>
-            <span class="rw-lv next" id="rw-lv-next">Lv ${rw.levelBefore + 1}</span>
+            <span class="rw-lv next" id="rw-lv-next">${t('lv', { n: rw.levelBefore + 1 })}</span>
           </div>
           <div class="rw-xp" id="rw-xp"></div>
         </div>
         <div class="rw-stats">${stats.map(([v, l]) => `<span><b>${esc(v)}</b>${esc(l)}</span>`).join('')}</div>
         <div class="rw-actions">
-          <button class="rw-btn primary ripple" id="rw-home"><span class="ms filled">check</span>Collect</button>
-          <button class="rw-btn ripple" id="rw-again"><span class="ms">replay</span>Again</button>
+          <button class="rw-btn primary ripple" id="rw-home"><span class="ms filled">check</span>${t('collect')}</button>
+          <button class="rw-btn ripple" id="rw-again"><span class="ms">replay</span>${t('again')}</button>
         </div>
       </div>
     </div>`;
 
   const $ = (s) => root.querySelector(s);
   const wrap = $('.reward');
+  wrap.style.setProperty('--levelup-text', JSON.stringify(t('levelUp')));
   const big = $('.rw-big');
   const fxLayer = $('.rw-fx');
   $('#rw-home').onclick = () => { stop(); onHome(); };
@@ -76,7 +77,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   }
 
   let ambient = null;
-  const PRAISE = ['JOB WELL DONE!', 'STRETCH LEGEND!', 'FLEXCELLENT!', 'UNSTOPPABLE!', 'LIMBER LORD!', 'LEGS OF STEEL!', 'YOU ROCK!'];
+  const PRAISE = t('praise');
 
   function flash(strong = true) {
     if (reduce) return;
@@ -241,7 +242,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     shake();
     burst($('.rw-chest'), rw.tier >= 2 ? 60 : 40, ['coin', 'star', 'spark', 'gem']);
     fountain(rw.tier >= 2 ? 30 : 18);
-    voiceGuide.say(`${TIERS[rw.tier].name} chest!`);
+    voiceGuide.say(t('say.chest', { name: getLang() === 'en' ? TIERS[rw.tier].name : TIERS[rw.tier].label }));
     musicWanted = true;
     fx.musicStart(rw.tier);
 
@@ -303,9 +304,9 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-card" data-rarity="${f.rarity}">
         <div class="rw-critter">${critterSVG(f)}</div>
         <div class="rw-card-text">
-          <span class="rw-new">${rw.isNew ? 'NEW FRIEND!' : `LEVEL ${rw.fibLevel}!`}</span>
+          <span class="rw-new">${rw.isNew ? t('newFriend') : t('levelBang', { n: rw.fibLevel })}</span>
           <b>${esc(f.name)}</b>
-          <span class="rw-rarity">${RARITY[f.rarity]}</span>
+          <span class="rw-rarity">${t('rarity')[f.rarity]}</span>
           <small>${esc(f.blurb)}</small>
         </div>
       </div>`;
@@ -313,7 +314,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.boing();
     haptics.buzz(50);
     burst(loot, 16, ['heart', 'star', 'spark']);
-    voiceGuide.say(rw.isNew ? `New friend: ${f.name}!` : `${f.name} leveled up!`, { interrupt: false });
+    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.friendUp', { name: f.name }), { interrupt: false });
 
     // 7. XP bar (can cross several levels)
     await sleep(700);
@@ -337,8 +338,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     const show = (v) => {
       const p = levelProgress(v);
       fill.style.width = `${Math.min(100, p.frac * 100)}%`;
-      $('#rw-lv').textContent = `Lv ${p.level}`;
-      $('#rw-lv-next').textContent = `Lv ${p.level + 1}`;
+      $('#rw-lv').textContent = t('lv', { n: p.level });
+      $('#rw-lv-next').textContent = t('lv', { n: p.level + 1 });
       $('#rw-xp').textContent = `${fmtBig(p.into)} / ${fmtBig(p.need)} XP`;
     };
     show(xp);
@@ -358,7 +359,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         void lv.offsetWidth;
         lv.classList.add('levelup');
         burst($('#rw-lv-next'), 18, ['star', 'spark']);
-        voiceGuide.say(`Level up! Level ${levelProgress(xp).level}`, { interrupt: false });
+        voiceGuide.say(t('say.levelUp', { n: levelProgress(xp).level }), { interrupt: false });
         show(xp);
         await sleep(650);
         if (!alive) return;

@@ -1,6 +1,8 @@
 // Reward loop: every finished session opens a chest that pays out "muscle fibers
 // stretched", stacks multipliers, drops a collectible Fibbie and grants XP.
 
+import { t, getLang, numLocale } from './i18n.js';
+
 export const FIBERS_PER_SEC = 1337;
 
 export const TIERS = [
@@ -55,6 +57,13 @@ export function levelProgress(xp) {
 }
 
 export function fmtBig(n) {
+  if (getLang() === 'sl') {
+    const d = (x, big) => x.toFixed(big ? 0 : 1).replace('.', ',');
+    if (n >= 1e9) return `${d(n / 1e9, n >= 1e10)} mrd.`;
+    if (n >= 1e6) return `${d(n / 1e6, n >= 1e7)} mio.`;
+    if (n >= 1e4) return `${Math.round(n / 1e3)} tis.`;
+    return n.toLocaleString(numLocale());
+  }
   if (n >= 1e9) return `${(n / 1e9).toFixed(n >= 1e10 ? 0 : 1)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M`;
   if (n >= 1e4) return `${Math.round(n / 1e3)}K`;
@@ -111,12 +120,12 @@ export function computeReward(o, rand = Math.random) {
   const lucky = rand() < 0.08;
 
   const mults = [];
-  if (firstToday) mults.push({ icon: 'wb_sunny', label: 'First stretch today', x: 1.2 });
-  if (streak >= 2) mults.push({ icon: 'local_fire_department', label: `${streak}-day streak`, x: round2(1 + 0.1 * Math.min(streak, 20)) });
-  if (sandwich) mults.push({ icon: 'lunch_dining', label: 'Run Sandwich!', x: 2, hot: true });
-  if (scale === 'flex') mults.push({ icon: 'self_improvement', label: 'Flex 60s', x: 1.5 });
-  if (perfect) mults.push({ icon: 'verified', label: 'Perfect session', x: 1.25 });
-  if (lucky) mults.push({ icon: 'casino', label: 'LUCKY STRETCH!', x: 3, hot: true });
+  if (firstToday) mults.push({ icon: 'wb_sunny', label: t('m.first'), x: 1.2 });
+  if (streak >= 2) mults.push({ icon: 'local_fire_department', label: t('m.streak', { n: streak }), x: round2(1 + 0.1 * Math.min(streak, 20)) });
+  if (sandwich) mults.push({ icon: 'lunch_dining', label: t('m.sandwich'), x: 2, hot: true });
+  if (scale === 'flex') mults.push({ icon: 'self_improvement', label: t('m.flex'), x: 1.5 });
+  if (perfect) mults.push({ icon: 'verified', label: t('m.perfect'), x: 1.25 });
+  if (lucky) mults.push({ icon: 'casino', label: t('m.lucky'), x: 3, hot: true });
 
   let total = base;
   const steps = [base];

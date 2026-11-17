@@ -1,6 +1,9 @@
 // Timer engine. Time-based (not tick-counting) so it stays accurate when throttled.
 import { buildTimeline, sideLabel } from './data.js';
 import { sfx, voiceGuide, haptics } from './audio.js';
+import { t } from './i18n.js';
+
+const moveName = (m) => `${m.stretch.name}${m.side ? ', ' + sideLabel(m) : ''}`;
 
 const now = () => performance.now();
 
@@ -93,14 +96,14 @@ export class Session {
     const st = this.step;
     if (st.kind === 'prep') {
       const m = st.next;
-      voiceGuide.say(`Get ready. First up: ${m.stretch.name}${m.side ? ', ' + sideLabel(m) : ''}.`);
+      voiceGuide.say(t('say.prep', { name: moveName(m) }));
     } else if (st.kind === 'rest') {
       const m = st.next;
       if (st.switchSides) {
         sfx.switchSides();
-        voiceGuide.say(`Switch sides. ${sideLabel(m)}.`);
+        voiceGuide.say(t('say.switch', { side: sideLabel(m) }));
       } else {
-        voiceGuide.say(`Next: ${m.stretch.name}${m.side ? ', ' + sideLabel(m) : ''}.`);
+        voiceGuide.say(t('say.next', { name: moveName(m) }));
       }
       haptics.buzz([40, 60, 40]);
     } else {
@@ -145,7 +148,7 @@ export class Session {
       this.halfDone = true;
       sfx.half();
       const cues = st.move.stretch.cues;
-      voiceGuide.say(cues[1] || 'Halfway there.', { interrupt: false });
+      voiceGuide.say(cues[1] || t('say.half'), { interrupt: false });
     }
     this.onTick?.(this);
   }
@@ -183,7 +186,7 @@ export class Session {
     clearInterval(this.timer);
     sfx.complete();
     haptics.buzz([80, 80, 80, 80, 200]);
-    voiceGuide.say('Great work. Routine complete.');
+    voiceGuide.say(t('say.done'));
     this.onDone?.(this);
   }
 }

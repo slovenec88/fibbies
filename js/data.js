@@ -1,4 +1,5 @@
 // Stretch library + routines for runners.
+import { t } from './i18n.js';
 // Poses use a 200x200 canvas, figure faces right, ground at y=180.
 // h = hip, t = torso angle (deg, 0 = right, 90 = down), n = head angle,
 // hN/hF = near/far hand targets, fN/fF = near/far ankle targets (solved with IK),
@@ -547,7 +548,7 @@ export function routineSeconds(routine, scale = 1) {
 
 export function sideLabel(move) {
   if (!move.side) return '';
-  const word = move.side === 'L' ? 'Left' : 'Right';
-  const limb = move.stretch.limb === 'side' ? 'side' : 'leg';
-  return `${word} ${limb}`;
+  const side = move.stretch.limb === 'side';
+  if (move.side === 'L') return t(side ? 'leftSide' : 'leftLeg');
+  return t(side ? 'rightSide' : 'rightLeg');
 }

@@ -18,6 +18,7 @@ A phone-first web app with follow-along stretching routines for runners, wrapped
 - **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices
 - **Installable PWA** that works offline after the first visit
 - Hold length setting (short / standard / long), plus an opt-in **Flex 60s** mode that brings every static hold to 60 s per side for flexibility gains, vibration, a streak counter and a weekly tracker
+- **Languages**: English and Slovenian (Settings → Language), including spoken cues. Picks the device voice for the language, and shows a hint (with an "Install voice" button on Android) if none is installed. UI strings live in `js/i18n.js`, stretch and routine text in `js/localize.js`
 - No build step and no dependencies, just static HTML, CSS and ES modules
 
 See [TODO.md](TODO.md) for planned ideas.

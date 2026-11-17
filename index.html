@@ -31,51 +31,51 @@
 <body>
   <div id="app">
     <!-- HOME -->
-    <section id="view-home" class="view" data-view="home" aria-label="Home">
+    <section id="view-home" class="view" data-view="home" aria-label="Home" data-i18n-aria="home">
       <header class="top-bar large">
         <div class="top-bar-row">
           <div class="brand">
             <span class="brand-mark" aria-hidden="true"><span class="ms filled">self_improvement</span></span>
             <span class="brand-name">Fibbies</span>
           </div>
-          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings"><span class="ms">tune</span></button>
+          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings" data-i18n-aria="settings"><span class="ms">tune</span></button>
         </div>
       </header>
 
       <div class="progress-card" id="progress-card"></div>
       <div class="week-card" id="week-card"></div>
 
-      <div class="section-label">Suggested now</div>
+      <div class="section-label" data-i18n="suggestedNow">Suggested now</div>
       <div id="hero"></div>
-      <section class="collection" id="collection" aria-label="Fibbie friends"></section>
+      <section class="collection" id="collection" aria-label="Fibbie friends" data-i18n-aria="fibbieFriends"></section>
 
-      <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+      <div class="chips" id="chips" role="tablist" aria-label="Categories" data-i18n-aria="categories"></div>
       <div class="routine-list" id="routine-list"></div>
-      <section class="ranking" id="ranking" aria-label="Top 10 stretches"></section>
-      <p class="footnote">Stretch gently. Mild tension is good, pain is not.</p>
+      <section class="ranking" id="ranking" aria-label="Top 10 stretches" data-i18n-aria="top10"></section>
+      <p class="footnote" data-i18n="footnote">Stretch gently. Mild tension is good, pain is not.</p>
     </section>
 
     <!-- DETAIL -->
-    <section id="view-detail" class="view" data-view="detail" aria-label="Routine"></section>
+    <section id="view-detail" class="view" data-view="detail" aria-label="Routine" data-i18n-aria="routine"></section>
 
     <!-- PLAYER -->
-    <section id="view-player" class="view" data-view="player" aria-label="Session">
+    <section id="view-player" class="view" data-view="player" aria-label="Session" data-i18n-aria="session">
       <div class="player" id="player" data-kind="prep">
         <header class="player-top">
-          <button class="icon-btn ripple" id="pl-close" aria-label="End session"><span class="ms">close</span></button>
+          <button class="icon-btn ripple" id="pl-close" aria-label="End session" data-i18n-aria="endSession"><span class="ms">close</span></button>
           <div class="player-title">
             <span id="pl-routine">Routine</span>
-            <span class="awake-chip" id="pl-awake" hidden><span class="ms filled">light_mode</span>Screen on</span>
+            <span class="awake-chip" id="pl-awake" hidden><span class="ms filled">light_mode</span><span data-i18n="screenOn">Screen on</span></span>
           </div>
-          <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice"><span class="ms">volume_up</span></button>
+          <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice" data-i18n-aria="soundAndVoice"><span class="ms">volume_up</span></button>
         </header>
         <div class="segments" id="pl-segments" aria-hidden="true"></div>
 
         <div class="stage" id="pl-stage">
-          <div class="stage-badge" id="pl-badge">Get ready</div>
+          <div class="stage-badge" id="pl-badge" data-i18n="getReady">Get ready</div>
           <div class="stage-side" id="pl-side" hidden></div>
           <div class="stage-fig" id="pl-fig"></div>
-          <div class="paused-veil" id="pl-veil"><span class="ms filled">pause</span>Paused</div>
+          <div class="paused-veil" id="pl-veil"><span class="ms filled">pause</span><span data-i18n="paused">Paused</span></div>
         </div>
 
         <div class="player-info">
@@ -94,9 +94,9 @@
         </div>
 
         <div class="player-controls">
-          <button class="icon-btn tonal big ripple" id="pl-prev" aria-label="Previous stretch"><span class="ms filled">skip_previous</span></button>
+          <button class="icon-btn tonal big ripple" id="pl-prev" aria-label="Previous stretch" data-i18n-aria="prevStretch"><span class="ms filled">skip_previous</span></button>
           <button class="play-btn ripple" id="pl-play" aria-label="Pause"><span class="ms filled" id="pl-play-icon">pause</span></button>
-          <button class="icon-btn tonal big ripple" id="pl-next" aria-label="Next stretch"><span class="ms filled">skip_next</span></button>
+          <button class="icon-btn tonal big ripple" id="pl-next" aria-label="Next stretch" data-i18n-aria="nextStretch"><span class="ms filled">skip_next</span></button>
         </div>
 
         <div class="up-next" id="pl-upnext"></div>
@@ -104,63 +104,71 @@
     </section>
 
     <!-- DONE -->
-    <section id="view-done" class="view" data-view="done" aria-label="Finished"></section>
+    <section id="view-done" class="view" data-view="done" aria-label="Finished" data-i18n-aria="finished"></section>
   </div>
 
   <!-- Settings sheet -->
-  <dialog class="sheet" id="sheet-settings" aria-label="Settings">
+  <dialog class="sheet" id="sheet-settings" aria-label="Settings" data-i18n-aria="settings">
     <div class="sheet-handle" aria-hidden="true"></div>
-    <h2 class="sheet-title">Settings</h2>
+    <h2 class="sheet-title" data-i18n="settings">Settings</h2>
     <div class="list">
       <label class="list-item">
         <span class="ms li-icon">record_voice_over</span>
-        <span class="li-text"><b>Voice guidance</b><small>Spoken names, tips and side switches</small></span>
+        <span class="li-text"><b data-i18n="voiceGuidance">Voice guidance</b><small data-i18n="voiceGuidanceSub">Spoken names, tips and side switches</small></span>
         <input type="checkbox" class="switch" id="set-voice">
       </label>
       <label class="list-item">
         <span class="ms li-icon">notifications_active</span>
-        <span class="li-text"><b>Sound cues</b><small>Chimes and 3-2-1 countdown beeps</small></span>
+        <span class="li-text"><b data-i18n="soundCues">Sound cues</b><small data-i18n="soundCuesSub">Chimes and 3-2-1 countdown beeps</small></span>
         <input type="checkbox" class="switch" id="set-sound">
       </label>
       <label class="list-item">
         <span class="ms li-icon">vibration</span>
-        <span class="li-text"><b>Vibration</b><small>Haptic taps on supported phones</small></span>
+        <span class="li-text"><b data-i18n="vibration">Vibration</b><small data-i18n="vibrationSub">Haptic taps on supported phones</small></span>
         <input type="checkbox" class="switch" id="set-haptics">
       </label>
     </div>
     <div class="set-group">
-      <div class="set-label">Hold length</div>
+      <div class="set-label" data-i18n="holdLength">Hold length</div>
       <div class="segmented" id="set-scale" role="radiogroup">
-        <button data-v="0.8" role="radio">Short</button>
-        <button data-v="1" role="radio">Standard</button>
-        <button data-v="1.25" role="radio">Long</button>
-        <button data-v="flex" role="radio">Flex 60s</button>
+        <button data-v="0.8" role="radio" data-i18n="short">Short</button>
+        <button data-v="1" role="radio" data-i18n="standard">Standard</button>
+        <button data-v="1.25" role="radio" data-i18n="long">Long</button>
+        <button data-v="flex" role="radio" data-i18n="flex60">Flex 60s</button>
       </div>
       <p class="set-note" id="set-scale-note"></p>
     </div>
     <div class="set-group">
-      <div class="set-label">Appearance</div>
+      <div class="set-label" data-i18n="appearance">Appearance</div>
       <div class="segmented" id="set-mode" role="radiogroup">
-        <button data-v="system" role="radio"><span class="ms">brightness_auto</span>Auto</button>
-        <button data-v="light" role="radio"><span class="ms">light_mode</span>Light</button>
-        <button data-v="dark" role="radio"><span class="ms">dark_mode</span>Dark</button>
+        <button data-v="system" role="radio"><span class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
+        <button data-v="light" role="radio"><span class="ms">light_mode</span><span data-i18n="light">Light</span></button>
+        <button data-v="dark" role="radio"><span class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
       </div>
     </div>
     <div class="set-group">
-      <div class="set-label">Color</div>
+      <div class="set-label" data-i18n="color">Color</div>
       <div class="swatches" id="set-hue"></div>
     </div>
-    <button class="btn filled ripple sheet-done" id="set-close">Done</button>
+    <div class="set-group">
+      <div class="set-label" data-i18n="language">Language</div>
+      <div class="segmented" id="set-lang" role="radiogroup"></div>
+      <div class="set-note lang-note" id="set-lang-note" hidden>
+        <span data-i18n="noVoice"></span>
+        <button class="btn tonal ripple" id="set-lang-install" hidden><span class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+      </div>
+    </div>
+    <button class="btn filled ripple sheet-done" id="set-close" data-i18n="done">Done</button>
   </dialog>
 
   <!-- Confirm dialog -->
   <dialog class="dialog" id="dlg-end">
     <span class="ms dialog-icon">self_improvement</span>
-    <h2>End this session?</h2>
-    <p>Your progress in this routine won't be saved.</p>
+    <h2 data-i18n="endTitle">End this session?</h2>
+    <p data-i18n="endBody">Your progress in this routine won't be saved.</p>
     <div class="dialog-actions">
-      <button class="btn text ripple" id="dlg-keep">Keep going</button>
-      <button class="btn text ripple" id="dlg-end-ok">End</button>
+      <button class="btn text ripple" id="dlg-keep" data-i18n="keepGoing">Keep going</button>
+      <button class="btn text ripple" id="dlg-end-ok" data-i18n="end">End</button>
     </div>
   </dialog>
 
