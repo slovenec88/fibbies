@@ -69,6 +69,9 @@ export const native = {
     quiet(S.setStyle({ style: dark ? 'DARK' : 'LIGHT' }));
   },
 
+  /** Google Play Games saved games (our own plugin, android/.../PlayGamesPlugin.java). null on the web. */
+  playGames: plugin('PlayGames'),
+
   onBackButton(handler) { const A = plugin('App'); if (A) A.addListener('backButton', handler); },
   onResume(handler) { const A = plugin('App'); if (A) A.addListener('resume', handler); },
   exit() { const A = plugin('App'); if (A) quiet(A.exitApp()); },

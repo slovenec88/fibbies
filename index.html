@@ -152,10 +152,20 @@
     </div>
     <div class="set-group">
       <div class="set-label" data-i18n="language">Language</div>
-      <div class="segmented" id="set-lang" role="radiogroup"></div>
+      <div class="lang-grid" id="set-lang" role="radiogroup"></div>
       <div class="set-note lang-note" id="set-lang-note" hidden>
         <span data-i18n="noVoice"></span>
         <button class="btn tonal ripple" id="set-lang-install" hidden><span class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+      </div>
+    </div>
+    <div class="set-group" id="set-cloud-group" hidden>
+      <div class="set-label">Google Play Games</div>
+      <div class="list">
+        <label class="list-item">
+          <span class="ms li-icon">cloud_sync</span>
+          <span class="li-text"><b data-i18n="cloudSave">Cloud save</b><small id="set-cloud-sub"></small></span>
+          <input type="checkbox" class="switch" id="set-cloud">
+        </label>
       </div>
     </div>
     <button class="btn filled ripple sheet-done" id="set-close" data-i18n="done">Done</button>
@@ -176,6 +186,17 @@
     <div class="dialog-actions">
       <button class="btn text ripple" id="dlg-keep" data-i18n="keepGoing">Keep going</button>
       <button class="btn text ripple" id="dlg-end-ok" data-i18n="end">End</button>
+    </div>
+  </dialog>
+
+  <!-- Cloud save: both this phone and Google Play already have progress -->
+  <dialog class="dialog" id="dlg-cloud">
+    <span class="ms dialog-icon">cloud_sync</span>
+    <h2 data-i18n="cloudFound">Cloud save found</h2>
+    <p id="dlg-cloud-body"></p>
+    <div class="dialog-actions">
+      <button class="btn text ripple" id="dlg-cloud-keep" data-i18n="cloudKeep">Keep this phone's</button>
+      <button class="btn text ripple" id="dlg-cloud-use" data-i18n="cloudUse">Use cloud save</button>
     </div>
   </dialog>
 

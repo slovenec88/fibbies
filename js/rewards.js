@@ -3,6 +3,7 @@
 
 import { t, getLang, numLocale } from './i18n.js';
 import { fibbie, keyOf, countOf, dropFibbie, addFibbie, migrateProfile } from './fibbies.js';
+import { cloud } from './cloud.js';
 
 export const FIBERS_PER_SEC = 1337;
 
@@ -24,6 +25,7 @@ export function loadProfile() {
 }
 export function saveProfile(p) {
   try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ }
+  cloud.touch();
 }
 
 // ---------- Levels ----------
@@ -50,6 +52,10 @@ export function fmtBig(n) {
     if (n >= 1e6) return `${d(n / 1e6, n >= 1e7)} mio.`;
     if (n >= 1e4) return `${Math.round(n / 1e3)} tis.`;
     return n.toLocaleString(numLocale());
+  }
+  if (getLang() !== 'en') {
+    if (n < 1e4) return n.toLocaleString(numLocale());
+    return new Intl.NumberFormat(numLocale(), { notation: 'compact', maximumFractionDigits: n >= 1e10 || (n < 1e9 && n >= 1e7) || n < 1e6 ? 0 : 1 }).format(n);
   }
   if (n >= 1e9) return `${(n / 1e9).toFixed(n >= 1e10 ? 0 : 1)}B`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M`;

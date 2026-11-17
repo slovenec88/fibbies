@@ -8,7 +8,8 @@ import { fibbie, groups, parseKey, countOf, mergeFibbies, discovered, MAX_STAGE 
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { native, isNative } from './native.js';
-import { t, LANGS, getLang, setLang, onLangChange, translateDom } from './i18n.js';
+import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
+import { cloud } from './cloud.js';
 import { localizeContent } from './localize.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -663,6 +664,7 @@ function finish(s) {
   log.push({ day, id: s.routine.id, cat: s.routine.cat, secs, ratio: Math.round(ratio * 100) / 100, at: Date.now() });
   log = log.slice(-500);
   store.set('limber.history', log);
+  cloud.touch();
   const profile = loadProfile();
   const reward = ratio < 0.5 ? null : computeReward({
     routine: s.routine,
@@ -728,6 +730,7 @@ function openSettings() {
   $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="${t('colorN', { h })}"></button>`).join('');
   $('#set-lang').innerHTML = LANGS.map((l) => `<button data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}">${l.label}</button>`).join('');
   checkVoice();
+  renderCloud();
   sheet.showModal();
 }
 function setScaleNote() {
@@ -859,6 +862,115 @@ function route() {
   }
 }
 
+// ---------- Google Play Games cloud save (Android only, optional) ----------
+async function renderCloud() {
+  const box = $('#set-cloud-group');
+  box.hidden = !cloud.supported;
+  if (!cloud.supported) return;
+  const ok = await cloud.available();
+  const sw = $('#set-cloud');
+  sw.checked = cloud.on;
+  sw.disabled = !ok || cloudBusy;
+  const when = cloud.syncedAt ? new Date(cloud.syncedAt).toLocaleString(numLocale(), { dateStyle: 'short', timeStyle: 'short' }) : '';
+  $('#set-cloud-sub').textContent = !ok ? t('cloudNotSetUp')
+    : cloud.signedOut ? t('cloudSignedOut')
+    : cloud.on ? [cloud.name ? t('cloudSignedIn', { name: cloud.name }) : '', when ? t('cloudSynced', { when }) : ''].filter(Boolean).join(' · ') || t('cloudSub')
+    : t('cloudSub');
+}
+cloud.onChange(() => { if (sheet.open) renderCloud(); });
+let cloudBusy = false;
+const dlgCloud = $('#dlg-cloud');
+function chooseCopy(remote) {
+  let lvl = 1;
+  try { lvl = levelProgress(JSON.parse(remote.data['limber.profile'] || '{}').xp || 0).level; } catch { /* ignore */ }
+  const here = levelProgress(loadProfile().xp).level;
+  const fmt = (ms) => new Date(ms).toLocaleString(numLocale(), { dateStyle: 'medium', timeStyle: 'short' });
+  $('#dlg-cloud-body').textContent = t('cloudChoose', { cloud: lvl, when: fmt(remote.at), here });
+  return new Promise((res) => {
+    // Only the two buttons are choices; any other way of closing cancels and changes nothing.
+    dlgCloud.onclose = () => { const v = dlgCloud.returnValue; dlgCloud.returnValue = ''; res(v === 'local' || v === 'cloud' ? v : null); };
+    dlgCloud.showModal();
+  });
+}
+$('#dlg-cloud-use').onclick = () => dlgCloud.close('cloud');
+$('#dlg-cloud-keep').onclick = () => dlgCloud.close('local');
+$('#set-cloud').onchange = async (e) => {
+  if (!e.target.checked) { cloud.disable(); renderCloud(); return; }
+  cloudBusy = true;
+  renderCloud();
+  try {
+    const r = await cloud.enable(chooseCopy);
+    if (r === 'off') snackbar(t('cloudSignInFailed'));
+    else if (r === 'pulled') { reloadAfterPull(); return; }
+    else snackbar(t('cloudOnNow'));
+  } catch {
+    cloud.disable();
+    snackbar(t('cloudError'));
+  } finally {
+    cloudBusy = false;
+    renderCloud();
+  }
+};
+// Pull a newer copy from another device when the app opens or comes back, but never mid-session.
+async function cloudSync() {
+  const r = await cloud.sync({
+    canReplace: () => !session && !dlgEnd.open && currentView !== 'player' && !document.querySelector('dialog[open]'),
+    choose: chooseCopy,
+  }).catch(() => 'error');
+  if (r === 'pulled') reloadAfterPull();
+}
+// Reload at once so nothing in memory (settings, history) can write stale data over the download.
+function reloadAfterPull() {
+  try { sessionStorage.setItem('fibbies.restored', '1'); } catch { /* ignore */ }
+  location.reload();
+}
+
+// ---------- Bottom sheets: pull down to close ----------
+// Dragging down from the handle, or anywhere while the sheet is scrolled to the top, moves the
+// sheet with the finger; letting go far enough (or with a quick flick) closes it.
+function dragToClose(dlg, canClose = () => true) {
+  let y0 = 0, t0 = 0, dy = 0, active = false, dragging = false;
+  const reset = () => { dlg.style.transition = ''; dlg.style.translate = ''; };
+  dlg.addEventListener('touchstart', (e) => {
+    active = dragging = false;
+    if (e.touches.length !== 1 || !canClose()) return;
+    const onHandle = !!e.target.closest('.sheet-handle, .sheet-title');
+    if (!onHandle && dlg.scrollTop > 0) return;
+    y0 = e.touches[0].clientY; t0 = performance.now(); dy = 0; active = true;
+  }, { passive: true });
+  dlg.addEventListener('touchmove', (e) => {
+    if (!active) return;
+    dy = e.touches[0].clientY - y0;
+    if (!dragging) {
+      if (dy < -8) { active = false; return; } // scrolling up: leave it to the sheet
+      if (dy < 8) return; // a tap that wobbles a little is still a tap
+      dragging = true;
+    }
+    e.preventDefault(); // the sheet follows the finger instead of scrolling
+    dlg.style.transition = 'none';
+    dlg.style.translate = `0 ${Math.max(0, dy - 8)}px`;
+  }, { passive: false });
+  const end = () => {
+    if (!active) return;
+    active = false;
+    if (!dragging) return;
+    dragging = false;
+    const fast = dy / Math.max(1, performance.now() - t0) > 0.6;
+    dlg.style.transition = 'translate .22s cubic-bezier(.2,0,0,1)';
+    if ((dy > 110 || (fast && dy > 40)) && canClose()) {
+      dlg.style.translate = '0 100%';
+      setTimeout(() => { dlg.close(); reset(); }, 200);
+    } else {
+      dlg.style.translate = '';
+      setTimeout(reset, 230);
+    }
+  };
+  dlg.addEventListener('touchend', end);
+  dlg.addEventListener('touchcancel', end);
+}
+dragToClose(sheet);
+dragToClose(fibSheet, () => !merging);
+
 // ---------- Boot ----------
 if (isNative) document.documentElement.classList.add('native');
 if (settings.lang !== getLang()) setLang(settings.lang);
@@ -877,10 +989,16 @@ $('.brand-mark').innerHTML = critterSVG(fibbie('quaddy', 1));
 route();
 window.__booted = true;
 native.hideSplash();
+try {
+  if (sessionStorage.getItem('fibbies.restored')) { sessionStorage.removeItem('fibbies.restored'); setTimeout(() => snackbar(t('cloudRestored')), 600); }
+} catch { /* ignore */ }
+if (cloud.on) cloudSync();
+native.onResume(() => { if (cloud.on) cloudSync(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && cloud.on) cloud.sync().catch(() => {}); });
 
 // Android hardware back: close dialogs first, confirm before leaving a session, exit from home.
 native.onBackButton(() => {
-  const open = document.querySelector('dialog[open]');
+  const open = [...document.querySelectorAll('dialog[open]')].pop(); // the topmost one
   if (open) { if (!(open === fibSheet && merging)) open.close(); return; }
   if (currentView === 'player' && session && !session.finished) { confirmEnd(); return; }
   if (currentView === 'home') { native.exit(); return; }

@@ -197,7 +197,8 @@ h1, h2, h3, p { margin: 0; }
   border-radius: 16px;
 }
 .streak b { display: block; font-size: 20px; font-weight: 650; line-height: 1.1; }
-.streak small { color: var(--on-surface-variant); font-size: 13px; }
+.streak small { color: var(--on-surface-variant); font-size: 13px; display: block; white-space: normal; line-height: 1.25; }
+.streak > div:last-child { min-width: 0; }
 .week-dots { margin-left: auto; display: flex; gap: 4px; }
 .wd { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--on-surface-variant); font-weight: 600; }
 .wd i {
@@ -514,6 +515,9 @@ dialog::backdrop { background: var(--scrim); animation: fade .25s both; }
   background: var(--surface-container-low); border-radius: 28px 28px 0 0; max-height: 92dvh;
 }
 .sheet[open] { animation: sheet-up .38s cubic-bezier(.2,0,0,1) both; }
+.sheet { overflow-y: auto; overscroll-behavior: contain; }
+/* While a dialog is open the page behind stays put, so a drag moves the sheet, not the page. */
+html:has(dialog[open]) { overflow: hidden; }
 @keyframes sheet-up { from { transform: translateY(100%); } }
 .sheet-handle { width: 32px; height: 4px; border-radius: 2px; background: var(--outline); opacity: .5; margin: 8px auto 16px; }
 .sheet-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
@@ -552,6 +556,14 @@ dialog::backdrop { background: var(--scrim); animation: fade .25s both; }
 .segmented button .ms { font-size: 18px; }
 .segmented button[aria-checked="true"] { background: var(--secondary-container); color: var(--on-secondary-container); }
 .swatches { display: flex; gap: 12px; flex-wrap: wrap; }
+.lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+.lang-grid button {
+  height: 44px; border-radius: 12px; border: 1px solid var(--outline); font-weight: 600; font-size: 14px;
+  color: var(--on-surface); display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  transition: background .2s, border-radius .25s;
+}
+.lang-grid button[aria-checked="true"] { background: var(--secondary-container); color: var(--on-secondary-container); border-color: transparent; border-radius: 22px; }
+.lang-grid button[aria-checked="true"]::before { content: 'check'; font-family: 'Material Symbols Rounded'; font-size: 18px; }
 .swatch {
   width: 48px; height: 48px; border-radius: 16px; position: relative; overflow: hidden;
   background: conic-gradient(var(--primary) 0 50%, var(--primary-container) 0 75%, var(--tertiary-container) 0);

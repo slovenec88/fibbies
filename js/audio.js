@@ -181,7 +181,7 @@ function pickVoice() {
   const lang = getLang();
   const re0 = new RegExp(`^${lang}(-|_|$)`, 'i');
   const vs = speechSynthesis.getVoices().filter((v) => re0.test(v.lang));
-  for (const re of VOICE_PREFS[lang] || []) {
+  for (const re of VOICE_PREFS[lang] || [/Natural/i, /Google/i]) {
     const v = vs.find((x) => re.test(x.name) || re.test(x.lang));
     if (v) { voice = v; return; }
   }

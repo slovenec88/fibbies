@@ -1,8 +1,18 @@
-// UI strings and language state. No imports, so any module can use t() without cycles.
-// Content (stretches, routines, Fibbies) is translated in localize.js.
+// UI strings and language state. Only imports the plain dictionaries in js/lang/, so any
+// module can use t() without cycles. Content (stretches, routines, Fibbies) is in localize.js.
+import { UI as DE } from './lang/de.js';
+import { UI as ES } from './lang/es.js';
+import { UI as FR } from './lang/fr.js';
+import { UI as IT } from './lang/it.js';
+import { UI as PT } from './lang/pt.js';
 
 export const LANGS = [
   { id: 'en', label: 'English', speech: 'en-US', locale: 'en-US' },
+  { id: 'de', label: 'Deutsch', speech: 'de-DE', locale: 'de-DE' },
+  { id: 'es', label: 'Español', speech: 'es-ES', locale: 'es-ES' },
+  { id: 'fr', label: 'Français', speech: 'fr-FR', locale: 'fr-FR' },
+  { id: 'it', label: 'Italiano', speech: 'it-IT', locale: 'it-IT' },
+  { id: 'pt', label: 'Português', speech: 'pt-BR', locale: 'pt-BR' },
   { id: 'sl', label: 'Slovenščina', speech: 'sl-SI', locale: 'sl-SI' },
 ];
 
@@ -11,8 +21,12 @@ function detect() {
     const s = JSON.parse(localStorage.getItem('limber.settings') || '{}');
     if (LANGS.some((l) => l.id === s.lang)) return s.lang;
   } catch { /* ignore */ }
-  const nav = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
-  return /^sl\b/i.test(nav) ? 'sl' : 'en';
+  const navs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+  for (const nav of navs) {
+    const id = String(nav).slice(0, 2).toLowerCase();
+    if (LANGS.some((l) => l.id === id)) return id;
+  }
+  return 'en';
 }
 
 let cur = detect();
@@ -185,6 +199,20 @@ const EN = {
   holdNextSession: 'Hold length applies from your next session',
   noVoice: 'No voice for this language was found on this device, so spoken cues may sound wrong or stay silent.',
   installVoice: 'Install voice',
+  cloudSave: 'Cloud save',
+  cloudSignedOut: 'Signed out of Google Play Games, so nothing is being saved. Turn this off and on to sign in again.',
+  cloudSub: 'Keep your Fibbies and progress in your Google Play Games account, free.',
+  cloudNotSetUp: 'Cloud save isn\'t set up in this version of the app yet.',
+  cloudSignedIn: ({ name }) => `Signed in as ${name}`,
+  cloudSynced: ({ when }) => `Synced ${when}`,
+  cloudSignInFailed: 'Couldn\'t sign in to Google Play Games.',
+  cloudError: 'Couldn\'t reach Google Play Games. Try again later.',
+  cloudRestored: 'Progress restored from Google Play.',
+  cloudOnNow: 'Cloud save is on.',
+  cloudFound: 'Cloud save found',
+  cloudChoose: ({ cloud, here, when }) => `Google Play has a save at level ${cloud} from ${when}. This phone is at level ${here}. Which progress do you want to keep?`,
+  cloudKeep: 'Keep this phone\'s',
+  cloudUse: 'Use cloud save',
 };
 
 const SL = {
@@ -329,9 +357,23 @@ const SL = {
   holdNextSession: 'Dolžina zadrževanja velja od naslednje vadbe',
   noVoice: 'Na tej napravi ni slovenskega glasu, zato glasovna navodila morda ne bodo zvenela prav ali pa bodo tiho.',
   installVoice: 'Namesti glas',
+  cloudSave: 'Shranjevanje v oblak',
+  cloudSignedOut: 'Odjavljen iz Google Play Iger, zato se nič ne shranjuje. Izklopi in znova vklopi za ponovno prijavo.',
+  cloudSub: 'Fibbiji in napredek se brezplačno shranijo v tvoj račun Google Play Igre.',
+  cloudNotSetUp: 'Shranjevanje v oblak v tej različici aplikacije še ni nastavljeno.',
+  cloudSignedIn: ({ name }) => `Prijavljen kot ${name}`,
+  cloudSynced: ({ when }) => `Sinhronizirano ${when}`,
+  cloudSignInFailed: 'Prijava v Google Play Igre ni uspela.',
+  cloudError: 'Povezava z Google Play Igrami ni uspela. Poskusi znova pozneje.',
+  cloudRestored: 'Napredek je obnovljen iz Google Play.',
+  cloudOnNow: 'Shranjevanje v oblak je vklopljeno.',
+  cloudFound: 'Najden je shranjen napredek',
+  cloudChoose: ({ cloud, here, when }) => `Google Play ima shranjeno stopnjo ${cloud} z dne ${when}. Ta telefon je na stopnji ${here}. Kateri napredek želiš obdržati?`,
+  cloudKeep: 'Obdrži telefonskega',
+  cloudUse: 'Uporabi iz oblaka',
 };
 
-const DICTS = { en: EN, sl: SL };
+const DICTS = { en: EN, sl: SL, de: DE, es: ES, fr: FR, it: IT, pt: PT };
 
 /** Translate a key. Function entries receive vars; arrays are returned as-is. */
 export function t(key, vars = {}) {

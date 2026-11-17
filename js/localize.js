@@ -4,6 +4,11 @@
 import { STRETCHES, ROUTINES, RANKINGS, CATEGORIES } from './data.js';
 import { FIBBIES, TIERS, QUESTS } from './rewards.js';
 import { getLang } from './i18n.js';
+import { CONTENT as DE } from './lang/de.js';
+import { CONTENT as ES } from './lang/es.js';
+import { CONTENT as FR } from './lang/fr.js';
+import { CONTENT as IT } from './lang/it.js';
+import { CONTENT as PT } from './lang/pt.js';
 
 const SL = {
   stretches: {
@@ -231,32 +236,34 @@ const EN = {
   quests: Object.fromEntries(QUESTS.map((q) => [q.cat, q.label])),
 };
 
+const CONTENT = { sl: SL, de: DE, es: ES, fr: FR, it: IT, pt: PT };
+
 export function localizeContent(lang = getLang()) {
-  const sl = lang === 'sl';
+  const L = CONTENT[lang] || null;
   for (const [id, s] of Object.entries(STRETCHES)) {
     const e = EN.stretches[id];
-    const x = sl && SL.stretches[id];
+    const x = L && L.stretches[id];
     s.name = x ? x[0] : e.name;
     s.target = x ? x[1] : e.target;
     s.cues = x ? x[2] : e.cues;
   }
   for (const r of ROUTINES) {
-    const x = sl && SL.routines[r.id];
+    const x = L && L.routines[r.id];
     r.title = x ? x[0] : EN.routines[r.id].title;
     r.blurb = x ? x[1] : EN.routines[r.id].blurb;
   }
   for (const [c, rows] of Object.entries(RANKINGS)) {
-    rows.forEach((row, i) => { row[1] = (sl && SL.rankings[c]?.[i]) || EN.rankings[c][i]; });
+    rows.forEach((row, i) => { row[1] = (L && L.rankings[c]?.[i]) || EN.rankings[c][i]; });
   }
-  for (const c of CATEGORIES) c.label = (sl && SL.categories[c.id]) || EN.categories[c.id];
+  for (const c of CATEGORIES) c.label = (L && L.categories[c.id]) || EN.categories[c.id];
   for (const f of FIBBIES) {
-    const x = sl && SL.fibbies[f.id];
+    const x = L && L.fibbies[f.id];
     f.name = (x && x[0]) || EN.fibbies[f.id].name;
     f.blurb = (x && x[1]) || EN.fibbies[f.id].blurb;
   }
   TIERS.forEach((tier, i) => {
-    tier.label = sl ? SL.tiers[i] : EN.tiers[i].label;
+    tier.label = (L && L.tiers[i]) || EN.tiers[i].label;
     tier.name = EN.tiers[i].name; // rarity word, used only for English voice
   });
-  for (const q of QUESTS) q.label = (sl && SL.quests[q.cat]) || EN.quests[q.cat];
+  for (const q of QUESTS) q.label = (L && L.quests[q.cat]) || EN.quests[q.cat];
 }

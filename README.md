@@ -19,7 +19,7 @@ A phone-first web app with follow-along stretching routines for runners, wrapped
 - **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices
 - **Installable PWA** that works offline after the first visit
 - Hold length setting (short / standard / long), plus an opt-in **Flex 60s** mode that brings every static hold to 60 s per side for flexibility gains, vibration, a streak counter and a weekly tracker
-- **Languages**: English and Slovenian (Settings → Language), including spoken cues. Picks the device voice for the language, and shows a hint (with an "Install voice" button on Android) if none is installed. UI strings live in `js/i18n.js`, stretch and routine text in `js/localize.js`
+- **Languages**: English, German, Spanish, French, Italian, Portuguese and Slovenian (Settings → Language), including spoken cues. The first launch follows the phone's language. Picks the device voice for the language, and shows a hint (with an "Install voice" button on Android) if none is installed. English and Slovenian UI strings live in `js/i18n.js` and their stretch and routine text in `js/localize.js`; each other language is one file in `js/lang/` with both
 - No build step and no dependencies, just static HTML, CSS and ES modules
 
 See [TODO.md](TODO.md) for planned ideas.
@@ -57,6 +57,19 @@ These live in `js/native.js` and do nothing on the web.
 | `npm run android:debug` | Copy the web app into `www/`, sync it to `android/`, and build `android/app/build/outputs/apk/debug/app-debug.apk` |
 | `npm run android:run` | Build and launch on a connected phone or emulator |
 | `npm run android:open` | Open the project in Android Studio |
+
+### Optional: cloud save with Google Play Games
+
+The Android app can keep the player's progress (Fibbies, level, history, settings) in their own Google Play Games account through the free [Saved Games](https://developer.android.com/games/pgs/savedgames) service. It's off until the app is set up in the Play Console; until then Settings shows "Cloud save isn't set up". Separately, Android's own Auto Backup (`allowBackup`) already copies the app's data to the user's Google Drive backup and restores it on a reinstall.
+
+To switch it on:
+1. Upload the app to the Play Console (an internal testing track is enough) and add yourself as a tester.
+2. In Play Console → **Play Games Services → Setup and management → Configuration**, create a games project for the app.
+3. Add an **Android credential** with package `io.github.slovenec88.fibbies` and the SHA-1 of the signing key (the upload key's and the Play app signing key's; for debug builds run `cd android && ./gradlew signingReport`).
+4. Under **Saved Games**, turn the feature on, then publish the Play Games configuration and add testers.
+5. Copy the **project ID** (a number) into `android/gradle.properties` as `playGamesAppId=1234567890`, and rebuild.
+
+The native side is `android/app/src/main/java/io/github/slovenec88/fibbies/PlayGamesPlugin.java`; the syncing (newest copy wins, and the app asks which to keep when two phones both have progress) is in `js/cloud.js`.
 
 Change the web code at the repo root, then run `npm run sync`. Don't edit `www/` or `android/app/src/main/assets`; both are generated.
 
