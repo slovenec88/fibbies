@@ -1,4 +1,4 @@
-// Stretch library + routines for runners.
+// Stretch library + routines for before and after exercise, evenings and short breaks.
 import { t } from './i18n.js';
 // Poses use a 200x200 canvas, figure faces right, ground at y=180.
 // h = hip, t = torso angle (deg, 0 = right, 90 = down), n = head angle,
@@ -311,7 +311,7 @@ export const STRETCHES = {
     cues: [
       'Scoot your hips close to a wall and rest your legs up it.',
       'Arms relaxed, palms up. Just breathe.',
-      'Let your legs feel light. Perfect for tired runner legs.',
+      'Let your legs feel light. Perfect for tired legs.',
     ],
   },
 
@@ -345,7 +345,7 @@ export const STRETCHES = {
     cues: [
       'Hands on the wall. Step one foot back and bend that back knee.',
       'Keep the back heel down and sink your hips. You will feel it low in the calf.',
-      "This one targets the soleus and Achilles, the runner's workhorse.",
+      'This one targets the soleus and Achilles, which carry you through every step.',
     ],
   },
 
@@ -437,23 +437,56 @@ export const STRETCHES = {
       'Keep your hips facing forward and your knees soft.',
     ],
   },
+
+  hipFlexorStand: {
+    name: 'Standing Hip Flexor Stretch', target: 'Hip flexors · Quads', view: 'side', sided: true, limb: 'leg', period: 8, work: true,
+    a: { h: [98, 112], t: -90, n: -90, hN: [106, 110], hF: [102, 108], fN: [132, 180], fF: [62, 180], ft: [0, 40] },
+    b: { h: [104, 116], t: -94, n: -94, hN: [110, 112], hF: [106, 110], fN: [132, 180], fF: [62, 180], ft: [0, 40] },
+    cues: [
+      'Step one foot back into a long stance, back heel lifted.',
+      'Tuck your tailbone under and gently push your hips forward.',
+      'Feel it at the front of the back hip. Stay tall, no need to lunge deep.',
+    ],
+  },
+
+  hamstringStand: {
+    name: 'Standing Hamstring Stretch', target: 'Hamstrings · Calves', view: 'side', sided: true, limb: 'leg', period: 8, work: true,
+    a: { h: [90, 118], t: -58, n: -44, hN: [122, 142], hF: [120, 140], fN: [138, 180], fF: [86, 180], ft: [-50, 0] },
+    b: { h: [86, 120], t: -44, n: -30, hN: [126, 150], hF: [124, 148], fN: [138, 180], fF: [86, 180], ft: [-55, 0] },
+    cues: [
+      'Put one heel forward with the toes up, and bend the back knee a little.',
+      'Hinge forward from your hips with a long, flat back.',
+      'Rest your hands on your thighs and feel the back of the front leg.',
+    ],
+  },
+
+  wristStretch: {
+    name: 'Wrist & Forearm Stretch', target: 'Forearms · Wrists', view: 'side', sided: true, limb: 'side', period: 7, work: true,
+    a: { h: [100, 104], t: -90, n: -88, hN: [156, 56], hF: [148, 54], fN: [104, 180], fF: [96, 180] },
+    b: { h: [100, 104], t: -90, n: -86, hN: [157, 60], hF: [147, 58], fN: [104, 180], fF: [96, 180] },
+    cues: [
+      'Hold one arm out straight, palm facing away, fingers pointing up.',
+      'With the other hand, gently draw the fingers back toward you.',
+      'Keep the elbow straight and the shoulder relaxed. Great after a lot of typing.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
   { id: 'all', label: 'All', icon: 'apps' },
-  { id: 'after', label: 'After run', icon: 'directions_run', hue: 165 },
-  { id: 'before', label: 'Before run', icon: 'bolt', hue: 45 },
+  { id: 'after', label: 'After workout', icon: 'fitness_center', hue: 165 },
+  { id: 'before', label: 'Before workout', icon: 'bolt', hue: 45 },
   { id: 'evening', label: 'Evening', icon: 'bedtime', hue: 290 },
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
 ];
 
-// Research-based rankings: effectiveness for runners weighed against simplicity
+// Research-based rankings: effectiveness for active people weighed against simplicity
 // (no equipment, easy to learn, safe to do alone). Sources are listed in RANKINGS.md.
 export const RANKINGS = {
   after: [
-    ['quad', 'Quads take a beating on every stride. Standing, no gear, and every physio list includes it.'],
+    ['quad', 'Quads work hard in almost every sport. Standing, no gear, and every physio list includes it.'],
     ['calf', 'Calves and Achilles absorb each landing. A wall is all you need.'],
-    ['lunge', 'Undoes tight hip flexors from running and sitting. PTs call this one out every time.'],
+    ['lunge', 'Undoes tight hip flexors from training and sitting. PTs call this one out every time.'],
     ['fold', 'Hamstrings and lower back in one simple standing move.'],
     ['pigeon', 'The physio favourite for glutes and outer hips, key for stability.'],
     ['soleus', 'Bent-knee version reaches the deep calf that a straight-leg stretch misses.'],
@@ -463,9 +496,9 @@ export const RANKINGS = {
     ['child', 'A calm finish for the back and hips that brings your breathing down.'],
   ],
   before: [
-    ['swingFront', 'Most-recommended pre-run drill. Opens the hips through the exact running motion.'],
+    ['swingFront', 'The most-recommended warm-up drill. Opens the hips through the walking and running motion.'],
     ['lungeReach', 'Fires the glutes and stretches the hip flexors while teaching knee tracking.'],
-    ['swingSide', 'Wakes up the adductors and hip stabilisers that keep you running straight.'],
+    ['swingSide', 'Wakes up the adductors and hip stabilisers that keep your knees and hips in line.'],
     ['highKnees', 'Raises your heart rate and grooves a strong knee drive.'],
     ['buttKicks', 'Dynamic quad stretch that warms the hamstrings too.'],
     ['worlds', 'Hits hips, hamstrings and the upper back in one flowing move.'],
@@ -487,13 +520,13 @@ export const RANKINGS = {
     ['pigeon', 'A deeper glute release when you have a little more time.'],
   ],
   quick: [
-    ['lunge', 'Biggest payoff in the least time for runners who also sit a lot.'],
+    ['lunge', 'Biggest payoff in the least time, especially if you sit a lot.'],
     ['calf', 'The fastest relief for tight calves and Achilles.'],
     ['quad', 'Standing, anywhere, in 30 seconds a side.'],
     ['downdog', 'Calves, hamstrings and back all at once.'],
     ['worlds', 'Hips, hamstrings and spine in one move. Maximum coverage.'],
     ['fold', 'Quick hamstring and back release with no setup.'],
-    ['soleus', 'Gets the deep calf that runners often miss.'],
+    ['soleus', 'Gets the deep calf that most stretches miss.'],
     ['itband', 'Outer hip relief, standing.'],
     ['squat', 'Opens the hips and ankles together.'],
     ['sideBend', 'Lengthens the side body after hunching over a desk.'],
@@ -505,23 +538,23 @@ export const topFive = (cat) => RANKINGS[cat].slice(0, 5).map(([id]) => id);
 // items: [stretchId, seconds per side]
 export const ROUTINES = [
   {
-    id: 'top5-after', hero: 'quad', title: 'Top 5 After Run', cat: 'after', hue: 165, icon: 'workspace_premium', top: true,
-    blurb: 'The five most effective, simplest post-run stretches, as ranked from physical therapist and coaching advice. Hold each about 30 seconds while your muscles are still warm.',
+    id: 'top5-after', hero: 'quad', title: 'Top 5 After Workout', cat: 'after', hue: 165, icon: 'workspace_premium', top: true,
+    blurb: 'The five most effective, simplest stretches after exercise, as ranked from physical therapist and coaching advice. Hold each about 30 seconds while your muscles are still warm.',
     items: [['quad', 30], ['calf', 30], ['lunge', 30], ['fold', 40], ['pigeon', 35]],
   },
   {
-    id: 'post-run-reset', hero: 'lunge', title: 'Post-Run Reset', cat: 'after', hue: 165, icon: 'directions_run',
+    id: 'post-run-reset', hero: 'lunge', title: 'Post-Workout Reset', cat: 'after', hue: 165, icon: 'fitness_center',
     blurb: 'The full cooldown: the Top 5, then the deep calf, down dog and a calm finish.',
     items: [['quad', 30], ['calf', 30], ['lunge', 35], ['fold', 40], ['pigeon', 40], ['soleus', 30], ['downdog', 30], ['child', 40]],
   },
   {
-    id: 'long-run-recovery', hero: 'lyingHam', title: 'Long Run Recovery', cat: 'after', hue: 140, icon: 'landscape',
-    blurb: 'Long, slow floor stretches for big-mileage days. All you need is a bit of floor and a wall.',
+    id: 'long-run-recovery', hero: 'lyingHam', title: 'Big Day Recovery', cat: 'after', hue: 140, icon: 'landscape',
+    blurb: 'Long, slow floor stretches after a long or hard day of training. All you need is a bit of floor and a wall.',
     items: [['legsUpWall', 60], ['lyingHam', 40], ['bridge', 30], ['happyBaby', 40], ['pigeon', 45], ['itband', 25], ['cobra', 30], ['child', 45], ['twist', 35]],
   },
   {
-    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Run', cat: 'before', hue: 45, icon: 'workspace_premium', top: true,
-    blurb: 'Moving stretches only. Research shows long static holds before a run can slightly reduce performance, while dynamic moves warm you up without that cost.',
+    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Workout', cat: 'before', hue: 45, icon: 'workspace_premium', top: true,
+    blurb: 'Moving stretches only. Research shows long static holds right before exercise can slightly reduce power and speed, while dynamic moves warm you up without that cost.',
     items: [['swingFront', 30], ['lungeReach', 60], ['swingSide', 30], ['highKnees', 45], ['buttKicks', 45]],
   },
   {
@@ -530,8 +563,8 @@ export const ROUTINES = [
     items: [['swingFront', 20], ['lungeReach', 40], ['swingSide', 20], ['highKnees', 30], ['buttKicks', 30], ['worlds', 30], ['hipCircles', 30], ['calfRaises', 30], ['inchworm', 40]],
   },
   {
-    id: 'race-day-primer', hero: 'worlds', title: 'Race Day Primer', cat: 'before', hue: 15, icon: 'flag',
-    blurb: 'A sharp five minutes for the start corral. Gets you loose without tiring you out.',
+    id: 'race-day-primer', hero: 'worlds', title: 'Game Day Primer', cat: 'before', hue: 15, icon: 'flag',
+    blurb: 'A sharp five minutes before a race, match or big session. Gets you loose without tiring you out.',
     items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['worlds', 30], ['calfRaises', 30], ['armCircles', 20]],
   },
   {
@@ -546,12 +579,12 @@ export const ROUTINES = [
   },
   {
     id: 'bedtime-hips', hero: 'butterfly', title: 'Bedtime Hips', cat: 'evening', hue: 320, icon: 'nights_stay',
-    blurb: 'Gentle hip openers to undo hours of sitting and running. Great right before bed.',
+    blurb: 'Gentle hip openers to undo hours of sitting and training. Great right before bed.',
     items: [['squat', 40], ['butterfly', 45], ['figureFour', 40], ['happyBaby', 45], ['twist', 40], ['child', 45], ['legsUpWall', 60]],
   },
   {
     id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', hue: 235, icon: 'workspace_premium', top: true,
-    blurb: 'Short on time? The five stretches with the biggest payoff for runners, in about five minutes.',
+    blurb: 'Short on time? The five stretches with the biggest payoff, in about five minutes.',
     items: [['lunge', 30], ['calf', 30], ['quad', 30], ['downdog', 40], ['worlds', 30]],
   },
   {
@@ -561,7 +594,7 @@ export const ROUTINES = [
   },
   {
     id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', hue: 70, icon: 'chair',
-    blurb: 'Sat all day? Open your hips and wake up your spine before your evening run.',
+    blurb: 'Sat all day? Open your hips and wake up your spine before your evening workout.',
     items: [['cobra', 30], ['catcow', 40], ['lunge', 30], ['sideBend', 30], ['squat', 40], ['fold', 30], ['bridge', 30]],
   },
   {
@@ -571,8 +604,8 @@ export const ROUTINES = [
   },
   {
     id: 'work-break', hero: 'chestOpener', title: 'Work Break', cat: 'quick', hue: 200, icon: 'work',
-    blurb: 'Stand up from your desk for five minutes. Neck, shoulders, chest and back, all standing, nothing needed.',
-    items: [['neckTilt', 20], ['shoulderCross', 20], ['tricep', 20], ['chestOpener', 25], ['backBend', 20], ['standingTwist', 30], ['sideBend', 25]],
+    blurb: 'Stand up from your desk for a few minutes. Neck, shoulders, wrists, chest, hips, legs and back, all standing, nothing needed.',
+    items: [['neckTilt', 20], ['shoulderCross', 20], ['wristStretch', 20], ['chestOpener', 25], ['hipFlexorStand', 25], ['hamstringStand', 25], ['backBend', 20], ['standingTwist', 30]],
   },
 ];
 

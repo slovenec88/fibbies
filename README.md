@@ -1,19 +1,21 @@
 # Fibbies: stretch & loot
 
-A phone-first web app with follow-along stretching routines for runners, wrapped in a treasure-chest reward loop. Every routine runs 5–10 minutes and comes with voice guidance, sound cues, an on-screen timer and animated figures that show each pose. The screen stays awake while you stretch.
+A phone-first web app with follow-along stretching routines for before and after exercise, evenings and work breaks, wrapped in a treasure-chest reward loop. Most routines run 2–10 minutes and comes with voice guidance, sound cues, an on-screen timer and animated figures that show each pose. The screen stays awake while you stretch.
 
 ## Features
 
-- **12 routines in 4 groups** (After run, Before run, Evening, Quick), each led by a research-ranked **Top 5** routine
+- **14 routines in 4 groups** (After workout, Before workout, Evening, Quick), each led by a research-ranked **Top 5** routine
 - **Top 10 rankings** for each group, ranked by effectiveness versus simplicity (see [RANKINGS.md](RANKINGS.md))
-- **32 stretches**, each with an animated figure drawn from joint targets (two-bone IK)
+- **41 stretches** (including standing work-break stretches that need no floor or equipment), each with an animated figure drawn from joint targets (two-bone IK)
 - **Procedural Fibbies**: every chest drops a seeded, code-drawn critter (endless species, 4 rarities). Collect duplicates and merge two identical ones to evolve them, up to 4 stages (`js/fibbies.js`, `js/critter.js`)
 - **Treasure-chest rewards** after every session:
   - Four chest tiers (Wooden to Legendary) and a slot-machine count-up of "muscle fibers stretched"
-  - Stacking multipliers: streak, Run Sandwich ×2 (warm-up and cooldown on the same day), Flex 60s, perfect session, lucky
+  - Stacking multipliers: streak, Stretch Sandwich ×2 (warm-up and cooldown on the same day), Flex 60s, perfect session, lucky
   - 12 collectible Fibbie critters, plus XP levels and level-ups
   - Sessions less than half done earn nothing, so skipping can't farm chests
-- **Daily quests** (before run, after run, evening) and a Fibbie collection on the home screen
+- **Daily quests** (before workout, after workout, evening) and a Fibbie collection on the home screen
+- **Weekly flexibility check**: four self-tests (both sides where it matters) with a score and progress chart (`js/flex.js`)
+- **Fibbie album** with shadows of the originals still to find
 - **Audio**: synthesized chimes, a 3-2-1 countdown, halfway and switch-sides cues, plus spoken names and tips through the Web Speech API
 - **Screen Wake Lock**, so the phone doesn't go to sleep mid-stretch
 - **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices

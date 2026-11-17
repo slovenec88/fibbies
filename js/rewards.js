@@ -65,8 +65,8 @@ export function fmtBig(n) {
 
 // ---------- Quests ----------
 export const QUESTS = [
-  { cat: 'before', icon: 'bolt', label: 'Warm up before a run' },
-  { cat: 'after', icon: 'directions_run', label: 'Cool down after a run' },
+  { cat: 'before', icon: 'bolt', label: 'Warm up before exercise' },
+  { cat: 'after', icon: 'fitness_center', label: 'Cool down after exercise' },
   { cat: 'evening', icon: 'bedtime', label: 'Evening wind-down' },
 ];
 

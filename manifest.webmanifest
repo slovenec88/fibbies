@@ -1,7 +1,7 @@
 {
   "name": "Fibbies: Stretch & Loot",
   "short_name": "Fibbies",
-  "description": "Follow-along 5–10 minute stretching routines for runners. Open treasure chests and collect cute muscle friends.",
+  "description": "Follow-along 5–10 minute stretching routines for before and after exercise, evenings and work breaks. Open treasure chests and collect cute muscle friends.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -5,7 +5,7 @@ import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
 import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, QUESTS } from './rewards.js';
 import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
-import { FLEX_TESTS, FLEX_MAX, WEEK_DAYS, loadFlex, saveFlex, scoreOf, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
+import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { native, isNative } from './native.js';
@@ -404,7 +404,8 @@ fibSheet.addEventListener('close', () => { if (albumSheet.open) renderAlbum(); }
 
 // ---------- Weekly flexibility check ----------
 const flexSheet = $('#sheet-flex');
-let flexPick = {};
+let flexPick = {}; // test id -> level, or [left, right] (either may still be null) for two-sided tests
+const answered = (x) => (x.side ? Array.isArray(flexPick[x.id]) && flexPick[x.id].every((v) => v != null) : flexPick[x.id] != null);
 let flexNote = null;
 function renderFlexCard() {
   const list = loadFlex();
@@ -425,18 +426,31 @@ function renderFlex() {
   const pts = chartPoints(list);
   const first = list[0];
   const last = list[list.length - 1];
+  const fmtLv = (n) => (Number.isInteger(n) ? String(n) : n.toLocaleString(numLocale(), { maximumFractionDigits: 1 }));
   const rows = FLEX_TESTS.map((x) => {
     const T = t('flexTests')[x.id];
-    const opts = T.levels.map((lab, i) => `<button class="fo ripple" role="radio" data-t="${x.id}" data-v="${i}" aria-checked="${flexPick[x.id] === i}"><i>${i}</i>${esc(lab)}</button>`).join('');
-    const delta = first && last && list.length > 1 ? (Number(last.r[x.id]) || 0) - (Number(first.r[x.id]) || 0) : 0;
-    const prev = last ? `<span class="ft-prev">${esc(T.levels[Number(last.r[x.id]) || 0])}${delta > 0 ? ` <b class="up">▲${delta}</b>` : ''}</span>` : '';
+    const pick = flexPick[x.id];
+    let opts;
+    if (x.side) {
+      // Two-sided tests: one row per level, with a left and a right choice.
+      const sides = [t('flexLeft'), t('flexRight')];
+      opts = `<div class="fo2-head"><span></span><b>${esc(sides[0])}</b><b>${esc(sides[1])}</b></div>` + T.levels.map((lab, i) => `
+        <div class="fo2"><span class="fo2-lab">${esc(lab)}</span>${[0, 1].map((s) => `<button class="fs ripple" data-t="${x.id}" data-s="${s}" data-v="${i}" aria-pressed="${!!pick && pick[s] === i}" aria-label="${esc(`${sides[s]}: ${lab}`)}">${i}</button>`).join('')}</div>`).join('');
+    } else {
+      opts = T.levels.map((lab, i) => `<button class="fo ripple" role="radio" data-t="${x.id}" data-v="${i}" aria-checked="${pick === i}"><i>${i}</i>${esc(lab)}</button>`).join('');
+    }
+    const delta = first && last && list.length > 1 ? levelOf(last, x) - levelOf(first, x) : 0;
+    const lastV = last && last.r[x.id];
+    const prevText = !last ? '' : x.side ? `${t('flexLeft')} ${lastV[0]} · ${t('flexRight')} ${lastV[1]}` : T.levels[lastV];
+    const prev = last ? `<span class="ft-prev">${esc(prevText)}${delta > 0 ? ` <b class="up">▲${fmtLv(delta)}</b>` : ''}</span>` : '';
     return `<section class="ft" data-t="${x.id}">
       <div class="ft-head"><div class="ft-fig"></div><div><h3>${esc(T.name)}</h3>${prev}</div></div>
       <p class="ft-how">${esc(T.how)}</p>
-      <div class="ft-opts" role="radiogroup" aria-label="${esc(T.name)}">${opts}</div>
+      <div class="ft-opts${x.side ? ' two' : ''}" role="${x.side ? 'group' : 'radiogroup'}" aria-label="${esc(T.name)}">${opts}</div>
     </section>`;
   }).join('');
-  const done = FLEX_TESTS.every((x) => flexPick[x.id] != null);
+  const done = FLEX_TESTS.every(answered);
+  const tight = last ? imbalances(last).map(({ test, side }) => t(side === 'L' ? 'flexTightL' : 'flexTightR', { test: t('flexTests')[test.id].name })) : [];
   const since = first && list.length > 1 ? scoreOf(last) - scoreOf(first) : null;
   $('#flex-body').innerHTML = `
     ${flexNote ? `<div class="flex-note"><span class="ms filled">check_circle</span>${esc(flexNote)}</div>` : ''}
@@ -444,6 +458,7 @@ function renderFlex() {
       <div class="fcb-head"><b>${t('flexScore')}</b>${since != null ? `<small>${esc(t('flexSince', { n: since }))}</small>` : ''}</div>
       ${flexChartSVG(list)}
       <div class="fcb-read" id="flex-read">${esc(list.length > 1 ? t('flexTapPoint') : t('flexOnePoint'))}</div>
+      ${tight.map((s) => `<div class="flex-tight"><span class="ms">balance</span><span>${esc(s)}</span></div>`).join('')}
     </div>` : ''}
     <p class="flex-intro">${t('flexIntro')}</p>
     ${rows}
@@ -466,7 +481,7 @@ function renderFlex() {
 function openFlex() {
   const list = loadFlex();
   const today = list.find((e) => e.day === dayKey());
-  flexPick = today ? { ...today.r } : {};
+  flexPick = today ? Object.fromEntries(Object.entries(today.r).map(([k, v]) => [k, Array.isArray(v) ? [...v] : v])) : {};
   flexNote = null;
   renderFlex();
   flexSheet.showModal();
@@ -475,23 +490,31 @@ function openFlex() {
 $('#flex-card').onclick = openFlex;
 $('#flex-close').onclick = () => flexSheet.close();
 $('#flex-body').addEventListener('click', (e) => {
-  const o = e.target.closest('.fo');
+  const o = e.target.closest('.fo, .fs');
   if (o) {
-    flexPick[o.dataset.t] = Number(o.dataset.v);
-    o.parentElement.querySelectorAll('.fo').forEach((b) => b.setAttribute('aria-checked', b === o));
-    const done = FLEX_TESTS.every((x) => flexPick[x.id] != null);
-    if (done) { $('#flex-save').removeAttribute('aria-disabled'); $('#flex-need').hidden = true; }
+    const id = o.dataset.t, v = Number(o.dataset.v);
+    if (o.classList.contains('fs')) {
+      const s = Number(o.dataset.s);
+      const cur = Array.isArray(flexPick[id]) ? flexPick[id] : [null, null];
+      cur[s] = v;
+      flexPick[id] = cur;
+      o.closest('.ft-opts').querySelectorAll(`.fs[data-s="${s}"]`).forEach((b) => b.setAttribute('aria-pressed', b === o));
+    } else {
+      flexPick[id] = v;
+      o.parentElement.querySelectorAll('.fo').forEach((b) => b.setAttribute('aria-checked', b === o));
+    }
+    if (FLEX_TESTS.every(answered)) { $('#flex-save').removeAttribute('aria-disabled'); $('#flex-need').hidden = true; }
     haptics.buzz(10);
     return;
   }
   if (e.target.closest('#flex-save')) {
-    if (!FLEX_TESTS.every((x) => flexPick[x.id] != null)) {
+    if (!FLEX_TESTS.every(answered)) {
       $('#flex-need').hidden = false;
-      const miss = FLEX_TESTS.find((x) => flexPick[x.id] == null);
+      const miss = FLEX_TESTS.find((x) => !answered(x));
       $(`#flex-body .ft[data-t="${miss.id}"]`).scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    const r = Object.fromEntries(FLEX_TESTS.map((x) => [x.id, Math.max(0, Math.min(FLEX_MAX, flexPick[x.id]))]));
+    const r = Object.fromEntries(FLEX_TESTS.map((x) => [x.id, cleanAnswer(x, flexPick[x.id])]));
     saveFlex(dayKey(), r);
     flexNote = t('flexSaved');
     unlockAudio();
@@ -1144,6 +1167,28 @@ for (const s of [flexSheet, albumSheet]) {
   });
 }
 
+// ---------- Safety note ----------
+// Shown once on first launch (and any time from the link at the bottom of home).
+const dlgSafety = $('#dlg-safety');
+const SAFETY_ICONS = ['local_fire_department', 'warning', 'air', 'medical_services'];
+function openSafety() {
+  $('#safety-list').innerHTML = t('safetyItems').map((s, i) => `<li><span class="ms">${SAFETY_ICONS[i] || 'check'}</span><span>${esc(s)}</span></li>`).join('');
+  if (!dlgSafety.open) dlgSafety.showModal();
+}
+$('#btn-safety').onclick = openSafety;
+$('#dlg-safety-ok').onclick = () => dlgSafety.close();
+// Per device (outside "limber." so cloud save neither uploads nor removes it).
+const SAFETY_KEY = 'fibbies.safety-seen';
+dlgSafety.addEventListener('close', () => {
+  try { localStorage.setItem(SAFETY_KEY, '1'); } catch { /* ignore */ }
+  if (cloud.on) cloudSync(); // a startup pull waits while any dialog is open
+});
+function maybeShowSafety() {
+  let seen = false;
+  try { seen = !!localStorage.getItem(SAFETY_KEY); } catch { /* ignore */ }
+  if (!seen && currentView === 'home' && !document.querySelector('dialog[open]')) openSafety();
+}
+
 // Number dialogs in the order they open, so Back can close the one on top.
 let dialogSeq = 0;
 const dialogWatch = new MutationObserver((ms) => ms.forEach((m) => { if (m.target.open) m.target.dataset.seq = String(++dialogSeq); }));
@@ -1171,6 +1216,7 @@ try {
   if (sessionStorage.getItem('fibbies.restored')) { sessionStorage.removeItem('fibbies.restored'); setTimeout(() => snackbar(t('cloudRestored')), 600); }
 } catch { /* ignore */ }
 if (cloud.on) cloudSync();
+setTimeout(maybeShowSafety, 700);
 native.onResume(() => { if (cloud.on) cloudSync(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && cloud.on) cloud.sync().catch(() => {}); });
 

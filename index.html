@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Fibbies · Stretch & Loot</title>
-  <meta name="description" content="Fibbies: follow-along 5–10 minute stretching routines for runners. Open treasure chests, collect cute muscle friends, keep your streak.">
+  <meta name="description" content="Fibbies: follow-along 5–10 minute stretching routines for before and after exercise, evenings and work breaks. Open treasure chests, collect cute muscle friends, keep your streak.">
   <meta name="theme-color" content="#f4fbf8">
   <meta name="color-scheme" content="light dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,7 +53,7 @@
       <div class="chips" id="chips" role="tablist" aria-label="Categories" data-i18n-aria="categories"></div>
       <div class="routine-list" id="routine-list"></div>
       <section class="ranking" id="ranking" aria-label="Top 10 stretches" data-i18n-aria="top10"></section>
-      <p class="footnote" data-i18n="footnote">Stretch gently. Mild tension is good, pain is not.</p>
+      <p class="footnote"><span data-i18n="footnote">Stretch gently. Mild tension is good, pain is not.</span><br><button class="footnote-btn" id="btn-safety" data-i18n="safetyLink">How to stretch safely</button></p>
     </section>
 
     <!-- DETAIL -->
@@ -193,6 +193,16 @@
     <h2 class="sheet-title" data-i18n="albumTitle">Fibbie album</h2>
     <div id="album-body"></div>
     <button class="btn text ripple sheet-done" id="album-close" data-i18n="done">Done</button>
+  </dialog>
+
+  <!-- Safety note: shown once, and from the link at the bottom of home -->
+  <dialog class="dialog" id="dlg-safety">
+    <span class="ms dialog-icon">health_and_safety</span>
+    <h2 data-i18n="safetyTitle">Stretch safely</h2>
+    <ul class="safety-list" id="safety-list"></ul>
+    <div class="dialog-actions">
+      <button class="btn text ripple" id="dlg-safety-ok" data-i18n="safetyOk">Got it</button>
+    </div>
   </dialog>
 
   <!-- Confirm dialog -->

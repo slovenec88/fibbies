@@ -13,26 +13,51 @@ export const FLEX_MAX = 4;
 export const WEEK_DAYS = 7;
 const KEY = 'limber.flex';
 
-/** [{ day: 'YYYY-MM-DD', r: { toe: 0-4, ... } }], oldest first, one entry per day. */
+const clampLevel = (v) => Math.max(0, Math.min(FLEX_MAX, Math.round(Number(v) || 0)));
+/** One test's answer, cleaned: a level for two-sided tests is [left, right]. Older saves stored a
+ *  single level for those, which counts for both sides. */
+export function cleanAnswer(test, v) {
+  if (!test.side) return clampLevel(Array.isArray(v) ? (Number(v[0]) + Number(v[1])) / 2 : v);
+  return Array.isArray(v) ? [clampLevel(v[0]), clampLevel(v[1])] : [clampLevel(v), clampLevel(v)];
+}
+/** Average level of one test (both sides together). */
+export const levelOf = (e, test) => { const v = e.r[test.id]; return Array.isArray(v) ? (v[0] + v[1]) / 2 : v; };
+/** Tests where one side is clearly tighter (two or more levels apart): [{ test, side: 'L' | 'R' }]. */
+export function imbalances(e) {
+  return FLEX_TESTS.filter((x) => x.side && Array.isArray(e.r[x.id]) && Math.abs(e.r[x.id][0] - e.r[x.id][1]) >= 2)
+    .map((x) => ({ test: x, side: e.r[x.id][0] < e.r[x.id][1] ? 'L' : 'R' }));
+}
+
+/** In memory: [{ day: 'YYYY-MM-DD', r: { toe: 0-4, quad: [L, R], ... } }], oldest first, one per day.
+ *  On disk every answer in `r` stays a single number (the rounded average) and the two sides go in
+ *  `s`, so an older app version (another phone on cloud save) still reads sensible levels. */
 export function loadFlex() {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) || '[]');
     if (!Array.isArray(v)) return [];
-    // Clamp every answer, so a damaged save can never push the score past 100 or show a missing label.
+    // Clean every answer, so a damaged save can never push the score past 100 or show a missing label.
     return v.filter((e) => e && typeof e.day === 'string' && /^\d{4}-\d\d-\d\d$/.test(e.day) && e.r && typeof e.r === 'object')
-      .map((e) => ({ day: e.day, r: Object.fromEntries(FLEX_TESTS.map((x) => [x.id, Math.max(0, Math.min(FLEX_MAX, Math.round(Number(e.r[x.id]) || 0)))])) }));
+      .map((e) => ({ day: e.day, r: Object.fromEntries(FLEX_TESTS.map((x) => [x.id, cleanAnswer(x, (x.side && e.s && e.s[x.id]) || e.r[x.id])])) }));
   } catch { return []; }
 }
+const toDisk = (e) => {
+  const r = {}, s = {};
+  for (const x of FLEX_TESTS) {
+    const v = e.r[x.id];
+    if (Array.isArray(v)) { r[x.id] = Math.round((v[0] + v[1]) / 2); s[x.id] = v; } else r[x.id] = v;
+  }
+  return Object.keys(s).length ? { day: e.day, r, s } : { day: e.day, r };
+};
 export function saveFlex(day, r) {
   const list = loadFlex().filter((e) => e.day !== day);
   list.push({ day, r });
   list.sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
-  try { localStorage.setItem(KEY, JSON.stringify(list.slice(-200))); } catch { /* ignore */ }
+  try { localStorage.setItem(KEY, JSON.stringify(list.slice(-200).map(toDisk))); } catch { /* ignore */ }
   cloud.touch();
 }
 
 /** 0-100 score for one check. */
-export const scoreOf = (e) => Math.round((FLEX_TESTS.reduce((a, x) => a + (Number(e.r[x.id]) || 0), 0) / (FLEX_TESTS.length * FLEX_MAX)) * 100);
+export const scoreOf = (e) => Math.round((FLEX_TESTS.reduce((a, x) => a + levelOf(e, x), 0) / (FLEX_TESTS.length * FLEX_MAX)) * 100);
 
 const parseDay = (day) => { const [y, m, d] = day.split('-').map(Number); return new Date(y, m - 1, d); };
 /** Whole days from the last check to today (null when never checked). */

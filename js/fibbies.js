@@ -25,14 +25,14 @@ export const FIBBIES = [
   { id: 'quaddy', name: 'Quaddy', rarity: 0, hue: 150, acc: 'headband', blurb: 'Never skips quad day.' },
   { id: 'hammy', name: 'Hammy', rarity: 0, hue: 25, acc: 'ears', blurb: 'A hamstring with hamster energy.' },
   { id: 'calfy', name: 'Calfy', rarity: 0, hue: 60, acc: 'wristbands', blurb: 'Bouncy, springy, a little dramatic.' },
-  { id: 'glutey', name: 'Glutey', rarity: 0, hue: 0, acc: 'bow', blurb: 'Powers every stride, asks for nothing.' },
+  { id: 'glutey', name: 'Glutey', rarity: 0, hue: 0, acc: 'bow', blurb: 'Powers every step, asks for nothing.' },
   { id: 'achi', name: 'Achi', rarity: 0, hue: 230, acc: 'wings', blurb: 'Tiny wings, mighty tendon.' },
   { id: 'hippy', name: 'Hippy', rarity: 1, hue: 300, acc: 'flowers', blurb: 'Hip flexor, flower child.' },
   { id: 'sprinty', name: 'Sprinty', rarity: 1, hue: 20, acc: 'bolt', blurb: 'Fast-twitch and proud of it.' },
   { id: 'zenny', name: 'Zenny', rarity: 1, hue: 185, acc: 'leaf', blurb: 'Breathes in for four, out for eight.', eyes: 'sleepy' },
   { id: 'snoozy', name: 'Snoozy', rarity: 1, hue: 265, acc: 'nightcap', blurb: 'Best friends with Legs Up the Wall.', eyes: 'sleepy' },
   { id: 'bendy', name: 'Bendy', rarity: 2, hue: 95, acc: 'tall', blurb: 'Stretched so much it got taller.', shape: 'tall' },
-  { id: 'medalia', name: 'Medalia', rarity: 2, hue: 340, acc: 'medal', blurb: 'Finished a marathon. Mentions it often.' },
+  { id: 'medalia', name: 'Medalia', rarity: 2, hue: 340, acc: 'medal', blurb: 'Won a medal once. Mentions it often.' },
   { id: 'goldie', name: 'Golden Fibbie', rarity: 3, hue: 85, acc: 'crown', blurb: 'The legend. Stretches in pure gold.' },
 ];
 const classicById = (id) => FIBBIES.find((f) => f.id === id);
