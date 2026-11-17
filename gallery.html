@@ -18,11 +18,17 @@
   <script type="module">
     import { STRETCHES } from './js/data.js';
     import { Figure } from './js/figure.js';
-    import { FIBBIES } from './js/rewards.js';
+    import { FIBBIES, fibbie, seedToSp } from './js/fibbies.js';
     import { critterSVG, chestSVG } from './js/critter.js';
     const cg = document.getElementById('c');
-    for (const f of FIBBIES) cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(f)}${f.name}</div>`);
-    cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(FIBBIES[0], { locked: true })}locked</div>`);
+    const cell = (f) => cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(f)}${f.name} · r${f.rarity}</div>`);
+    for (const c of FIBBIES) cell(fibbie(c.id, 1));
+    cg.insertAdjacentHTML('beforeend', `<div class="cell">${critterSVG(null, { locked: true })}locked</div>`);
+    // Generated species (?seed=N picks a different batch) and evolutions of the first few.
+    const base = Number(new URLSearchParams(location.search).get('seed') ?? 1);
+    for (let i = 0; i < 24; i++) cell(fibbie(seedToSp(base * 7919 + i * 104729), 1));
+    for (let i = 0; i < 3; i++) for (let st = 1; st <= 4; st++) cell(fibbie(seedToSp(base * 7919 + i * 104729), st));
+    for (let st = 2; st <= 4; st++) cell(fibbie('quaddy', st));
     for (let t = 0; t < 4; t++) cg.insertAdjacentHTML('beforeend', `<div class="cell">${chestSVG(t)}chest ${t}</div>`);
     const g = document.getElementById('g');
     const t = Number(new URLSearchParams(location.search).get('t') ?? -1);

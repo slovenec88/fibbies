@@ -7,6 +7,7 @@ A phone-first web app with follow-along stretching routines for runners, wrapped
 - **12 routines in 4 groups** (After run, Before run, Evening, Quick), each led by a research-ranked **Top 5** routine
 - **Top 10 rankings** for each group, ranked by effectiveness versus simplicity (see [RANKINGS.md](RANKINGS.md))
 - **32 stretches**, each with an animated figure drawn from joint targets (two-bone IK)
+- **Procedural Fibbies**: every chest drops a seeded, code-drawn critter (endless species, 4 rarities). Collect duplicates and merge two identical ones to evolve them, up to 4 stages (`js/fibbies.js`, `js/critter.js`)
 - **Treasure-chest rewards** after every session:
   - Four chest tiers (Wooden to Legendary) and a slot-machine count-up of "muscle fibers stretched"
   - Stacking multipliers: streak, Run Sandwich ×2 (warm-up and cooldown on the same day), Flex 60s, perfect session, lucky

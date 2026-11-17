@@ -2,6 +2,7 @@
 // stretched", stacks multipliers, drops a collectible Fibbie and grants XP.
 
 import { t, getLang, numLocale } from './i18n.js';
+import { fibbie, keyOf, countOf, dropFibbie, addFibbie, migrateProfile } from './fibbies.js';
 
 export const FIBERS_PER_SEC = 1337;
 
@@ -12,28 +13,14 @@ export const TIERS = [
   { name: 'Legendary', label: 'Legendary chest' },
 ];
 
-// hue = body color (OKLCH hue). rarity = minimum chest tier that can drop it.
-export const FIBBIES = [
-  { id: 'quaddy', name: 'Quaddy', rarity: 0, hue: 150, acc: 'headband', blurb: 'Never skips quad day.' },
-  { id: 'hammy', name: 'Hammy', rarity: 0, hue: 25, acc: 'ears', blurb: 'A hamstring with hamster energy.' },
-  { id: 'calfy', name: 'Calfy', rarity: 0, hue: 60, acc: 'wristbands', blurb: 'Bouncy, springy, a little dramatic.' },
-  { id: 'glutey', name: 'Glutey', rarity: 0, hue: 0, acc: 'bow', blurb: 'Powers every stride, asks for nothing.' },
-  { id: 'achi', name: 'Achi', rarity: 0, hue: 230, acc: 'wings', blurb: 'Tiny wings, mighty tendon.' },
-  { id: 'hippy', name: 'Hippy', rarity: 1, hue: 300, acc: 'flowers', blurb: 'Hip flexor, flower child.' },
-  { id: 'sprinty', name: 'Sprinty', rarity: 1, hue: 20, acc: 'bolt', blurb: 'Fast-twitch and proud of it.' },
-  { id: 'zenny', name: 'Zenny', rarity: 1, hue: 185, acc: 'leaf', blurb: 'Breathes in for four, out for eight.' },
-  { id: 'snoozy', name: 'Snoozy', rarity: 1, hue: 265, acc: 'nightcap', blurb: 'Best friends with Legs Up the Wall.' },
-  { id: 'bendy', name: 'Bendy', rarity: 2, hue: 95, acc: 'tall', blurb: 'Stretched so much it got taller.' },
-  { id: 'medalia', name: 'Medalia', rarity: 2, hue: 340, acc: 'medal', blurb: 'Finished a marathon. Mentions it often.' },
-  { id: 'goldie', name: 'Golden Fibbie', rarity: 3, hue: 85, acc: 'crown', blurb: 'The legend. Stretches in pure gold.' },
-];
+export { FIBBIES } from './fibbies.js';
 
 // ---------- Profile storage ----------
 const KEY = 'limber.profile';
 export function loadProfile() {
   let p = null;
   try { p = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { /* ignore */ }
-  return Object.assign({ xp: 0, fibers: 0, chests: 0, fibbies: {}, buddy: null }, p || {});
+  return migrateProfile(Object.assign({ xp: 0, fibers: 0, chests: 0, buddy: null }, p || {}));
 }
 export function saveProfile(p) {
   try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ }
@@ -85,20 +72,6 @@ export function todaysCats(log, day) {
 // ---------- Reward computation ----------
 const round2 = (x) => Math.round(x * 100) / 100;
 
-function pickFibbie(tier, profile, rand) {
-  // Better chests skip the lowest rarities: Legendary drops Rare or better, Epic drops Common to Epic.
-  const pool = FIBBIES.filter((f) => f.rarity <= tier && f.rarity >= tier - 2);
-  const unowned = pool.filter((f) => !profile.fibbies[f.id]);
-  const source = unowned.length && (rand() < 0.7 || !profile.chests) ? unowned : pool;
-  const weights = source.map((f) => (f.rarity === tier ? 3 : 1));
-  let r = rand() * weights.reduce((a, b) => a + b, 0);
-  for (let i = 0; i < source.length; i++) {
-    r -= weights[i];
-    if (r <= 0) return source[i];
-  }
-  return source[source.length - 1];
-}
-
 /**
  * @param o.routine     finished routine
  * @param o.holdSecs    planned seconds of stretching (sum of holds)
@@ -146,13 +119,13 @@ export function computeReward(o, rand = Math.random) {
   if (!profile.chests) tier = Math.max(tier, 1); // first chest is always special
   if (ratio < 0.3) tier = 0;
 
-  const fib = pickFibbie(tier, profile, rand);
-  const prevCount = profile.fibbies[fib.id]?.count || 0;
+  const fib = fibbie(dropFibbie(tier, profile, rand), 1);
+  const copies = countOf(profile, fib.key) + 1;
   const before = levelProgress(profile.xp);
   const after = levelProgress(profile.xp + total);
   return {
     base, mults, steps, total, tier, perfect, sandwich, lucky,
-    fibbie: fib, isNew: prevCount === 0, fibLevel: prevCount + 1,
+    fibbie: fib, isNew: !profile.dex[fib.key], copies,
     xpBefore: profile.xp, xpAfter: profile.xp + total,
     levelBefore: before.level, levelAfter: after.level,
   };
@@ -162,9 +135,6 @@ export function applyReward(profile, r) {
   profile.xp += r.total;
   profile.fibers += r.total;
   profile.chests += 1;
-  const e = profile.fibbies[r.fibbie.id] || { count: 0 };
-  e.count += 1;
-  profile.fibbies[r.fibbie.id] = e;
-  if (!profile.buddy || r.fibbie.rarity >= (FIBBIES.find((f) => f.id === profile.buddy)?.rarity ?? 0)) profile.buddy = r.fibbie.id;
+  addFibbie(profile, keyOf(r.fibbie.sp, 1));
   return profile;
 }

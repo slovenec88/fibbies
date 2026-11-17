@@ -1,9 +1,10 @@
 import { STRETCHES, CATEGORIES, ROUTINES, RANKINGS, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
 import { Figure } from './figure.js';
-import { unlockAudio, sfx, voiceGuide, haptics } from './audio.js';
+import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
-import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, FIBBIES, QUESTS } from './rewards.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, QUESTS } from './rewards.js';
+import { fibbie, groups, parseKey, countOf, mergeFibbies, discovered, MAX_STAGE } from './fibbies.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { native, isNative } from './native.js';
@@ -230,16 +231,16 @@ function renderHome() {
 function renderProgress() {
   const p = loadProfile();
   const lp = levelProgress(p.xp);
-  const buddy = FIBBIES.find((f) => f.id === p.buddy) || FIBBIES[0];
+  const bk = p.buddy && parseKey(p.buddy);
+  const buddy = bk ? fibbie(bk.sp, bk.stage) : null;
   const done = todaysCats(log, dayKey());
-  const owned = Object.keys(p.fibbies).length;
   $('#progress-card').innerHTML = `
     <div class="pc-top">
-      <div class="pc-buddy">${critterSVG(buddy, { locked: !p.buddy })}</div>
+      <div class="pc-buddy">${critterSVG(buddy, { locked: !buddy })}</div>
       <div>
         <div class="pc-line"><b>${t('level', { n: lp.level })}</b><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
         <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
-        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${t('chestsFriends', { c: p.chests, o: owned, t: FIBBIES.length })}</small></div>
+        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${t('chestsFriends', { c: p.chests, d: discovered(p) })}</small></div>
       </div>
     </div>
     <div class="quests" aria-label="${esc(t('questsAria'))}">
@@ -248,24 +249,108 @@ function renderProgress() {
     <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
 }
 
+const stars = (n) => `<span class="stars" aria-label="${esc(t('stageN', { n }))}">${'★'.repeat(n)}<i>${'★'.repeat(MAX_STAGE - n)}</i></span>`;
+
 function renderCollection() {
   const p = loadProfile();
-  const owned = FIBBIES.filter((f) => p.fibbies[f.id]).length;
+  const gs = groups(p);
+  const items = gs.map((g) => `
+    <button class="col-item owned${g.canMerge ? ' can-merge' : ''}" data-fib="${g.key}">
+      ${g.count > 1 ? `<span class="col-count">×${g.count}</span>` : ''}
+      ${critterSVG(g.fib)}<span class="col-name">${esc(g.fib.name)}</span>${stars(g.fib.stage)}
+    </button>`).join('');
   $('#collection').innerHTML = `
-    <div class="col-head"><h2>${t('fibbieFriends')}</h2><small>${owned}/${FIBBIES.length}</small></div>
-    <div class="col-row">${[...FIBBIES].sort((x, y) => (p.fibbies[y.id] ? 1 : 0) - (p.fibbies[x.id] ? 1 : 0)).map((f) => {
-      const e = p.fibbies[f.id];
-      return `<button class="col-item${e ? ' owned' : ''}" data-fib="${f.id}">${critterSVG(f, { locked: !e })}<span>${e ? esc(f.name) : '???'}</span>${e ? `<span class="lv">${t('lv', { n: e.count })}</span>` : ''}</button>`;
-    }).join('')}</div>`;
+    <div class="col-head"><h2>${t('fibbieFriends')}</h2><small>${t('discovered', { n: discovered(p) })}</small></div>
+    ${gs.length ? `<div class="col-row">${items}</div>` : `<div class="col-empty">${critterSVG(null, { locked: true })}<span>${t('moreToFind')}</span></div>`}`;
 }
+
+// ---------- Fibbie sheet: details + merging ----------
+const fibSheet = $('#sheet-fib');
+let fibKey = null;
+let merging = false;
+function openFib(key) {
+  fibKey = key;
+  renderFib();
+  if (!fibSheet.open) fibSheet.showModal();
+}
+function renderFib(born = false) {
+  const p = loadProfile();
+  const { sp, stage } = parseKey(fibKey);
+  const f = fibbie(sp, stage);
+  const n = countOf(p, fibKey);
+  const next = stage < MAX_STAGE ? fibbie(sp, stage + 1) : null;
+  const knowNext = next && p.dex[next.key];
+  $('#fib-body').innerHTML = `
+    <div class="fs-stage" data-glow="${f.glow}"><div class="fs-critter${born ? ' born' : ''}">${critterSVG(f)}</div><div class="fs-fx" aria-hidden="true"></div></div>
+    <h2 class="fs-name">${esc(f.name)}</h2>
+    <div class="fs-chips"><span class="rar-chip" data-r="${f.rarity}">${t('rarity')[f.rarity]}</span>${stars(stage)}</div>
+    <p class="fs-blurb">${esc(f.blurb)}</p>
+    ${next ? `<div class="fs-evo">
+      <div class="fs-mini">${critterSVG(f)}<b>×2</b></div><span class="ms">arrow_forward</span>
+      <div class="fs-mini">${critterSVG(next, { className: knowNext ? '' : 'sil' })}<b>${knowNext ? esc(next.name) : '?'}</b></div>
+    </div>` : ''}
+    <div class="fs-owned">${t('owned', { n })}</div>
+    ${next ? `<button class="btn filled ripple fs-merge" id="fs-merge" ${n >= 2 ? '' : 'disabled'}><span class="ms filled">auto_awesome</span>${n >= 2 ? t('merge') : t('needOne')}</button>`
+    : `<div class="fs-max"><span class="ms filled">workspace_premium</span>${t('maxEvo')}</div>`}`;
+  const mb = $('#fs-merge');
+  if (mb) mb.onclick = doMerge;
+}
+async function doMerge() {
+  if (merging) return;
+  const key = fibKey;
+  const { sp, stage } = parseKey(key);
+  if (countOf(loadProfile(), key) < 2 || stage >= MAX_STAGE) return;
+  merging = true;
+  try {
+    await runMerge(key, sp, stage);
+  } finally {
+    merging = false;
+  }
+}
+async function runMerge(key, sp, stage) {
+  unlockAudio();
+  const f = fibbie(sp, stage);
+  const box = $('#fib-body .fs-stage');
+  $('#fs-merge').disabled = true;
+  box.innerHTML = `<div class="fs-twin a">${critterSVG(f)}</div><div class="fs-twin b">${critterSVG(f)}</div><div class="fs-flash"></div><div class="fs-fx" aria-hidden="true"></div>`;
+  fx.charge();
+  haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 30]);
+  await new Promise((r) => setTimeout(r, 1100));
+  const p = loadProfile();
+  const res = mergeFibbies(p, key);
+  if (!res) { renderFib(); return; }
+  saveProfile(p);
+  fibKey = res.key;
+  const nf = fibbie(sp, stage + 1);
+  fx.boom();
+  fx.levelUp();
+  haptics.buzz([60, 40, 160]);
+  renderFib(true);
+  const fxl = $('#fib-body .fs-fx');
+  for (let i = 0; i < 22; i++) {
+    const el = document.createElement('i');
+    const ang = (i / 22) * Math.PI * 2;
+    const d = 70 + Math.random() * 50;
+    el.style.setProperty('--tx', `${Math.cos(ang) * d}px`);
+    el.style.setProperty('--ty', `${Math.sin(ang) * d}px`);
+    el.style.background = `oklch(0.85 0.17 ${Math.floor(Math.random() * 360)})`;
+    fxl.appendChild(el);
+  }
+  voiceGuide.say(t('evolved', { name: nf.name }));
+  snackbar(t('evolved', { name: nf.name }));
+  if (currentView === 'home') { renderCollection(); renderProgress(); }
+}
+fibSheet.addEventListener('click', (e) => {
+  if (e.target !== fibSheet || merging) return;
+  const r = fibSheet.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) fibSheet.close();
+});
+$('#fib-close').onclick = () => { if (!merging) fibSheet.close(); };
+fibSheet.addEventListener('cancel', (e) => { if (merging) e.preventDefault(); });
 
 document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-fib]');
-  if (!b) return;
-  const f = FIBBIES.find((x) => x.id === b.dataset.fib);
-  const e2 = loadProfile().fibbies[f.id];
-  const rar = t('rarity')[f.rarity];
-  snackbar(e2 ? t('fibInfo', { name: f.name, rar, n: e2.count, blurb: f.blurb }) : t('fibLocked', { rar }));
+  if (b) openFib(b.dataset.fib);
 });
 
 function renderList() {
@@ -788,7 +873,7 @@ try {
   }
 } catch { /* ignore */ }
 setSoundIcon();
-$('.brand-mark').innerHTML = critterSVG(FIBBIES[0]);
+$('.brand-mark').innerHTML = critterSVG(fibbie('quaddy', 1));
 route();
 window.__booted = true;
 native.hideSplash();
@@ -796,7 +881,7 @@ native.hideSplash();
 // Android hardware back: close dialogs first, confirm before leaving a session, exit from home.
 native.onBackButton(() => {
   const open = document.querySelector('dialog[open]');
-  if (open) { open.close(); return; }
+  if (open) { if (!(open === fibSheet && merging)) open.close(); return; }
   if (currentView === 'player' && session && !session.finished) { confirmEnd(); return; }
   if (currentView === 'home') { native.exit(); return; }
   if (currentView === 'done') { replace('#/'); return; }

@@ -7,6 +7,9 @@ import { t, getLang, numLocale } from './i18n.js';
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmt = (n) => Math.round(n).toLocaleString(numLocale());
 
+const TAPS = 3; // taps to break the chest open
+const stars = (n) => `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(4 - n)}</i></span>`;
+
 export function playReward(root, rw, { stats, onHome, onAgain }) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let fast = reduce;
@@ -25,10 +28,11 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-fx" aria-hidden="true"></div>
       <div class="rw-flash" aria-hidden="true"></div>
       <div class="rw-banner" aria-hidden="true"></div>
+      <button class="rw-skip" id="rw-skip"><span>${t('skip')}</span><span class="ms">fast_forward</span></button>
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
         <button class="rw-chest" aria-label="${t('openChest')}"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
-        <div class="rw-tap"><span class="ms filled">touch_app</span>${t('tapChest')}</div>
+        <div class="rw-tap"><span class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
         <div class="rw-count">
           <div class="rw-label">${t('fibersLabel')}</div>
           <div class="rw-big" aria-live="polite">0</div>
@@ -57,6 +61,33 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const big = $('.rw-big');
   const fxLayer = $('.rw-fx');
   $('#rw-home').onclick = () => { stop(); onHome(); };
+  // Taps never cut the show short; only this small Skip button does.
+  let releaseTaps = null;
+  let skipped = false;
+  $('#rw-skip').onclick = () => {
+    fast = true;
+    skipped = true;
+    $('#rw-skip').hidden = true;
+    releaseTaps?.();
+  };
+  // Start with the chest in the middle of the screen; it moves up once it opens.
+  const tierEl = $('.rw-tier');
+  const centerChest = (animate = true) => {
+    if (wrap.classList.contains('collapse')) return;
+    const wr = wrap.getBoundingClientRect();
+    if (!wr.height) return;
+    // Measure with transitions off, so the current margin is the one actually laid out.
+    tierEl.style.transition = 'none';
+    const cur = parseFloat(tierEl.style.marginTop) || 0;
+    const c = $('.rw-chest').getBoundingClientRect();
+    const mid = Math.max(0, wr.top) + Math.min(innerHeight, wr.height) / 2;
+    tierEl.style.marginTop = `${Math.max(0, cur + mid - (c.top + c.height / 2) - 10)}px`;
+    void tierEl.offsetWidth;
+    if (animate) tierEl.style.transition = '';
+    else requestAnimationFrame(() => { tierEl.style.transition = ''; });
+  };
+  const onResize = () => centerChest();
+  addEventListener('resize', onResize);
   $('#rw-again').onclick = () => { stop(); onAgain(); };
 
   // Pause the jingle when the app goes to the background; resume if still counting.
@@ -71,6 +102,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     alive = false;
     musicWanted = false;
     document.removeEventListener('visibilitychange', onVis);
+    removeEventListener('resize', onResize);
+    releaseTaps?.();
     fx.musicStop();
     clearInterval(ambient);
     for (const id of timers) clearTimeout(id);
@@ -210,6 +243,10 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   }
 
   async function run() {
+    // The view may still be swapping in (view transition): wait until it has a size, then center.
+    while (alive && !wrap.getBoundingClientRect().height) await new Promise((r) => requestAnimationFrame(r));
+    if (!alive) return;
+    centerChest(false);
     // 1. drop in
     wrap.classList.add('dropping');
     await sleep(420);
@@ -221,10 +258,28 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.remove('dropping'); // otherwise the drop animation replays when the halo stops
     wrap.classList.add('ready');
 
-    // 2. the chest waits until you open it
+    // 2. the chest waits for a few taps: it jolts, cracks and the lid lifts a little each time
     await new Promise((res) => {
       const chest = $('.rw-chest');
-      chest.addEventListener('click', res, { once: true });
+      let hits = 0;
+      const done = () => { chest.removeEventListener('click', onTap); releaseTaps = null; res(); };
+      releaseTaps = done;
+      if (skipped) { done(); return; }
+      function onTap() {
+        hits++;
+        wrap.dataset.hits = String(hits);
+        if (hits >= TAPS) { done(); return; }
+        chest.classList.remove('hit');
+        void chest.offsetWidth;
+        chest.classList.add('hit');
+        chest.addEventListener('animationend', () => chest.classList.remove('hit'), { once: true });
+        fx.rattle();
+        fx.pop();
+        haptics.buzz(30 + hits * 25);
+        burst(chest, 6 + hits * 6, ['spark', 'star', 'coin']);
+        $('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
+      }
+      chest.addEventListener('click', onTap);
     });
     if (!alive) return;
 
@@ -236,6 +291,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (!alive) return;
     flash();
     wrap.classList.add('opened', 'collapse', 'party');
+    tierEl.style.marginTop = '';
     fx.boom();
     fx.open();
     haptics.buzz(160);
@@ -246,8 +302,6 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     musicWanted = true;
     fx.musicStart(rw.tier);
 
-    // fast-forward on any tap from here on
-    wrap.addEventListener('pointerdown', (e) => { if (!e.target.closest('.rw-actions')) fast = true; });
 
     await sleep(550);
     if (!alive) return;
@@ -304,17 +358,17 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-card" data-rarity="${f.rarity}">
         <div class="rw-critter">${critterSVG(f)}</div>
         <div class="rw-card-text">
-          <span class="rw-new">${rw.isNew ? t('newFriend') : t('levelBang', { n: rw.fibLevel })}</span>
+          <span class="rw-new">${rw.isNew ? t('newFriend') : t('dupe', { n: rw.copies })}</span>
           <b>${esc(f.name)}</b>
-          <span class="rw-rarity">${t('rarity')[f.rarity]}</span>
-          <small>${esc(f.blurb)}</small>
+          <span class="rw-rarity">${t('rarity')[f.rarity]}</span>${stars(f.stage)}
+          <small${rw.copies >= 2 ? ' class="rw-merge"' : ''}>${esc(rw.copies >= 2 ? t('mergeHint') : f.blurb)}</small>
         </div>
       </div>`;
     wrap.classList.add('show-loot');
     fx.boing();
     haptics.buzz(50);
     burst(loot, 16, ['heart', 'star', 'spark']);
-    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.friendUp', { name: f.name }), { interrupt: false });
+    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false });
 
     // 7. XP bar (can cross several levels)
     await sleep(700);
@@ -326,6 +380,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(200);
     if (!alive) return;
     wrap.classList.add('done');
+    $('#rw-skip').hidden = true;
     if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) fountain(1); }, 450);
     const act = $('.rw-actions');
     if (act.getBoundingClientRect().bottom > innerHeight) act.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
