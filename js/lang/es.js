@@ -144,6 +144,8 @@ export const UI = {
   noVoice: "No se ha encontrado una voz en español en este dispositivo, así que la guía por voz puede sonar mal o no oírse.",
   installVoice: "Instalar voz",
   cloudSave: "Guardado en la nube",
+  cloudConnecting: "Conectando con Google Play Juegos…",
+  cloudNeedsSetup: "Aún no disponible: el guardado en la nube funcionará cuando la app esté en Google Play con Play Juegos configurado (pasos en el README).",
   cloudSignedOut: "Has cerrado sesión en Google Play Juegos y no se guarda nada. Desactívalo y vuelve a activarlo para iniciar sesión.",
   cloudSub: "Guarda tus Fibbies y tu progreso gratis en tu cuenta de Google Play Juegos.",
   cloudNotSetUp: "El guardado en la nube aún no está configurado en esta versión de la app.",

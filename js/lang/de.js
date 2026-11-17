@@ -144,6 +144,8 @@ export const UI = {
   noVoice: "Auf diesem Gerät wurde keine deutsche Stimme gefunden. Sprachhinweise klingen eventuell falsch oder bleiben stumm.",
   installVoice: "Stimme installieren",
   cloudSave: "Cloud-Speicher",
+  cloudConnecting: "Verbindung mit Google Play Spiele …",
+  cloudNeedsSetup: "Noch nicht verfügbar: Der Cloud-Speicher funktioniert, sobald die App bei Google Play ist und Play Spiele eingerichtet ist (Schritte in der README).",
   cloudSignedOut: "Von Google Play Spiele abgemeldet, es wird nichts gespeichert. Schalte das aus und wieder ein, um dich anzumelden.",
   cloudSub: "Speichere deine Fibbies und deinen Fortschritt kostenlos in deinem Google Play Spiele-Konto.",
   cloudNotSetUp: "Der Cloud-Speicher ist in dieser App-Version noch nicht eingerichtet.",

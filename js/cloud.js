@@ -131,7 +131,7 @@ export const cloud = {
       const pick = await choose(remote);
       if (pick === 'cloud') { applyRemote(remote); result = 'pulled'; }
       else if (pick === 'local') await push(remote);
-      else return 'off';
+      else return 'cancelled';
     }
     meta.on = true;
     saveMeta();

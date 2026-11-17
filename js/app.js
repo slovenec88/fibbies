@@ -870,15 +870,22 @@ async function renderCloud() {
   const ok = await cloud.available();
   const sw = $('#set-cloud');
   sw.checked = cloud.on;
-  sw.disabled = !ok || cloudBusy;
+  // Never disabled: a disabled switch ignores taps, so a tap instead explains what is missing.
+  sw.disabled = cloudBusy;
+  const sub = $('#set-cloud-sub');
+  sub.classList.toggle('warn', !!(cloudMsg && cloudMsg.warn));
+  if (cloudMsg) { sub.textContent = cloudMsg.text; return; }
   const when = cloud.syncedAt ? new Date(cloud.syncedAt).toLocaleString(numLocale(), { dateStyle: 'short', timeStyle: 'short' }) : '';
-  $('#set-cloud-sub').textContent = !ok ? t('cloudNotSetUp')
+  sub.textContent = !ok ? t('cloudNotSetUp')
     : cloud.signedOut ? t('cloudSignedOut')
     : cloud.on ? [cloud.name ? t('cloudSignedIn', { name: cloud.name }) : '', when ? t('cloudSynced', { when }) : ''].filter(Boolean).join(' · ') || t('cloudSub')
     : t('cloudSub');
 }
 cloud.onChange(() => { if (sheet.open) renderCloud(); });
 let cloudBusy = false;
+// A message shown in place of the status line (snackbars are hidden behind the open sheet).
+let cloudMsg = null;
+sheet.addEventListener('close', () => { cloudMsg = null; });
 const dlgCloud = $('#dlg-cloud');
 function chooseCopy(remote) {
   let lvl = 1;
@@ -895,17 +902,26 @@ function chooseCopy(remote) {
 $('#dlg-cloud-use').onclick = () => dlgCloud.close('cloud');
 $('#dlg-cloud-keep').onclick = () => dlgCloud.close('local');
 $('#set-cloud').onchange = async (e) => {
+  cloudMsg = null;
   if (!e.target.checked) { cloud.disable(); renderCloud(); return; }
+  if (!(await cloud.available())) {
+    e.target.checked = false;
+    cloudMsg = { text: t('cloudNeedsSetup'), warn: true };
+    renderCloud();
+    return;
+  }
   cloudBusy = true;
+  cloudMsg = { text: t('cloudConnecting') };
   renderCloud();
   try {
     const r = await cloud.enable(chooseCopy);
-    if (r === 'off') snackbar(t('cloudSignInFailed'));
-    else if (r === 'pulled') { reloadAfterPull(); return; }
-    else snackbar(t('cloudOnNow'));
+    if (r === 'pulled') { reloadAfterPull(); return; }
+    cloudMsg = r === 'off' ? { text: t('cloudSignInFailed'), warn: true }
+      : r === 'cancelled' ? null
+      : { text: t('cloudOnNow') };
   } catch {
     cloud.disable();
-    snackbar(t('cloudError'));
+    cloudMsg = { text: t('cloudError'), warn: true };
   } finally {
     cloudBusy = false;
     renderCloud();
