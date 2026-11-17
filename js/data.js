@@ -370,6 +370,73 @@ export const STRETCHES = {
       'A gentler pigeon. Perfect for sore glutes and bedtime.',
     ],
   },
+
+  // ---------- Work breaks: standing, nothing needed, no floor ----------
+  neckTilt: {
+    name: 'Neck Side Stretch', target: 'Neck · Upper traps', view: 'front', sided: true, limb: 'side', period: 8, work: true,
+    a: { h: [100, 104], t: -90, n: -66, hN: [112, 25], hF: [76, 150], eb: [1, 1], fN: [110, 180], fF: [90, 180] },
+    b: { h: [100, 104], t: -90, n: -58, hN: [116, 27], hF: [74, 154], eb: [1, 1], fN: [110, 180], fF: [90, 180] },
+    cues: [
+      'Tilt your ear toward your shoulder and rest your hand lightly on your head.',
+      'Let the other arm hang heavy and reach your fingers toward the floor.',
+      "Don't pull. The weight of your hand is enough.",
+    ],
+  },
+
+  shoulderCross: {
+    name: 'Cross-Body Shoulder Stretch', target: 'Shoulders · Upper back', view: 'front', sided: true, limb: 'side', period: 7, work: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [64, 60], hF: [104, 62], fN: [110, 180], fF: [90, 180] },
+    b: { h: [100, 104], t: -90, n: -88, hN: [60, 58], hF: [102, 60], fN: [110, 180], fF: [90, 180] },
+    cues: [
+      'Bring one arm straight across your chest.',
+      'Hug it closer with the other hand, just above the elbow.',
+      'Keep your shoulder down, away from your ear.',
+    ],
+  },
+
+  tricep: {
+    name: 'Overhead Triceps Stretch', target: 'Triceps · Shoulders', view: 'front', sided: true, limb: 'side', period: 7, work: true,
+    a: { h: [100, 104], t: -90, n: -92, hN: [96, 48], hF: [114, 14], fN: [110, 180], fF: [90, 180], eb: [1, -1] },
+    b: { h: [100, 104], t: -90, n: -94, hN: [93, 50], hF: [111, 12], fN: [110, 180], fF: [90, 180], eb: [1, -1] },
+    cues: [
+      'Reach one arm up, bend the elbow and let your hand drop behind your head.',
+      'With the other hand, gently press the elbow back.',
+      'Stand tall and keep breathing.',
+    ],
+  },
+
+  chestOpener: {
+    name: 'Standing Chest Opener', target: 'Chest · Front shoulders', view: 'side', period: 7, work: true,
+    a: { h: [100, 104], t: -93, n: -96, hN: [70, 122], hF: [72, 120], fN: [104, 180], fF: [96, 180] },
+    b: { h: [101, 104], t: -97, n: -104, hN: [62, 112], hF: [64, 110], fN: [104, 180], fF: [96, 180] },
+    cues: [
+      'Clasp your hands behind your back.',
+      'Squeeze your shoulder blades together and lift your chest.',
+      'Raise your hands a little, only as far as feels good.',
+    ],
+  },
+
+  backBend: {
+    name: 'Standing Back Bend', target: 'Lower back · Abs', view: 'side', period: 7, work: true,
+    a: { h: [103, 104], t: -98, n: -102, hN: [88, 102], hF: [90, 100], fN: [102, 180], fF: [97, 180] },
+    b: { h: [107, 104], t: -108, n: -118, hN: [86, 100], hF: [88, 98], fN: [102, 180], fF: [97, 180] },
+    cues: [
+      'Hands on your lower back, fingers pointing down.',
+      'Push your hips gently forward and lean back a little.',
+      'Look up softly. Small and easy is perfect after sitting.',
+    ],
+  },
+
+  standingTwist: {
+    name: 'Standing Twist', target: 'Spine · Obliques', view: 'front', period: 3, dynamic: true, work: true,
+    a: { h: [100, 104], t: -88, n: -86, hN: [150, 92], hF: [124, 80], fN: [112, 180], fF: [88, 180] },
+    b: { h: [100, 104], t: -92, n: -94, hN: [76, 80], hF: [50, 92], fN: [112, 180], fF: [88, 180] },
+    cues: [
+      'Feet hip-width apart. Turn your upper body side to side.',
+      'Let your arms swing loosely and wrap around you.',
+      'Keep your hips facing forward and your knees soft.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
@@ -496,6 +563,16 @@ export const ROUTINES = [
     id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', hue: 70, icon: 'chair',
     blurb: 'Sat all day? Open your hips and wake up your spine before your evening run.',
     items: [['cobra', 30], ['catcow', 40], ['lunge', 30], ['sideBend', 30], ['squat', 40], ['fold', 30], ['bridge', 30]],
+  },
+  {
+    id: 'two-minute', hero: 'standingTwist', title: '2-Minute Reset', cat: 'quick', hue: 250, icon: 'timer',
+    blurb: 'Really short on time? Five standing moves in two minutes. No floor, no wall, nothing to change into.',
+    items: [['standingTwist', 15], ['sideBend', 15], ['chestOpener', 15], ['quad', 12], ['fold', 15]],
+  },
+  {
+    id: 'work-break', hero: 'chestOpener', title: 'Work Break', cat: 'quick', hue: 200, icon: 'work',
+    blurb: 'Stand up from your desk for five minutes. Neck, shoulders, chest and back, all standing, nothing needed.',
+    items: [['neckTilt', 20], ['shoulderCross', 20], ['tricep', 20], ['chestOpener', 25], ['backBend', 20], ['standingTwist', 30], ['sideBend', 25]],
   },
 ];
 

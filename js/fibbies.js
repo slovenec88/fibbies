@@ -49,7 +49,8 @@ const WINGS = ['wings', 'fairy', 'bat'];
 const SYL_A = ['Quad', 'Ham', 'Calf', 'Glu', 'Achi', 'Hip', 'Flex', 'Lun', 'Twis', 'Bend', 'Zen', 'Snoo', 'Sprin', 'Pivo',
   'Tendo', 'Fib', 'Sole', 'Pira', 'Psoa', 'Limb', 'Stre', 'Wig', 'Bou', 'Hop', 'Jog', 'Strid', 'Pac', 'Loo', 'Swi', 'Mo', 'Wob', 'Nim'];
 const SYL_B = ['y', 'ie', 'o', 'ix', 'kin', 'bo', 'zee', 'oo', 'ette', 'ster', 'ly', 'bug', 'pop', 'mo', 'wee', 'ling', 'bit', 'pip'];
-const STRETCH_IDS = Object.keys(STRETCHES).filter((id) => id !== 'stand');
+// Frozen list: adding stretches must not change the favourite stretch of Fibbies people already own.
+const STRETCH_IDS = Object.keys(STRETCHES).filter((id) => id !== 'stand' && !STRETCHES[id].work);
 
 /** Rarity is part of the seed, so a species is always the same rarity. 55/28/13/4 %. */
 export function rarityOf(seed) {

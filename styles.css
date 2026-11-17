@@ -972,3 +972,72 @@ html.native input, html.native textarea { -webkit-user-select: text; user-select
 .reward[data-hits="2"]:not(.opened) .chest-glow, .reward[data-hits="3"]:not(.opened) .chest-glow { opacity: .95; }
 .rw-card-text .stars { font-size: 14px; margin-top: 2px; }
 .rw-card-text small.rw-merge { opacity: 1; color: #ffd60a; font-weight: 700; }
+
+/* ---------- Fibbie album ---------- */
+.col-album { display: inline-flex; align-items: center; gap: 4px; padding: 6px 4px 6px 10px; border-radius: 16px; font-size: 13px; font-weight: 700;
+  color: var(--primary); background: none; position: relative; overflow: hidden; }
+.col-album .ms { font-size: 18px; }
+.col-head { align-items: center; }
+.al-hint { color: var(--on-surface-variant); font-size: 14px; line-height: 1.45; }
+.al-sub { margin-top: 6px; font-size: 13px; font-weight: 700; color: var(--primary); }
+.al-head { font-size: 15px; font-weight: 700; margin: 20px 0 10px; }
+.al-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+.al-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px 10px; border-radius: 18px; min-width: 0;
+  background: var(--surface-container); font-size: 11px; font-weight: 700; color: var(--on-surface-variant); position: relative; overflow: hidden; }
+.al-cell .critter { width: 64px; height: 64px; }
+.al-cell.unknown { background: var(--surface-container-high); }
+.al-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.al-pips { display: flex; gap: 3px; }
+.al-pips i { width: 7px; height: 7px; border-radius: 50%; background: var(--outline-variant, var(--outline)); opacity: .45; }
+.al-pips i.on { background: #f4a100; opacity: 1; }
+.al-empty { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: var(--on-surface-variant); font-size: 13px; line-height: 1.4; }
+.al-empty .critter { width: 48px; height: 48px; flex: none; }
+
+/* ---------- Flexibility check ---------- */
+.flex-card { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 18px; padding: 14px 16px; border-radius: 24px; text-align: left;
+  background: var(--surface-container); color: var(--on-surface); position: relative; overflow: hidden; }
+.flex-card.due { background: var(--secondary-container); color: var(--on-secondary-container); }
+.fx-icon { width: 40px; height: 40px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--primary); color: var(--on-primary); }
+.fx-text { flex: 1; min-width: 0; }
+.fx-text b { display: block; font-weight: 600; }
+.fx-text small { display: block; font-size: 13px; line-height: 1.35; opacity: .8; }
+.fx-go { flex: none; color: var(--primary); margin-right: -6px; }
+.flex-card .flex-chart.mini { width: 72px; height: 30px; flex: none; }
+.flex-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.fc-grid { stroke: var(--outline-variant, var(--outline)); stroke-width: 1; opacity: .35; }
+.fc-tick { fill: var(--on-surface-variant); font-size: 10px; font-family: inherit; }
+.fc-line { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fc-area { fill: var(--primary); opacity: .1; }
+.fc-dot { fill: var(--primary); stroke: var(--surface-container-low); stroke-width: 2; }
+.flex-card .fc-dot { stroke: none; }
+.fc-hit { fill: transparent; cursor: pointer; }
+.fc-val { fill: var(--on-surface); font-size: 12px; font-weight: 700; font-family: inherit; }
+.flex-chart-box { padding: 14px 14px 10px; border-radius: 20px; background: var(--surface-container); margin-bottom: 8px; }
+.fcb-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.fcb-head small { color: var(--primary); font-weight: 700; font-size: 13px; }
+.fcb-read { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; min-height: 16px; }
+.flex-note { display: flex; align-items: center; gap: 8px; padding: 10px 14px; margin-bottom: 10px; border-radius: 16px;
+  background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; font-size: 14px; }
+.flex-intro { color: var(--on-surface-variant); font-size: 14px; line-height: 1.45; margin: 8px 0 4px; }
+.ft { margin-top: 18px; }
+.ft-head { display: flex; align-items: center; gap: 12px; }
+.ft-fig { width: 56px; height: 56px; flex: none; border-radius: 16px; background: var(--surface-container); padding: 2px; }
+.ft-fig .fig { width: 100%; height: 100%; }
+.ft-head h3 { font-size: 16px; font-weight: 600; }
+.ft-prev { font-size: 12px; color: var(--on-surface-variant); }
+.ft-prev .up { color: var(--primary); }
+.ft-how { font-size: 13px; line-height: 1.4; color: var(--on-surface-variant); margin: 8px 0; }
+.ft-opts { display: grid; gap: 6px; }
+.fo { display: flex; align-items: center; gap: 10px; text-align: left; padding: 9px 12px; border-radius: 14px; font-size: 14px;
+  background: var(--surface-container); color: var(--on-surface); border: 1.5px solid transparent; position: relative; overflow: hidden; }
+.fo i { font-style: normal; width: 22px; height: 22px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700;
+  background: var(--surface-container-highest); color: var(--on-surface-variant); }
+.fo[aria-checked="true"] { border-color: var(--primary); background: var(--primary-container); color: var(--on-primary-container); font-weight: 600; }
+.fo[aria-checked="true"] i { background: var(--primary); color: var(--on-primary); }
+.flex-save { width: 100%; height: 52px; margin-top: 22px; }
+.flex-save[aria-disabled="true"] { opacity: .5; }
+.flex-need { text-align: center; font-size: 13px; font-weight: 600; margin-top: 8px; color: var(--error, var(--on-surface)); }
+.fx-score { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.fx-score b { font-size: 22px; font-weight: 700; line-height: 1; color: var(--primary); }
+.flex-card .fx-score .flex-chart.mini { width: 64px; height: 26px; }
+.fc-val, .fc-dot { pointer-events: none; }

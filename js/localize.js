@@ -141,6 +141,12 @@ const SL = {
       'Na hrbtu položi en gleženj čez nasprotno koleno.',
       'Spodnjo nogo potegni k sebi, da začutiš odpiranje zunanjega kolka.',
       'Nežnejši golob. Popolno za boleče zadnjice in pred spanjem.']],
+    neckTilt: ["Raztezanje vratu vstran", "Vrat · Zgornji trapez", ["Uho nagni proti rami in dlan rahlo položi na glavo.", "Druga roka naj visi težko, s prsti seži proti tlom.", "Ne vleci. Teža roke je dovolj."]],
+    shoulderCross: ["Rama čez prsi", "Ramena · Zgornji del hrbta", ["Eno roko iztegnjeno potegni čez prsi.", "Z drugo roko jo nad komolcem objemi bliže.", "Ramo drži spuščeno, stran od ušesa."]],
+    tricep: ["Triceps nad glavo", "Triceps · Ramena", ["Eno roko dvigni, pokrči komolec in dlan spusti za glavo.", "Z drugo roko nežno potisni komolec nazaj.", "Stoj vzravnano in dihaj."]],
+    chestOpener: ["Odpiranje prsi stoje", "Prsi · Sprednji del ramen", ["Dlani sklepi za hrbtom.", "Stisni lopatici in dvigni prsni koš.", "Roke malo dvigni, le toliko, kot ti prija."]],
+    backBend: ["Zaklon stoje", "Spodnji del hrbta · Trebuh", ["Dlani na spodnji del hrbta, prsti obrnjeni navzdol.", "Boke nežno potisni naprej in se malo nagni nazaj.", "Mehko poglej navzgor. Majhen gib je po sedenju popoln."]],
+    standingTwist: ["Zasuk stoje", "Hrbtenica · Poševne trebušne", ["Stopala v širini bokov. Zgornji del telesa obračaj levo in desno.", "Roke naj ohlapno zamahujejo in se ovijejo okoli tebe.", "Boki gledajo naprej, kolena mehka."]],
   },
   categories: { all: 'Vse', after: 'Po teku', before: 'Pred tekom', evening: 'Zvečer', quick: 'Hitro' },
   rankings: {
@@ -206,6 +212,8 @@ const SL = {
     'five-minute-fix': ['Top 5 na hitro', 'Malo časa? Pet raztezanj z največjo koristjo za tekače, v približno petih minutah.'],
     'calf-sos': ['SOS za zakrčene meče', 'Meče in Ahilova tetiva nagajajo? Osredotočena vadba za spodnji del nog.'],
     'desk-reset': ['Po dnevu za mizo', 'Cel dan za mizo? Odpri boke in prebudi hrbtenico pred večernim tekom.'],
+    "two-minute": ["Dve minuti", "Res nimaš časa? Pet gibov stoje v dveh minutah. Brez tal, brez stene, brez preoblačenja."],
+    "work-break": ["Odmor v službi", "Za pet minut vstani od mize. Vrat, ramena, prsi in hrbet, vse stoje, brez pripomočkov."],
   },
   fibbies: {
     quaddy: [null, 'Nikoli ne izpusti dneva za kvadricepse.'],

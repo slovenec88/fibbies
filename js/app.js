@@ -4,7 +4,8 @@ import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
 import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, QUESTS } from './rewards.js';
-import { fibbie, groups, parseKey, countOf, mergeFibbies, discovered, MAX_STAGE } from './fibbies.js';
+import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
+import { FLEX_TESTS, FLEX_MAX, WEEK_DAYS, loadFlex, saveFlex, scoreOf, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { native, isNative } from './native.js';
@@ -219,6 +220,7 @@ function renderHome() {
   });
 
   renderCollection();
+  renderFlexCard();
 
   // Chips
   $('#chips').innerHTML = CATEGORIES.map((c) => `
@@ -261,7 +263,8 @@ function renderCollection() {
       ${critterSVG(g.fib)}<span class="col-name">${esc(g.fib.name)}</span>${stars(g.fib.stage)}
     </button>`).join('');
   $('#collection').innerHTML = `
-    <div class="col-head"><h2>${t('fibbieFriends')}</h2><small>${t('discovered', { n: discovered(p) })}</small></div>
+    <div class="col-head"><h2>${t('fibbieFriends')}</h2>
+      <button class="col-album ripple" id="btn-album"><span class="ms">auto_stories</span>${t('discovered', { n: discovered(p) })}<span class="ms">chevron_right</span></button></div>
     ${gs.length ? `<div class="col-row">${items}</div>` : `<div class="col-empty">${critterSVG(null, { locked: true })}<span>${t('moreToFind')}</span></div>`}`;
 }
 
@@ -352,6 +355,152 @@ fibSheet.addEventListener('cancel', (e) => { if (merging) e.preventDefault(); })
 document.addEventListener('click', (e) => {
   const b = e.target.closest('[data-fib]');
   if (b) openFib(b.dataset.fib);
+});
+
+// ---------- Fibbie album ----------
+// Every species you have discovered, plus shadows of the 12 originals still out there.
+const albumSheet = $('#sheet-album');
+function albumCell(sp, stages) {
+  const best = stages.length ? Math.max(...stages) : 0;
+  const f = fibbie(sp, best || 1);
+  const pips = Array.from({ length: MAX_STAGE }, (_, i) => `<i class="${stages.includes(i + 1) ? 'on' : ''}"></i>`).join('');
+  return best
+    ? `<button class="al-cell ripple" data-fib="${esc(keyOf(sp, best))}">${critterSVG(f)}<span class="al-name">${esc(f.name)}</span><span class="al-pips" aria-label="${esc(t('stageN', { n: best }))}">${pips}</span></button>`
+    : `<div class="al-cell unknown">${critterSVG(f, { className: 'sil' })}<span class="al-name">???</span><span class="al-pips">${pips}</span></div>`;
+}
+function renderAlbum() {
+  const p = loadProfile();
+  const found = new Map(); // sp -> { stages, first }
+  for (const [k, at] of Object.entries(p.dex || {})) {
+    const { sp, stage: raw } = parseKey(k);
+    const stage = Math.max(1, Math.min(MAX_STAGE, Math.round(raw) || 1));
+    const e = found.get(sp) || { stages: [], first: Infinity };
+    e.stages.push(stage);
+    e.first = Math.min(e.first, Number(at) || 0);
+    found.set(sp, e);
+  }
+  const classicIds = new Set(FIBBIES.map((f) => f.id));
+  const originals = FIBBIES.map((f) => albumCell(f.id, found.get(f.id)?.stages || []));
+  const nOrig = FIBBIES.filter((f) => found.has(f.id)).length;
+  const wild = [...found].filter(([sp]) => !classicIds.has(sp)).sort((a, b) => a[1].first - b[1].first);
+  $('#album-body').innerHTML = `
+    <p class="al-hint">${t('albumHint')}</p>
+    <div class="al-sub">${t('albumEvos', { n: Object.keys(p.dex || {}).length })}</div>
+    <h3 class="al-head">${t('albumOriginals', { n: nOrig, of: FIBBIES.length })}</h3>
+    <div class="al-grid">${originals.join('')}</div>
+    <h3 class="al-head">${t('albumWild', { n: wild.length })}</h3>
+    ${wild.length ? `<div class="al-grid">${wild.map(([sp, e]) => albumCell(sp, e.stages)).join('')}</div>` : ''}
+    <div class="al-empty">${critterSVG(null, { locked: true })}<span>${t('albumWildEmpty')}</span></div>`;
+}
+function openAlbum() {
+  renderAlbum();
+  albumSheet.showModal();
+  albumSheet.scrollTop = 0;
+}
+$('#album-close').onclick = () => albumSheet.close();
+document.addEventListener('click', (e) => { if (e.target.closest('#btn-album')) openAlbum(); });
+// Merging inside the details sheet changes what the album shows.
+fibSheet.addEventListener('close', () => { if (albumSheet.open) renderAlbum(); });
+
+// ---------- Weekly flexibility check ----------
+const flexSheet = $('#sheet-flex');
+let flexPick = {};
+let flexNote = null;
+function renderFlexCard() {
+  const list = loadFlex();
+  const since = daysSinceLast(list, dayKey());
+  const due = since == null || since >= WEEK_DAYS;
+  const last = list[list.length - 1];
+  const sub = since == null ? t('flexFirst') : due ? t('flexDue') : t('flexNext', { n: WEEK_DAYS - since });
+  $('#flex-card').classList.toggle('due', due);
+  $('#flex-card').innerHTML = `
+    <span class="fx-icon"><span class="ms filled">accessibility_new</span></span>
+    <span class="fx-text"><b>${t('flexTitle')}</b><small>${esc(sub)}</small></span>
+    ${last ? `<span class="fx-score"><b>${scoreOf(last)}</b>${list.length > 1 ? flexChartSVG(list, { w: 96, h: 40, mini: true }) : ''}</span>` : ''}
+    <span class="ms fx-go" aria-hidden="true">chevron_right</span>`;
+  $('#flex-card').setAttribute('aria-label', `${t('flexTitle')}. ${sub} ${due ? t('flexStart') : t('flexView')}`);
+}
+function renderFlex() {
+  const list = loadFlex();
+  const pts = chartPoints(list);
+  const first = list[0];
+  const last = list[list.length - 1];
+  const rows = FLEX_TESTS.map((x) => {
+    const T = t('flexTests')[x.id];
+    const opts = T.levels.map((lab, i) => `<button class="fo ripple" role="radio" data-t="${x.id}" data-v="${i}" aria-checked="${flexPick[x.id] === i}"><i>${i}</i>${esc(lab)}</button>`).join('');
+    const delta = first && last && list.length > 1 ? (Number(last.r[x.id]) || 0) - (Number(first.r[x.id]) || 0) : 0;
+    const prev = last ? `<span class="ft-prev">${esc(T.levels[Number(last.r[x.id]) || 0])}${delta > 0 ? ` <b class="up">▲${delta}</b>` : ''}</span>` : '';
+    return `<section class="ft" data-t="${x.id}">
+      <div class="ft-head"><div class="ft-fig"></div><div><h3>${esc(T.name)}</h3>${prev}</div></div>
+      <p class="ft-how">${esc(T.how)}</p>
+      <div class="ft-opts" role="radiogroup" aria-label="${esc(T.name)}">${opts}</div>
+    </section>`;
+  }).join('');
+  const done = FLEX_TESTS.every((x) => flexPick[x.id] != null);
+  const since = first && list.length > 1 ? scoreOf(last) - scoreOf(first) : null;
+  $('#flex-body').innerHTML = `
+    ${flexNote ? `<div class="flex-note"><span class="ms filled">check_circle</span>${esc(flexNote)}</div>` : ''}
+    ${list.length ? `<div class="flex-chart-box">
+      <div class="fcb-head"><b>${t('flexScore')}</b>${since != null ? `<small>${esc(t('flexSince', { n: since }))}</small>` : ''}</div>
+      ${flexChartSVG(list)}
+      <div class="fcb-read" id="flex-read">${esc(list.length > 1 ? t('flexTapPoint') : t('flexOnePoint'))}</div>
+    </div>` : ''}
+    <p class="flex-intro">${t('flexIntro')}</p>
+    ${rows}
+    <button class="btn filled ripple flex-save" id="flex-save" ${done ? '' : 'aria-disabled="true"'}><span class="ms filled">save</span>${t('flexSave')}</button>
+    <p class="flex-need" id="flex-need" hidden>${t('flexPickAll')}</p>`;
+  for (const x of FLEX_TESTS) {
+    const box = $(`#flex-body .ft[data-t="${x.id}"] .ft-fig`);
+    const f = new Figure(STRETCHES[x.fig]);
+    f.fit();
+    box.appendChild(f.svg);
+    animate(f, { paused: () => !flexSheet.open }); // a closed dialog stays in the DOM
+  }
+  $('#flex-body .flex-chart:not(.mini)')?.addEventListener('click', (e) => {
+    const hit = e.target.closest('.fc-hit');
+    if (!hit) return;
+    const p = pts[Number(hit.dataset.i)];
+    $('#flex-read').textContent = `${fmtDay(p.day, { day: 'numeric', month: 'long', year: 'numeric' })}: ${scoreOf(p)} / 100`;
+  });
+}
+function openFlex() {
+  const list = loadFlex();
+  const today = list.find((e) => e.day === dayKey());
+  flexPick = today ? { ...today.r } : {};
+  flexNote = null;
+  renderFlex();
+  flexSheet.showModal();
+  flexSheet.scrollTop = 0;
+}
+$('#flex-card').onclick = openFlex;
+$('#flex-close').onclick = () => flexSheet.close();
+$('#flex-body').addEventListener('click', (e) => {
+  const o = e.target.closest('.fo');
+  if (o) {
+    flexPick[o.dataset.t] = Number(o.dataset.v);
+    o.parentElement.querySelectorAll('.fo').forEach((b) => b.setAttribute('aria-checked', b === o));
+    const done = FLEX_TESTS.every((x) => flexPick[x.id] != null);
+    if (done) { $('#flex-save').removeAttribute('aria-disabled'); $('#flex-need').hidden = true; }
+    haptics.buzz(10);
+    return;
+  }
+  if (e.target.closest('#flex-save')) {
+    if (!FLEX_TESTS.every((x) => flexPick[x.id] != null)) {
+      $('#flex-need').hidden = false;
+      const miss = FLEX_TESTS.find((x) => flexPick[x.id] == null);
+      $(`#flex-body .ft[data-t="${miss.id}"]`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    const r = Object.fromEntries(FLEX_TESTS.map((x) => [x.id, Math.max(0, Math.min(FLEX_MAX, flexPick[x.id]))]));
+    saveFlex(dayKey(), r);
+    flexNote = t('flexSaved');
+    unlockAudio();
+    sfx.go?.();
+    haptics.buzz([20, 40, 20]);
+    renderFlex();
+    flexSheet.scrollTo({ top: 0, behavior: 'smooth' });
+    renderFlexCard();
+  }
 });
 
 function renderList() {
@@ -986,6 +1135,19 @@ function dragToClose(dlg, canClose = () => true) {
 }
 dragToClose(sheet);
 dragToClose(fibSheet, () => !merging);
+for (const s of [flexSheet, albumSheet]) {
+  dragToClose(s);
+  s.addEventListener('click', (e) => {
+    if (e.target !== s) return;
+    const r = s.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) s.close();
+  });
+}
+
+// Number dialogs in the order they open, so Back can close the one on top.
+let dialogSeq = 0;
+const dialogWatch = new MutationObserver((ms) => ms.forEach((m) => { if (m.target.open) m.target.dataset.seq = String(++dialogSeq); }));
+document.querySelectorAll('dialog').forEach((d) => dialogWatch.observe(d, { attributes: true, attributeFilter: ['open'] }));
 
 // ---------- Boot ----------
 if (isNative) document.documentElement.classList.add('native');
@@ -1014,7 +1176,8 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && clo
 
 // Android hardware back: close dialogs first, confirm before leaving a session, exit from home.
 native.onBackButton(() => {
-  const open = [...document.querySelectorAll('dialog[open]')].pop(); // the topmost one
+  // The most recently opened dialog is the one on top (DOM order says nothing about that).
+  const open = [...document.querySelectorAll('dialog[open]')].sort((a, b) => (Number(a.dataset.seq) || 0) - (Number(b.dataset.seq) || 0)).pop();
   if (open) { if (!(open === fibSheet && merging)) open.close(); return; }
   if (currentView === 'player' && session && !session.finished) { confirmEnd(); return; }
   if (currentView === 'home') { native.exit(); return; }

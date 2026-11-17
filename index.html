@@ -48,6 +48,7 @@
       <div class="section-label" data-i18n="suggestedNow">Suggested now</div>
       <div id="hero"></div>
       <section class="collection" id="collection" aria-label="Fibbie friends" data-i18n-aria="fibbieFriends"></section>
+      <button class="flex-card ripple" id="flex-card"></button>
 
       <div class="chips" id="chips" role="tablist" aria-label="Categories" data-i18n-aria="categories"></div>
       <div class="routine-list" id="routine-list"></div>
@@ -176,6 +177,22 @@
     <div class="sheet-handle" aria-hidden="true"></div>
     <div id="fib-body"></div>
     <button class="btn text ripple sheet-done" id="fib-close" data-i18n="done">Done</button>
+  </dialog>
+
+  <!-- Weekly flexibility check -->
+  <dialog class="sheet flex-sheet" id="sheet-flex">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <h2 class="sheet-title" data-i18n="flexTitle">Flexibility check</h2>
+    <div id="flex-body"></div>
+    <button class="btn text ripple sheet-done" id="flex-close" data-i18n="done">Done</button>
+  </dialog>
+
+  <!-- Fibbie album -->
+  <dialog class="sheet album-sheet" id="sheet-album">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <h2 class="sheet-title" data-i18n="albumTitle">Fibbie album</h2>
+    <div id="album-body"></div>
+    <button class="btn text ripple sheet-done" id="album-close" data-i18n="done">Done</button>
   </dialog>
 
   <!-- Confirm dialog -->
