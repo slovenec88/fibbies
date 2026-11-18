@@ -8,6 +8,7 @@ import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG } from './critter.js';
 import { playReward } from './reward-screen.js';
+import { playMerge } from './merge-fx.js';
 import { native, isNative } from './native.js';
 import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
 import { cloud } from './cloud.js';
@@ -314,21 +315,15 @@ async function doMerge() {
 async function runMerge(key, sp, stage) {
   unlockAudio();
   const f = fibbie(sp, stage);
-  const box = $('#fib-body .fs-stage');
   $('#fs-merge').disabled = true;
-  box.innerHTML = `<div class="fs-twin a">${critterSVG(f)}</div><div class="fs-twin b">${critterSVG(f)}</div><div class="fs-flash"></div><div class="fs-fx" aria-hidden="true"></div>`;
-  fx.charge();
-  haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 30]);
-  await new Promise((r) => setTimeout(r, 1100));
+  // Save first, so closing the app mid-show never loses the evolution.
   const p = loadProfile();
   const res = mergeFibbies(p, key);
   if (!res) { renderFib(); return; }
   saveProfile(p);
   fibKey = res.key;
   const nf = fibbie(sp, stage + 1);
-  fx.boom();
-  fx.levelUp();
-  haptics.buzz([60, 40, 160]);
+  await playMerge($('#merge-fx'), f, nf);
   renderFib(true);
   const fxl = $('#fib-body .fs-fx');
   for (let i = 0; i < 22; i++) {
@@ -340,8 +335,7 @@ async function runMerge(key, sp, stage) {
     el.style.background = `oklch(0.85 0.17 ${Math.floor(Math.random() * 360)})`;
     fxl.appendChild(el);
   }
-  voiceGuide.say(t('evolved', { name: nf.name }));
-  snackbar(t('evolved', { name: nf.name }));
+  if (albumSheet.open) renderAlbum();
   if (currentView === 'home') { renderCollection(); renderProgress(); }
 }
 fibSheet.addEventListener('click', (e) => {
@@ -803,7 +797,8 @@ function leavePlayer() {
   clearTimeout(doneTimer);
   if (lastResult && !lastResult.shown && lastResult.reward) {
     lastResult.shown = true;
-    setTimeout(() => snackbar(t('chestBanked', { f: fmtBig(lastResult.reward.total), name: lastResult.reward.fibbie.name })), 400);
+    const rw = lastResult.reward;
+    setTimeout(() => snackbar(rw.ranAway ? t('chestBankedRan', { f: fmtBig(rw.total) }) : t('chestBanked', { f: fmtBig(rw.total), name: rw.fibbie.name })), 400);
   }
   session?.destroy();
   session = null;

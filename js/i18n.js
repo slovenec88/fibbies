@@ -251,6 +251,12 @@ const EN = {
   safetyItems: ["Warm up first with a few minutes of walking or the moving stretches. Never push cold muscles hard.","Mild tension is good. Stop if you feel sharp pain, tingling or numbness.","Breathe slowly and never bounce in a hold.","Injured, pregnant or recovering from surgery? Check with a doctor or physio first."],
   safetyOk: "Got it",
   safetyLink: "How to stretch safely",
+  ranAway: "IT RAN AWAY!",
+  ranAwayBody: "This one was too shy and dashed off. You still keep all your fibers. Catch the next one!",
+  "say.ranAway": ({ name }) => `Oh no, ${name} ran away!`,
+  chestBankedRan: ({ f }) => `Chest banked: +${f} fibers. The Fibbie ran away!`,
+  evolvedKicker: "EVOLVED!",
+  tapToContinue: "Tap to continue",
 };
 
 const SL = {
@@ -458,6 +464,12 @@ const SL = {
   safetyItems: ["Najprej se ogrej z nekaj minutami hoje ali raztezanji v gibanju. Hladnih mišic nikoli ne sili.","Rahla napetost je v redu. Ustavi se, če začutiš ostro bolečino, mravljinčenje ali odrevenelost.","Dihaj počasi in v zadrževanju nikoli ne poskakuj.","Poškodba, nosečnost ali okrevanje po operaciji? Najprej se posvetuj z zdravnikom ali fizioterapevtom."],
   safetyOk: "Razumem",
   safetyLink: "Kako se varno raztezati",
+  ranAway: "POBEGNIL JE!",
+  ranAwayBody: "Ta je bil preveč plašen in je odbrzel. Vsa vlakna ostanejo tvoja. Ujemi naslednjega!",
+  "say.ranAway": ({ name }) => `Oh ne, ${name} je pobegnil!`,
+  chestBankedRan: ({ f }) => `Skrinja shranjena: +${f} vlaken. Fibbie je pobegnil!`,
+  evolvedKicker: "RAZVIL SE JE!",
+  tapToContinue: "Tapni za nadaljevanje",
 };
 
 const DICTS = { en: EN, sl: SL, de: DE, es: ES, fr: FR, it: IT, pt: PT };

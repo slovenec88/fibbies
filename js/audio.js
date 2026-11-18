@@ -142,6 +142,32 @@ export const fx = {
     chords.forEach((ch, k) => ch.forEach((f) => bell(f, k * 0.16, k === 2 ? 1.6 : 0.2, 0.11, k === 2 ? 'triangle' : 'square')));
     [1568, 1760, 2093, 2637].forEach((f, i) => bell(f, 0.32 + i * 0.06, 0.5, 0.07));
   },
+  /** A Fibbie dashes off: quick whoosh, then a little "aww". */
+  runAway() {
+    if (!this.on) return;
+    sweep(700, 2400, 0, 0.18, 0.12, 'triangle');
+    noise(0.05, 0.35, 0.16, 4000, 900);
+    bell(587, 0.55, 0.35, 0.12, 'triangle');
+    bell(440, 0.8, 0.7, 0.12, 'triangle');
+  },
+  /** Long rising whir while two Fibbies spin into one (about 2.4 s). */
+  evolveCharge() {
+    if (!this.on) return;
+    sweep(90, 1800, 0, 2.4, 0.14, 'sawtooth');
+    sweep(180, 3600, 0, 2.4, 0.06, 'triangle');
+    noise(0.3, 2.1, 0.2, 200, 7000);
+    for (let i = 0; i < 18; i++) bell(262 * Math.pow(2, i / 7), i * 0.13, 0.12, 0.06, 'square');
+  },
+  /** The evolution lands: deep boom, bright chord and a shower of chimes. */
+  evolve() {
+    if (!this.on) return;
+    sweep(300, 30, 0, 0.9, 0.6);
+    noise(0, 0.9, 0.4, 6000, 150);
+    [523, 659, 784, 1047, 1319, 1568, 2093].forEach((f, i) => bell(f, 0.05 + i * 0.04, 1.8, 0.12, i % 2 ? 'triangle' : 'sine'));
+    for (let i = 0; i < 12; i++) bell(2000 + Math.random() * 2500, 0.4 + i * 0.07, 0.3, 0.05);
+  },
+  /** One star lighting up (pitch rises with n). */
+  star(n = 1) { if (this.on) { bell(988 * Math.pow(1.26, n - 1), 0, 0.5, 0.14, 'triangle'); bell(1976 * Math.pow(1.26, n - 1), 0.02, 0.4, 0.06); } },
   levelUp() {
     if (!this.on) return;
     [523, 659, 784, 1047].forEach((f, i) => bell(f, i * 0.09, 0.4, 0.18, 'triangle'));

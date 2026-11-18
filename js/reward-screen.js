@@ -354,6 +354,26 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (!alive) return;
     const f = rw.fibbie;
     const loot = $('.rw-loot');
+    if (rw.ranAway) {
+      // The Fibbie peeks out, looks around, and dashes off the screen.
+      loot.innerHTML = `
+        <div class="rw-card runaway" data-rarity="${f.rarity}">
+          <div class="rw-critter"><div class="rw-runner">${critterSVG(f)}</div><i class="rw-dust" aria-hidden="true"></i><i class="rw-dust d2" aria-hidden="true"></i></div>
+          <div class="rw-card-text">
+            <span class="rw-new">${esc(t('ranAway'))}</span>
+            <b>${esc(f.name)}</b>
+            <small>${esc(t('ranAwayBody'))}</small>
+          </div>
+        </div>`;
+      wrap.classList.add('show-loot');
+      fx.boing();
+      haptics.buzz(40);
+      await sleep(1300);
+      if (!alive) return;
+      fx.runAway();
+      haptics.buzz([20, 30, 20, 30, 60]);
+      voiceGuide.say(t('say.ranAway', { name: f.name }), { interrupt: false });
+    } else {
     loot.innerHTML = `
       <div class="rw-card" data-rarity="${f.rarity}">
         <div class="rw-critter">${critterSVG(f)}</div>
@@ -369,6 +389,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz(50);
     burst(loot, 16, ['heart', 'star', 'spark']);
     voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false });
+    }
 
     // 7. XP bar (can cross several levels)
     await sleep(700);

@@ -206,6 +206,12 @@ export const UI = {
   safetyItems: ["Aqueça antes com alguns minutos de caminhada ou com os alongamentos em movimento. Nunca force músculos frios.","Uma tensão leve é boa. Pare se sentir dor aguda, formigamento ou dormência.","Respire devagar e nunca dê trancos ao segurar.","Lesão, gravidez ou recuperação de cirurgia? Fale antes com um médico ou fisioterapeuta."],
   safetyOk: "Entendi",
   safetyLink: "Como alongar com segurança",
+  ranAway: "FUGIU!",
+  ranAwayBody: "Era tímido demais e saiu correndo. Você fica com todas as fibras. Pegue o próximo!",
+  "say.ranAway": ({ name }) => `Ah não, ${name} fugiu!`,
+  chestBankedRan: ({ f }) => `Baú guardado: +${f} fibras. O Fibbie fugiu!`,
+  evolvedKicker: "EVOLUIU!",
+  tapToContinue: "Toque para continuar",
 };
 
 export const CONTENT = {

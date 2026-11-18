@@ -113,24 +113,32 @@ export function computeReward(o, rand = Math.random) {
     steps.push(total);
   }
 
-  let pts = 0;
-  if (perfect) pts++;
-  if (streak >= 3) pts++;
-  if (streak >= 7) pts++;
-  if (sandwich) pts++;
-  if (scale === 'flex') pts++;
-  if (lucky) pts++;
-  if (rand() < 0.15) pts++;
-  let tier = pts >= 4 ? 3 : pts === 3 ? 2 : pts >= 1 ? 1 : 0;
+  // Chest tier is a roll: wooden chests are the usual result, so a rare one feels special.
+  // Luck (streaks, a stretch sandwich, Flex 60s) tilts the odds; a lucky stretch is at least rare.
+  // No luck: 75 % wooden, 20 % rare, 4 % epic, 1 % legendary. All four: about 32/44/18/6 %.
+  let luck = 0;
+  if (streak >= 3) luck++;
+  if (streak >= 7) luck++;
+  if (sandwich) luck++;
+  if (scale === 'flex') luck++;
+  const pLeg = 0.01 + 0.012 * luck;
+  const pEpic = 0.04 + 0.035 * luck;
+  const pRare = 0.2 + 0.06 * luck;
+  const roll = rand();
+  let tier = roll < pLeg ? 3 : roll < pLeg + pEpic ? 2 : roll < pLeg + pEpic + pRare ? 1 : 0;
+  if (lucky) tier = Math.max(tier, 1);
   if (!profile.chests) tier = Math.max(tier, 1); // first chest is always special
   if (ratio < 0.3) tier = 0;
 
   const fib = fibbie(dropFibbie(tier, profile, rand), 1);
-  const copies = countOf(profile, fib.key) + 1;
+  // Now and then a Fibbie is too shy and runs off. Never in the first few chests, never from
+  // an epic or legendary chest, and never twice in a row.
+  const ranAway = profile.chests >= 3 && tier <= 1 && !profile.lastRanAway && rand() < 0.08;
+  const copies = countOf(profile, fib.key) + (ranAway ? 0 : 1);
   const before = levelProgress(profile.xp);
   const after = levelProgress(profile.xp + total);
   return {
-    base, mults, steps, total, tier, perfect, sandwich, lucky,
+    base, mults, steps, total, tier, perfect, sandwich, lucky, ranAway,
     fibbie: fib, isNew: !profile.dex[fib.key], copies,
     xpBefore: profile.xp, xpAfter: profile.xp + total,
     levelBefore: before.level, levelAfter: after.level,
@@ -141,6 +149,7 @@ export function applyReward(profile, r) {
   profile.xp += r.total;
   profile.fibers += r.total;
   profile.chests += 1;
-  addFibbie(profile, keyOf(r.fibbie.sp, 1));
+  profile.lastRanAway = !!r.ranAway;
+  if (!r.ranAway) addFibbie(profile, keyOf(r.fibbie.sp, 1));
   return profile;
 }
