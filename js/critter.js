@@ -261,7 +261,8 @@ export function chestSVG(tier) {
   const c = CHEST[tier];
   return `<svg viewBox="0 0 160 150" class="chest-svg" aria-hidden="true">
     <ellipse cx="80" cy="140" rx="62" ry="8" fill="#000" opacity=".25"/>
-    <ellipse class="chest-glow" cx="80" cy="74" rx="52" ry="16" fill="#fffbe0"/>
+    <defs><radialGradient id="chest-glow-g"><stop offset="0" stop-color="#fffbe0"/><stop offset=".6" stop-color="#fffbe0" stop-opacity=".85"/><stop offset="1" stop-color="#fffbe0" stop-opacity="0"/></radialGradient></defs>
+    <ellipse class="chest-glow" cx="80" cy="74" rx="60" ry="22" fill="url(#chest-glow-g)"/>
     <g class="chest-base">
       <rect x="20" y="70" width="120" height="66" rx="14" fill="${c.body}" stroke="${c.dark}" stroke-width="4"/>
       <rect x="38" y="70" width="13" height="66" fill="${c.band}" stroke="${c.dark}" stroke-width="2"/>

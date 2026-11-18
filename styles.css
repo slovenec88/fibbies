@@ -619,17 +619,18 @@ html:has(dialog[open]) { overflow: hidden; }
   padding: calc(16px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
 }
 .rw-beams {
-  position: absolute; left: 50%; top: 21%; width: 180vmax; height: 180vmax; translate: -50% -50%; z-index: 1;
+  position: absolute; left: 50%; top: 21%; width: 110vmax; height: 110vmax; translate: -50% -50%; z-index: 1; will-change: transform;
   background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.18) 0 9deg, transparent 9deg 24deg);
   background: repeating-conic-gradient(from 0deg, color-mix(in oklch, var(--tc) 55%, transparent) 0 9deg, transparent 9deg 24deg);
-  -webkit-mask: radial-gradient(circle, #000 0 8%, transparent 42%); mask: radial-gradient(circle, #000 0 8%, transparent 42%);
+  -webkit-mask: radial-gradient(circle, #000 0 13%, transparent 69%); mask: radial-gradient(circle, #000 0 13%, transparent 69%);
   opacity: 0; transition: opacity .6s; animation: spin 14s linear infinite;
 }
 .reward[data-tier="3"] .rw-beams {
   background: repeating-conic-gradient(from 0deg, #ff5fa2aa 0 6deg, transparent 6deg 15deg, #ffd60aaa 15deg 21deg, transparent 21deg 30deg, #4cc9f0aa 30deg 36deg, transparent 36deg 45deg);
 }
 .reward.opened .rw-beams { opacity: 1; }
-.rw-fx { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.rw-fx { position: absolute; inset: 0; z-index: 5; pointer-events: none; contain: strict; }
+.pt { will-change: transform, opacity; }
 
 .rw-tier {
   font-size: 15px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; margin-top: 4px;
@@ -639,8 +640,12 @@ html:has(dialog[open]) { overflow: hidden; }
   position: relative; z-index: 4;
 }
 .reward.ready .rw-tier { opacity: 1; }
+.reward.opened .rw-tier { animation: none; }
 @keyframes shimmer { to { background-position: -200% 0; } }
-.rw-chest { width: min(54vw, 210px); margin-top: 34px; position: relative; z-index: 3; filter: drop-shadow(0 10px 30px color-mix(in oklch, var(--tc) 60%, transparent)); }
+.rw-chest { width: min(54vw, 210px); margin-top: 34px; position: relative; z-index: 3; }
+.rw-chest::after { content: ''; position: absolute; inset: 0 -14% -10%; z-index: -2; pointer-events: none; opacity: .85;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--tc) 55%, transparent), transparent); }
+.rw-chest svg { will-change: transform; }
 .rw-chest svg { width: 100%; height: auto; display: block; overflow: visible; }
 .reward.dropping .rw-chest { animation: chest-drop .55s cubic-bezier(.3,1.5,.6,1) both; }
 @keyframes chest-drop { from { transform: translateY(-70vh) rotate(-12deg) scale(.6); } }
@@ -650,7 +655,7 @@ html:has(dialog[open]) { overflow: hidden; }
 @keyframes rattle { 0% { transform: translate(-3px, 1px) rotate(-3deg); } 50% { transform: translate(3px, -1px) rotate(3deg); } 100% { transform: translate(-3px, 1px) rotate(-3deg); } }
 .chest-lid { transform-box: fill-box; transform-origin: 0% 100%; transition: transform .5s cubic-bezier(.3,1.6,.5,1); }
 .reward.opened .chest-lid { transform: translate(-4px, -34px) rotate(-24deg); }
-.chest-glow { opacity: 0; transition: opacity .3s; filter: blur(4px); }
+.chest-glow { opacity: 0; transition: opacity .3s; }
 .reward.opened .chest-glow { opacity: 1; }
 .cf-open { display: none; }
 .reward.opened .cf-open { display: inline; }
@@ -663,16 +668,24 @@ html:has(dialog[open]) { overflow: hidden; }
 .reward.done .rw-stats, .reward.done .rw-actions { opacity: 1; transform: none; pointer-events: auto; }
 .rw-count { width: 100%; }
 .rw-label { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: color-mix(in oklch, var(--tc) 70%, #fff); }
-.rw-big {
+.rw-big-wrap, .rw-big-wrap::before {
   font-size: clamp(46px, 15vw, 80px); line-height: 1.05; font-weight: 900; font-variant-numeric: tabular-nums;
   font-variation-settings: 'wdth' 70, 'opsz' 96; letter-spacing: -.01em;
+}
+.rw-big {
   background: linear-gradient(180deg, #fffbe0 0%, #ffd166 45%, #ff9f1c 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 4px 0 rgba(0,0,0,.45)) drop-shadow(0 0 22px color-mix(in oklch, var(--tc) 70%, transparent));
+  position: relative; z-index: 0;
 }
-.rw-big.bump { animation: bump .35s cubic-bezier(.3,1.8,.5,1); }
+/* Cheap 3D edge: a dark copy 4px lower (a drop-shadow filter would be redrawn every frame while counting). */
+.rw-big-wrap { position: relative; }
+.rw-big-wrap::before { content: attr(data-n); position: absolute; inset: 0; translate: 0 4px; color: rgba(0,0,0,.45); pointer-events: none; font-size: inherit; }
+.rw-count { position: relative; }
+.rw-count::before { content: ''; position: absolute; left: 50%; top: 52%; width: min(92vw, 420px); height: 120px; translate: -50% -50%; z-index: -1; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--tc) 45%, transparent), transparent); }
+.rw-big-wrap.bump { animation: bump .35s cubic-bezier(.3,1.8,.5,1); }
 @keyframes bump { 40% { transform: scale(1.18); } }
-.rw-big.final { animation: final 1.2s ease-in-out 2; }
+.rw-big-wrap.final { animation: final 1.2s ease-in-out 2; }
 @keyframes final { 50% { transform: scale(1.08); } }
 .rw-mults { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 8px; min-height: 34px; }
 .rw-mult {
@@ -712,7 +725,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .rw-lv { font-weight: 900; font-size: 14px; padding: 4px 10px; border-radius: 10px; background: var(--tc); color: #1b1230; white-space: nowrap; }
 .rw-lv.next { background: rgba(255,255,255,.14); color: #fff; }
 .rw-bar { flex: 1; height: 14px; border-radius: 7px; background: rgba(255,255,255,.14); overflow: hidden; }
-.rw-bar i { display: block; height: 100%; width: 0; border-radius: 7px; background: linear-gradient(90deg, var(--tc), #fff6c2); box-shadow: 0 0 14px var(--tc); }
+.rw-bar i { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; will-change: transform; border-radius: 7px; background: linear-gradient(90deg, var(--tc), #fff6c2); box-shadow: 0 0 14px var(--tc); }
 .rw-xp { font-size: 12px; font-weight: 700; opacity: .75; margin-top: 6px; font-variant-numeric: tabular-nums; }
 .rw-level.levelup .rw-lv { animation: lvpop .7s cubic-bezier(.3,1.8,.5,1); }
 .rw-level.levelup::after {
@@ -745,7 +758,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .pt { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; animation: fly 1s cubic-bezier(.15,.7,.4,1) forwards; }
 .pt.coin { border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff6c2, #ffd60a 45%, #e09f00); box-shadow: inset 0 0 0 2px #c77d00; }
 .pt.star { background: var(--tc); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.pt.spark { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #fff; }
+.pt.spark { width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: radial-gradient(circle, #fff 0 28%, rgba(255,255,255,.45) 40%, transparent 70%); }
 .pt.heart { background: #ff5fa2; clip-path: polygon(50% 100%, 0 40%, 10% 10%, 35% 5%, 50% 22%, 65% 5%, 90% 10%, 100% 40%); }
 @keyframes fly {
   0% { transform: translate(0, 0) scale(.2) rotate(0); opacity: 1; }
@@ -786,7 +799,7 @@ html:has(dialog[open]) { overflow: hidden; }
 
 @media (max-height: 720px) {
   .rw-chest { width: min(42vw, 160px); margin-top: 26px; }
-  .rw-big { font-size: clamp(40px, 13vw, 60px); }
+  .rw-big-wrap { font-size: clamp(40px, 13vw, 60px); }
   .rw-card { grid-template-columns: 80px 1fr; padding: 8px 12px 8px 6px; }
   .rw-critter .critter { width: 80px; height: 80px; }
   .rw-card-text b { font-size: 19px; }
@@ -798,14 +811,15 @@ html:has(dialog[open]) { overflow: hidden; }
 }
 
 /* After opening, the chest shrinks so the payout fits on the screen */
-.rw-chest { transition: width .5s cubic-bezier(.2,0,0,1), margin .5s cubic-bezier(.2,0,0,1); }
+/* The size change happens under the white flash in one step (animating width/margin re-lays out the page every frame). */
+.reward.collapse .rw-tier { transition: none; }
 .reward.collapse .rw-tap { display: none; }
 .reward.collapse .rw-chest { width: min(34vw, 140px); margin-top: 30px; }
 @media (max-height: 720px) {
   .reward.collapse .rw-chest { width: min(26vw, 100px); margin-top: 22px; }
 }
 @media (max-height: 680px) {
-  .rw-big { font-size: clamp(36px, 12vw, 52px); }
+  .rw-big-wrap { font-size: clamp(36px, 12vw, 52px); }
   .rw-mult { height: 30px; font-size: 12px; }
   .rw-mults { gap: 4px; margin-top: 6px; }
   .rw-card { grid-template-columns: 68px 1fr; }
@@ -816,6 +830,7 @@ html:has(dialog[open]) { overflow: hidden; }
 }
 .rw-nochest { justify-content: center; gap: 12px; }
 .rw-nochest .rw-chest { filter: grayscale(.6) brightness(.8); }
+.rw-nochest .rw-chest::after { content: none; }
 .rw-nochest h1 { font-size: 32px; font-weight: 800; }
 .rw-nochest p { opacity: .8; max-width: 300px; }
 .rw-nochest .rw-actions { opacity: 1; transform: none; pointer-events: auto; margin-top: 12px; }
@@ -826,13 +841,14 @@ html:has(dialog[open]) { overflow: hidden; }
 .reward.ready:not(.opening) .rw-tap { animation: tap-bounce .9s ease-in-out infinite; }
 @keyframes tap-bounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-6px) scale(1.08); } }
 /* light leaking from the seams before it opens */
-.reward.ready:not(.opened) .chest-glow { opacity: .55; animation: seam 1.2s ease-in-out infinite; }
-@keyframes seam { 50% { opacity: .95; } }
-.reward.ready:not(.opening) .rw-chest { animation: halo 1.6s ease-in-out infinite; }
-@keyframes halo { 50% { filter: drop-shadow(0 0 34px var(--tc)) drop-shadow(0 0 60px var(--tc)); } }
+.reward.ready:not(.opened) .chest-glow { opacity: .7; }
+.reward.ready:not(.opening) .rw-chest::after { animation: halo 1.6s ease-in-out infinite; }
+@keyframes halo { 50% { transform: scale(1.3); opacity: 1; } }
 /* charging: grows, glows, rattles harder */
 .rw-chest > svg { transition: transform .9s cubic-bezier(.5,0,.9,.4); }
-.reward.opening:not(.opened) .rw-chest { filter: drop-shadow(0 0 40px #fff) drop-shadow(0 0 80px var(--tc)); }
+.rw-chest::after { transition: transform .4s cubic-bezier(.5,0,.9,.4); }
+.reward.opening:not(.opened) .rw-chest::after { transform: scale(1.7); opacity: 1;
+  background: radial-gradient(closest-side, #fff 0, #fff 45%, color-mix(in oklch, var(--tc) 85%, transparent) 70%, transparent); }
 .reward.opening:not(.opened) .rw-chest svg { animation: rattle .07s linear infinite; scale: 1.18; transition: scale .9s cubic-bezier(.5,0,.9,.4); }
 
 .rw-flash { position: fixed; inset: 0; z-index: 9; background: #fff; opacity: 0; pointer-events: none; }
@@ -845,18 +861,25 @@ html:has(dialog[open]) { overflow: hidden; }
   position: absolute; left: 50%; top: 45%; width: 64%; height: 220vh; translate: -50% -50%; z-index: -1;
   background: linear-gradient(to top, transparent 0%, rgba(255,255,255,.5) 46%, #fff 50%, rgba(255,255,255,.5) 54%, transparent 100%);
   background: linear-gradient(to top, transparent 0%, color-mix(in oklch, var(--tc) 35%, transparent) 30%, var(--tc) 46%, #fff 50%, var(--tc) 54%, color-mix(in oklch, var(--tc) 35%, transparent) 70%, transparent 100%);
-  filter: blur(10px); border-radius: 50%; transform-origin: 50% 50%; transform: scaleY(0) scaleX(.4); opacity: 0;
+  border-radius: 50%; transform-origin: 50% 50%; transform: scaleY(0) scaleX(.4); opacity: 0; will-change: transform, opacity;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent); mask: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent);
 }
 .reward.opened .rw-pillar { animation: pillar-up .55s cubic-bezier(.2,1.4,.4,1) forwards, pillar-pulse 1.4s ease-in-out .55s infinite; }
 @keyframes pillar-up { to { transform: scaleY(1) scaleX(1); opacity: .9; } }
 @keyframes pillar-pulse { 0%, 100% { transform: scaleY(1) scaleX(1); opacity: .9; } 50% { transform: scaleY(1.03) scaleX(.82); opacity: .7; } }
-.reward[data-tier="3"].opened:not(.done) .rw-pillar, .reward[data-tier="2"].opened:not(.done) .rw-pillar { animation: pillar-up .55s cubic-bezier(.2,1.4,.4,1) forwards, pillar-pulse 1.4s ease-in-out .55s infinite, hue 2.5s linear infinite; }
 .reward.done .rw-pillar { animation: none; transform: none; opacity: .75; }
 
 /* party mode: beams spin faster and cycle through colors */
-.reward.party:not(.done) .rw-beams { animation: spin 7s linear infinite, hue 4s linear infinite; }
+.reward.party:not(.done) .rw-beams { animation: spin 7s linear infinite; }
+.rw-beams::before, .rw-beams::after { content: ''; position: absolute; inset: 0; border-radius: 50%; opacity: 0; }
+.rw-beams::before { background: repeating-conic-gradient(from 0deg, color-mix(in oklch, #ff5fa2 55%, transparent) 0 9deg, transparent 9deg 24deg); }
+.rw-beams::after { background: repeating-conic-gradient(from 0deg, color-mix(in oklch, #4cc9f0 55%, transparent) 0 9deg, transparent 9deg 24deg); }
+.reward.party:not(.done) .rw-beams::before { animation: beam-tint 4s linear infinite; }
+.reward.party:not(.done) .rw-beams::after { animation: beam-tint 4s linear 2s infinite; }
+@keyframes beam-tint { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+.reward[data-tier="3"] .rw-beams::before { background: repeating-conic-gradient(from 0deg, #ffd60aaa 0 6deg, transparent 6deg 15deg, #4cc9f0aa 15deg 21deg, transparent 21deg 30deg, #ff5fa2aa 30deg 36deg, transparent 36deg 45deg); }
+.reward[data-tier="3"] .rw-beams::after { background: repeating-conic-gradient(from 0deg, #4cc9f0aa 0 6deg, transparent 6deg 15deg, #ff5fa2aa 15deg 21deg, transparent 21deg 30deg, #ffd60aaa 30deg 36deg, transparent 36deg 45deg); }
 .reward.party:not(.done) .rw-label { animation: label-flash .5s steps(2) infinite; }
-@keyframes hue { to { filter: hue-rotate(360deg); } }
 @keyframes label-flash { 50% { color: #fff; } }
 
 /* coin rain */
@@ -867,7 +890,7 @@ html:has(dialog[open]) { overflow: hidden; }
   100% { transform: translate(var(--tx), var(--fall)) scale(var(--s)) rotate(var(--r)); opacity: 1; }
 }
 .pt.gem { width: 12px; height: 16px; margin: -8px 0 0 -6px; clip-path: polygon(50% 0, 100% 35%, 50% 100%, 0 35%); background: linear-gradient(135deg, #a5f3ff, #4cc9f0 45%, #7b2ff7); }
-.pt.fw { width: 6px; height: 6px; margin: -3px 0 0 -3px; }
+.pt.fw { width: 14px; height: 14px; margin: -7px 0 0 -7px; }
 
 /* praise stamp */
 .rw-banner {
@@ -957,7 +980,7 @@ html.native input, html.native textarea { -webkit-user-select: text; user-select
 .rw-tier { transition: margin-top .55s cubic-bezier(.2,0,0,1); }
 .rw-skip { position: absolute; top: calc(env(safe-area-inset-top, 0px) + 8px); right: 8px; z-index: 30; display: inline-flex; align-items: center; gap: 2px;
   height: 32px; padding: 0 8px 0 12px; border-radius: 16px; border: 0; font: inherit; font-size: 13px; font-weight: 600;
-  background: rgba(255,255,255,.12); color: rgba(255,255,255,.75); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  background: rgba(20,14,38,.6); color: rgba(255,255,255,.75); }
 .rw-skip .ms { font-size: 18px; }
 .rw-skip:active { background: rgba(255,255,255,.22); }
 .rw-dots { display: inline-flex; gap: 5px; margin-left: 8px; }
@@ -965,7 +988,7 @@ html.native input, html.native textarea { -webkit-user-select: text; user-select
 .reward[data-hits="1"] .rw-dots i:nth-child(-n+1), .reward[data-hits="2"] .rw-dots i:nth-child(-n+2), .reward[data-hits="3"] .rw-dots i { background: #ffd60a; transform: scale(1.2); box-shadow: 0 0 8px #ffd60a; }
 .reward.ready:not(.opening) .rw-chest.hit svg { animation: chest-hit .38s cubic-bezier(.3,1.8,.5,1); }
 @keyframes chest-hit { 0% { transform: scale(1); } 30% { transform: scale(1.14, .88) rotate(-4deg); } 60% { transform: scale(.94, 1.08) rotate(3deg); } 100% { transform: scale(1); } }
-.chest-cracks path { opacity: 0; transition: opacity .2s; filter: drop-shadow(0 0 3px #fff6c2); }
+.chest-cracks path { opacity: 0; transition: opacity .2s; }
 .reward[data-hits="1"] .chest-cracks .ck1, .reward[data-hits="2"] .chest-cracks path, .reward[data-hits="3"] .chest-cracks path { opacity: 1; }
 .reward[data-hits="1"]:not(.opened) .chest-lid { transform: translate(0, -3px) rotate(-2deg); }
 .reward[data-hits="2"]:not(.opened) .chest-lid, .reward[data-hits="3"]:not(.opened) .chest-lid { transform: translate(-1px, -7px) rotate(-5deg); }

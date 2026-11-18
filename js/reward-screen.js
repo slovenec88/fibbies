@@ -5,12 +5,14 @@ import { fx, voiceGuide, haptics } from './audio.js';
 import { t, getLang, numLocale } from './i18n.js';
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const fmt = (n) => Math.round(n).toLocaleString(numLocale());
+let numFmt = null; // one formatter per show (creating one every frame is slow)
+const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
 
 const TAPS = 3; // taps to break the chest open
 const stars = (n) => `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(4 - n)}</i></span>`;
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
+  numFmt = null;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let fast = reduce;
   let alive = true;
@@ -35,7 +37,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         <div class="rw-tap"><span class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
         <div class="rw-count">
           <div class="rw-label">${t('fibersLabel')}</div>
-          <div class="rw-big" aria-live="polite">0</div>
+          <div class="rw-big-wrap" data-n="0"><div class="rw-big" aria-live="polite">0</div></div>
           <div class="rw-mults"></div>
         </div>
         <div class="rw-loot"></div>
@@ -125,14 +127,19 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const MAX_PARTICLES = 80; // keeps low-end phones smooth
   const room = (n) => Math.max(0, Math.min(n, MAX_PARTICLES - fxLayer.childElementCount));
 
+  // Each measurement forces a layout, so the chest position is cached while numbers count.
+  let fountainAt = null;
   function fountain(n) {
     if (reduce) return;
     n = room(n);
     if (!n) return;
-    const fr = $('.rw-chest').getBoundingClientRect();
-    const wr = wrap.getBoundingClientRect();
-    const cx = fr.left + fr.width / 2 - wr.left;
-    const cy = fr.top + fr.height * 0.45 - wr.top;
+    if (!fountainAt) {
+      const fr = $('.rw-chest').getBoundingClientRect();
+      const r = wrap.getBoundingClientRect();
+      fountainAt = { cx: fr.left + fr.width / 2 - r.left, cy: fr.top + fr.height * 0.45 - r.top, width: r.width, height: r.height };
+    }
+    const { cx, cy } = fountainAt;
+    const wr = fountainAt;
     for (let i = 0; i < n; i++) {
       const p = document.createElement('i');
       p.className = `pt fall ${Math.random() < 0.75 ? 'coin' : Math.random() < 0.5 ? 'star' : 'gem'}`;
@@ -167,8 +174,9 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
           const d = 70 + Math.random() * 50;
           p.style.left = `${x}px`;
           p.style.top = `${y}px`;
-          p.style.background = `hsl(${hue + Math.random() * 60} 100% 65%)`;
-          p.style.boxShadow = `0 0 10px hsl(${hue} 100% 65%)`;
+          // Glow drawn into the background (a box-shadow per spark is far slower on phones).
+          const c = `hsl(${hue + Math.random() * 60} 100% 65%)`;
+          p.style.background = `radial-gradient(circle, ${c} 0 30%, hsl(${hue} 100% 65% / .45) 42%, transparent 70%)`;
           p.style.setProperty('--tx', `${Math.cos(ang) * d}px`);
           p.style.setProperty('--ty', `${Math.sin(ang) * d}px`);
           p.style.setProperty('--r', '0deg');
@@ -224,9 +232,11 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.add('shake');
   }
 
+  function setBig(v) { const s = fmt(v); big.textContent = s; big.parentElement.dataset.n = s; }
   function countTo(from, to, ms) {
+    fountainAt = null; // re-measure once per count, not on every coin
     return new Promise((res) => {
-      if (fast || ms <= 0) { big.textContent = fmt(to); res(); return; }
+      if (fast || ms <= 0) { setBig(to); res(); return; }
       let t0 = null;
       let lastTick = 0;
       const step = (now) => {
@@ -234,9 +244,9 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         if (t0 === null) t0 = now;
         const p = Math.max(0, Math.min(1, (now - t0) / ms));
         const e = 1 - Math.pow(1 - p, 3);
-        big.textContent = fmt(from + (to - from) * e);
+        setBig(from + (to - from) * e);
         if (now - lastTick > 55 && p < 1) { lastTick = now; fx.count(p); haptics.buzz(5); fountain(2); }
-        if (p >= 1 || fast) { big.textContent = fmt(to); res(); } else requestAnimationFrame(step);
+        if (p >= 1 || fast) { setBig(to); res(); } else requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
     });
@@ -325,9 +335,9 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       shake();
       flash(false);
       fountain(m.hot ? 16 : 8);
-      big.classList.remove('bump');
+      big.parentElement.classList.remove('bump');
       void big.offsetWidth;
-      big.classList.add('bump');
+      big.parentElement.classList.add('bump');
       await countTo(rw.steps[i], rw.steps[i + 1], 650);
       if (!alive) return;
     }
@@ -335,7 +345,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     // 5. total
     await sleep(200);
     if (!alive) return;
-    big.classList.add('final');
+    big.parentElement.classList.add('final');
     musicWanted = false;
     fx.musicStop();
     fx.fanfare();
@@ -413,7 +423,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     const end = rw.xpAfter;
     const show = (v) => {
       const p = levelProgress(v);
-      fill.style.width = `${Math.min(100, p.frac * 100)}%`;
+      fill.style.transform = `scaleX(${Math.min(1, p.frac)})`;
       $('#rw-lv').textContent = t('lv', { n: p.level });
       $('#rw-lv-next').textContent = t('lv', { n: p.level + 1 });
       $('#rw-xp').textContent = `${fmtBig(p.into)} / ${fmtBig(p.need)} XP`;
