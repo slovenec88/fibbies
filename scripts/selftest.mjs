@@ -125,6 +125,21 @@ await test('mid-session the cloud copy is never applied', async () => {
   assert.equal(JSON.parse(mem.get('limber.profile')).xp, 50);
 });
 
+// ---- voice picking ----
+const { bestVoice } = await import(new URL('voice-pick.js', root));
+const V = (pairs) => pairs.map(([name, lang]) => ({ name, lang }));
+await test('voice: natural female over robotic and male voices', () => {
+  assert.equal(bestVoice(V([['Microsoft David - English (United States)', 'en-US'], ['Microsoft Guy Online (Natural) - English (United States)', 'en-US'], ['Microsoft Aria Online (Natural) - English (United States)', 'en-US']]), 'en-US').voice.name, 'Microsoft Aria Online (Natural) - English (United States)');
+  assert.equal(bestVoice(V([['en-us-x-iol-local', 'en-US'], ['en-us-x-tpf-local', 'en-US']]), 'en-US').voice.name, 'en-us-x-tpf-local');
+});
+await test('voice: right accent first, and engine default when no voice is known to be good', () => {
+  assert.equal(bestVoice(V([['Joana (Enhanced)', 'pt-PT'], ['Luciana', 'pt-BR']]), 'pt-BR').voice.name, 'Luciana');
+  assert.equal(bestVoice(V([['sl-si-x-aaa-local', 'sl-SI'], ['sl-si-x-bbb-local', 'sl-SI']]), 'sl-SI', { needSignal: true }), null);
+});
+await test('voice: never a voice for another language', () => {
+  assert.equal(bestVoice(V([['Google US English', 'en-US'], ['Microsoft Zira', 'en-US']]), 'sl-SI'), null);
+});
+
 cloud.disable();
 console.log(failed ? `\n${failed} failed` : '\nall passed');
 process.exit(failed ? 1 : 0);

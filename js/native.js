@@ -1,9 +1,30 @@
 // Native bridge for the Android/iOS app (Capacitor). Every call is a safe no-op on the web,
 // and the plugins are reached through Capacitor's global, so the web app needs no bundler.
+import { bestVoice, PACE } from './voice-pick.js';
 const Cap = window.Capacitor;
 export const isNative = !!(Cap && typeof Cap.isNativePlatform === 'function' && Cap.isNativePlatform());
 const plugin = (name) => (isNative && Cap.Plugins && Cap.Plugins[name]) || null;
 const quiet = (p) => { if (p && typeof p.catch === 'function') p.catch(() => {}); };
+
+// Chosen Android voice (its index in getSupportedVoices) per language; null = the engine's default.
+// The index only means something for the current voice list, so both are forgotten whenever the
+// list may have changed (voice data installed, app back from the background).
+const nativeVoice = new Map();
+let voiceList = null;
+const forgetVoices = () => { nativeVoice.clear(); voiceList = null; };
+globalThis.document?.addEventListener('visibilitychange', () => { if (!document.hidden) forgetVoices(); });
+async function pickNativeVoice(T, lang) {
+  try {
+    const list = voiceList || (await T.getSupportedVoices()).voices || [];
+    if (!list.length) return null; // engine not ready yet: try again next time
+    voiceList = list;
+    // Only a voice we know to be good; otherwise the engine's own default for the language.
+    const best = bestVoice(list, lang, { needSignal: true });
+    nativeVoice.set(lang, best ? best.index : null);
+    return nativeVoice.get(lang);
+  } catch { return null; }
+}
+let speechEpoch = 0; // bumped by stopSpeaking(), so a line still waiting for the voice lookup is dropped
 let hapticTimers = [];
 
 export const native = {
@@ -30,12 +51,21 @@ export const native = {
   },
   cancelHaptics() { hapticTimers.forEach(clearTimeout); hapticTimers = []; },
 
-  /** Android WebView has no reliable speechSynthesis, so voice goes through native text-to-speech. */
+  /** Android WebView has no reliable speechSynthesis, so voice goes through native text-to-speech,
+   *  with the nicest gentle female voice the phone has for the language (see voice-pick.js). */
   speak(text, interrupt = true, lang = 'en-US') {
     const T = plugin('TextToSpeech');
     if (!T) return false;
-    // queueStrategy 0 = flush (interrupts current speech), 1 = add to the queue.
-    quiet(T.speak({ text, lang, rate: 1.0, pitch: 1.0, volume: 1.0, queueStrategy: interrupt ? 0 : 1 }));
+    const go = (voice) => quiet(T.speak({
+      text, lang, rate: PACE.rate, pitch: PACE.pitch, volume: 1.0,
+      ...(voice != null ? { voice } : {}),
+      queueStrategy: interrupt ? 0 : 1, // 0 = flush (interrupts current speech), 1 = add to the queue
+    }));
+    const known = nativeVoice.get(lang);
+    if (known !== undefined) { go(known); return true; }
+    // First line in this language: look the voices up once, then speak.
+    const epoch = speechEpoch;
+    pickNativeVoice(T, lang).then((v) => { if (epoch === speechEpoch) go(v); });
     return true;
   },
   /** true if the device's speech engine lists this language (e.g. 'sl-SI'), null if unknown. */
@@ -50,8 +80,8 @@ export const native = {
   },
   /** Opens Android's "install voice data" screen. */
   canInstallVoice: isNative && typeof Cap.getPlatform === 'function' && Cap.getPlatform() === 'android',
-  openTtsInstall() { const T = plugin('TextToSpeech'); if (T) quiet(T.openInstall()); },
-  stopSpeaking() { const T = plugin('TextToSpeech'); if (T) quiet(T.stop()); },
+  openTtsInstall() { forgetVoices(); const T = plugin('TextToSpeech'); if (T) quiet(T.openInstall()); },
+  stopSpeaking() { speechEpoch++; const T = plugin('TextToSpeech'); if (T) quiet(T.stop()); },
 
   /** Keep the screen on during a session. Returns true if handled natively. */
   keepAwake(on) {

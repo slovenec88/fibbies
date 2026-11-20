@@ -1,6 +1,7 @@
 // Synthesized sound cues (Web Audio) + spoken guidance (Speech Synthesis, or native TTS in the app).
 import { native } from './native.js';
-import { getLang, speechLang, onLangChange } from './i18n.js';
+import { speechLang, onLangChange } from './i18n.js';
+import { bestVoice, PACE } from './voice-pick.js';
 let ctx = null;
 let music = null;
 let master = null;
@@ -195,23 +196,16 @@ export const sfx = {
 };
 
 // ---- Voice ----
-// Voice follows the app language. If the device has no voice for it, we still ask for
-// that language (some engines handle it without listing a voice) and settings shows a hint.
+// Voice follows the app language: the nicest gentle female voice the device has for it (see
+// voice-pick.js). With no voice for the language we stay quiet (settings shows a hint): a voice
+// for another language reading the text sounds awful.
 let voice = null;
-const VOICE_PREFS = {
-  en: [/Google US English/i, /Samantha/i, /Ava/i, /Aria/i, /Jenny/i, /Natural/i, /Google UK English Female/i, /en-US/i],
-  sl: [/Natural/i, /Petra/i, /Google/i, /sl-SI/i],
-};
+let voicesKnown = false; // the browser has listed its voices (Chrome loads them lazily)
 function pickVoice() {
   if (!('speechSynthesis' in window)) return;
-  const lang = getLang();
-  const re0 = new RegExp(`^${lang}(-|_|$)`, 'i');
-  const vs = speechSynthesis.getVoices().filter((v) => re0.test(v.lang));
-  for (const re of VOICE_PREFS[lang] || [/Natural/i, /Google/i]) {
-    const v = vs.find((x) => re.test(x.name) || re.test(x.lang));
-    if (v) { voice = v; return; }
-  }
-  voice = vs[0] || null;
+  const vs = speechSynthesis.getVoices();
+  voicesKnown = vs.length > 0;
+  voice = bestVoice(vs, speechLang())?.voice || null;
 }
 if ('speechSynthesis' in window) {
   pickVoice();
@@ -234,13 +228,14 @@ export const voiceGuide = {
     if (!this.enabled || !text) return;
     if (native.speak(text, interrupt, speechLang())) return;
     if (!('speechSynthesis' in window)) return;
+    if (!voice && voicesKnown) return; // no voice for this language on this device
     try {
       if (interrupt) speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       if (voice) u.voice = voice;
       u.lang = voice?.lang || speechLang();
-      u.rate = 1.0;
-      u.pitch = 1.0;
+      u.rate = PACE.rate;
+      u.pitch = PACE.pitch;
       u.volume = 1;
       speechSynthesis.speak(u);
     } catch { /* ignore */ }
