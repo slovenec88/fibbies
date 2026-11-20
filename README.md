@@ -8,7 +8,7 @@
 
 A follow-along stretching app for before and after a workout, at bedtime and during a work break, with a treasure chest at the end of every session.
 
-**[See Fibbies at juringari.com →](https://juringari.com/fibbies/)**
+**[Try Fibbies in your browser →](https://fibbies.juringari.com/)** · [Project and Android updates](https://juringari.com/fibbies/)
 
 <img src="docs/screenshots/home.png" width="230" alt="Home screen with level, streak and a suggested routine">&nbsp;
 <img src="docs/screenshots/stretch.png" width="230" alt="A stretch in progress with an animated figure and timer">&nbsp;
