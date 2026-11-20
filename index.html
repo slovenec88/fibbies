@@ -14,10 +14,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,300..900&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0&display=block">
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
   <script>
     // Apply saved theme before first paint to avoid a flash.
@@ -35,10 +32,10 @@
       <header class="top-bar large">
         <div class="top-bar-row">
           <div class="brand">
-            <span class="brand-mark" aria-hidden="true"><span class="ms filled">self_improvement</span></span>
+            <span class="brand-mark" aria-hidden="true"><span aria-hidden="true" class="ms filled">self_improvement</span></span>
             <span class="brand-name">Fibbies</span>
           </div>
-          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings" data-i18n-aria="settings"><span class="ms">tune</span></button>
+          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings" data-i18n-aria="settings"><span aria-hidden="true" class="ms">tune</span></button>
         </div>
       </header>
 
@@ -63,12 +60,12 @@
     <section id="view-player" class="view" data-view="player" aria-label="Session" data-i18n-aria="session">
       <div class="player" id="player" data-kind="prep">
         <header class="player-top">
-          <button class="icon-btn ripple" id="pl-close" aria-label="End session" data-i18n-aria="endSession"><span class="ms">close</span></button>
+          <button class="icon-btn ripple" id="pl-close" aria-label="End session" data-i18n-aria="endSession"><span aria-hidden="true" class="ms">close</span></button>
           <div class="player-title">
             <span id="pl-routine">Routine</span>
-            <span class="awake-chip" id="pl-awake" hidden><span class="ms filled">light_mode</span><span data-i18n="screenOn">Screen on</span></span>
+            <span class="awake-chip" id="pl-awake" hidden><span aria-hidden="true" class="ms filled">light_mode</span><span data-i18n="screenOn">Screen on</span></span>
           </div>
-          <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice" data-i18n-aria="soundAndVoice"><span class="ms">volume_up</span></button>
+          <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice" data-i18n-aria="soundAndVoice"><span aria-hidden="true" class="ms">volume_up</span></button>
         </header>
         <div class="segments" id="pl-segments" aria-hidden="true"></div>
 
@@ -76,7 +73,7 @@
           <div class="stage-badge" id="pl-badge" data-i18n="getReady">Get ready</div>
           <div class="stage-side" id="pl-side" hidden></div>
           <div class="stage-fig" id="pl-fig"></div>
-          <div class="paused-veil" id="pl-veil"><span class="ms filled">pause</span><span data-i18n="paused">Paused</span></div>
+          <div class="paused-veil" id="pl-veil"><span aria-hidden="true" class="ms filled">pause</span><span data-i18n="paused">Paused</span></div>
         </div>
 
         <div class="player-info">
@@ -95,9 +92,9 @@
         </div>
 
         <div class="player-controls">
-          <button class="icon-btn tonal big ripple" id="pl-prev" aria-label="Previous stretch" data-i18n-aria="prevStretch"><span class="ms filled">skip_previous</span></button>
-          <button class="play-btn ripple" id="pl-play" aria-label="Pause"><span class="ms filled" id="pl-play-icon">pause</span></button>
-          <button class="icon-btn tonal big ripple" id="pl-next" aria-label="Next stretch" data-i18n-aria="nextStretch"><span class="ms filled">skip_next</span></button>
+          <button class="icon-btn tonal big ripple" id="pl-prev" aria-label="Previous stretch" data-i18n-aria="prevStretch"><span aria-hidden="true" class="ms filled">skip_previous</span></button>
+          <button class="play-btn ripple" id="pl-play" aria-label="Pause"><span aria-hidden="true" class="ms filled" id="pl-play-icon">pause</span></button>
+          <button class="icon-btn tonal big ripple" id="pl-next" aria-label="Next stretch" data-i18n-aria="nextStretch"><span aria-hidden="true" class="ms filled">skip_next</span></button>
         </div>
 
         <div class="up-next" id="pl-upnext"></div>
@@ -116,17 +113,17 @@
     <h3 class="m3-section" data-i18n="soundAndFeel">Sound and vibration</h3>
     <div class="m3-group">
       <label class="m3-item ripple">
-        <span class="m3-lead"><span class="ms">record_voice_over</span></span>
+        <span class="m3-lead"><span aria-hidden="true" class="ms">record_voice_over</span></span>
         <span class="li-text"><b data-i18n="voiceGuidance">Voice guidance</b><small data-i18n="voiceGuidanceSub">Spoken names, tips and side switches</small></span>
         <input type="checkbox" class="switch" id="set-voice">
       </label>
       <label class="m3-item ripple">
-        <span class="m3-lead"><span class="ms">notifications_active</span></span>
+        <span class="m3-lead"><span aria-hidden="true" class="ms">notifications_active</span></span>
         <span class="li-text"><b data-i18n="soundCues">Sound cues</b><small data-i18n="soundCuesSub">Chimes and 3-2-1 countdown beeps</small></span>
         <input type="checkbox" class="switch" id="set-sound">
       </label>
       <label class="m3-item ripple">
-        <span class="m3-lead"><span class="ms">vibration</span></span>
+        <span class="m3-lead"><span aria-hidden="true" class="ms">vibration</span></span>
         <span class="li-text"><b data-i18n="vibration">Vibration</b><small data-i18n="vibrationSub">Haptic taps on supported phones</small></span>
         <input type="checkbox" class="switch" id="set-haptics">
       </label>
@@ -149,9 +146,9 @@
     <div class="m3-group">
       <div class="m3-item col">
         <div class="segmented" id="set-mode" role="radiogroup" aria-labelledby="sec-look">
-          <button data-v="system" role="radio"><span class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
-          <button data-v="light" role="radio"><span class="ms">light_mode</span><span data-i18n="light">Light</span></button>
-          <button data-v="dark" role="radio"><span class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
+          <button data-v="system" role="radio"><span aria-hidden="true" class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
+          <button data-v="light" role="radio"><span aria-hidden="true" class="ms">light_mode</span><span data-i18n="light">Light</span></button>
+          <button data-v="dark" role="radio"><span aria-hidden="true" class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
         </div>
       </div>
       <div class="m3-item col">
@@ -164,14 +161,26 @@
     <div class="m3-group" id="set-lang" role="radiogroup" aria-labelledby="sec-lang"></div>
     <div class="set-note lang-note" id="set-lang-note" hidden>
       <span data-i18n="noVoice"></span>
-      <button class="btn tonal ripple" id="set-lang-install" hidden><span class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+      <button class="btn tonal ripple" id="set-lang-install" hidden><span aria-hidden="true" class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+    </div>
+
+    <h3 class="m3-section" data-i18n="backupSection">Your progress</h3>
+    <div class="m3-group">
+      <button class="m3-item ripple" id="set-backup-copy">
+        <span class="m3-lead"><span aria-hidden="true" class="ms">content_copy</span></span>
+        <span class="li-text"><b data-i18n="backupCopy">Copy backup code</b><small data-i18n="backupCopySub">Keep it in a note or an email to yourself</small></span>
+      </button>
+      <button class="m3-item ripple" id="set-backup-restore">
+        <span class="m3-lead"><span aria-hidden="true" class="ms">settings_backup_restore</span></span>
+        <span class="li-text"><b data-i18n="backupRestore">Restore from backup code</b><small data-i18n="backupRestoreSub">Replaces the progress on this phone</small></span>
+      </button>
     </div>
 
     <div id="set-cloud-group" hidden>
       <h3 class="m3-section">Google Play Games</h3>
       <div class="m3-group">
         <label class="m3-item ripple">
-          <span class="m3-lead"><span class="ms">cloud_sync</span></span>
+          <span class="m3-lead"><span aria-hidden="true" class="ms">cloud_sync</span></span>
           <span class="li-text"><b data-i18n="cloudSave">Cloud save</b><small id="set-cloud-sub"></small></span>
           <input type="checkbox" class="switch" id="set-cloud">
         </label>
@@ -208,7 +217,7 @@
 
   <!-- Safety note: shown once, and from the link at the bottom of home -->
   <dialog class="dialog" id="dlg-safety">
-    <span class="ms dialog-icon">health_and_safety</span>
+    <span aria-hidden="true" class="ms dialog-icon">health_and_safety</span>
     <h2 data-i18n="safetyTitle">Stretch safely</h2>
     <ul class="safety-list" id="safety-list"></ul>
     <div class="dialog-actions">
@@ -216,9 +225,21 @@
     </div>
   </dialog>
 
+  <!-- Backup code: shown for copying by hand, or pasted to restore -->
+  <dialog class="dialog backup-dialog" id="dlg-backup">
+    <span aria-hidden="true" class="ms dialog-icon">settings_backup_restore</span>
+    <h2 data-i18n="backupTitle">Backup code</h2>
+    <textarea id="backup-text" class="backup-text" rows="5" spellcheck="false" autocomplete="off" data-i18n-placeholder="backupPaste"></textarea>
+    <p id="backup-msg" class="backup-msg" aria-live="polite"></p>
+    <div class="dialog-actions">
+      <button class="btn text ripple" id="dlg-backup-cancel" data-i18n="close">Close</button>
+      <button class="btn text ripple" id="dlg-backup-ok" data-i18n="backupRestoreBtn">Restore</button>
+    </div>
+  </dialog>
+
   <!-- Confirm dialog -->
   <dialog class="dialog" id="dlg-end">
-    <span class="ms dialog-icon">self_improvement</span>
+    <span aria-hidden="true" class="ms dialog-icon">self_improvement</span>
     <h2 data-i18n="endTitle">End this session?</h2>
     <p data-i18n="endBody">Your progress in this routine won't be saved.</p>
     <div class="dialog-actions">
@@ -229,7 +250,7 @@
 
   <!-- Cloud save: both this phone and Google Play already have progress -->
   <dialog class="dialog" id="dlg-cloud">
-    <span class="ms dialog-icon">cloud_sync</span>
+    <span aria-hidden="true" class="ms dialog-icon">cloud_sync</span>
     <h2 data-i18n="cloudFound">Cloud save found</h2>
     <p id="dlg-cloud-body"></p>
     <div class="dialog-actions">

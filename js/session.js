@@ -71,7 +71,7 @@ export class Session {
     this.onTick?.(this);
   }
 
-  toggle() { this.paused ? this.resume() : this.pause(); }
+  toggle() { if (!this.finished) (this.paused ? this.resume() : this.pause()); }
 
   destroy() {
     clearInterval(this.timer);
@@ -129,6 +129,7 @@ export class Session {
         return;
       }
       const big = overflow > 1.5;
+      if (big) this.skips++; // time passed unseen (throttled page): not a perfect run
       if (this.step.kind === 'hold' && !big) sfx.holdEnd();
       this.enter(this.i + 1, { silent: big });
       this.elapsedBefore = Math.max(0, overflow) * 1000;
@@ -154,6 +155,7 @@ export class Session {
   }
 
   next() {
+    if (this.finished) return;
     if (this.step.kind === 'hold') this.skips++;
     // jump to next hold
     let j = this.i + 1;
@@ -168,6 +170,7 @@ export class Session {
   }
 
   prev() {
+    if (this.finished) return;
     const cur = this.step;
     if (cur.kind === 'hold' && this.stepElapsed() > 3000) {
       this.enter(this.i, { silent: this.paused });

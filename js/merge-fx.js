@@ -1,10 +1,9 @@
 // The evolution show: two identical Fibbies spin into each other and burst into the next stage.
 // Plays full screen in its own <dialog> (top layer, above any open sheet). Resolves when closed.
-import { critterSVG } from './critter.js';
+import { critterSVG, esc } from './critter.js';
 import { fx, haptics, voiceGuide } from './audio.js';
 import { t } from './i18n.js';
 
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 // Glow colour per stage reached: 2 = teal, 3 = violet, 4 = gold.
 const HUE = { 2: 170, 3: 285, 4: 75 };
 
@@ -32,7 +31,7 @@ export function playMerge(dlg, from, to) {
       <div class="mx-text">
         <div class="mx-kicker">${esc(t('evolvedKicker'))}</div>
         <div class="mx-name">${esc(to.name)}</div>
-        <div class="mx-stars" aria-hidden="true">${Array.from({ length: 4 }, (_, i) => `<i class="${i < to.stage ? 'on' : ''}"><span class="ms filled">star</span></i>`).join('')}</div>
+        <div class="mx-stars" aria-hidden="true">${Array.from({ length: 4 }, (_, i) => `<i class="${i < to.stage ? 'on' : ''}"><span aria-hidden="true" class="ms filled">star</span></i>`).join('')}</div>
         <div class="mx-tap">${esc(t('tapToContinue'))}</div>
       </div>
     </div>`;

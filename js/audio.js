@@ -17,7 +17,7 @@ export function unlockAudio() {
       master.connect(comp).connect(ctx.destination);
     }
     if (ctx.state !== 'running') ctx.resume().catch?.(() => {});
-    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch { /* ignore */ }
+    try { if (navigator.audioSession) navigator.audioSession.type = 'transient'; } catch { /* ignore */ } // ducks other audio instead of stopping it
     // iOS needs one buffer played inside a gesture
     const b = ctx.createBuffer(1, 1, 22050);
     const src = ctx.createBufferSource();
@@ -252,7 +252,11 @@ export const voiceGuide = {
     let vs = speechSynthesis.getVoices();
     if (!vs.length) {
       // Chrome loads voices lazily.
-      await new Promise((r) => { speechSynthesis.addEventListener?.('voiceschanged', r, { once: true }); setTimeout(r, 1500); });
+      await new Promise((r) => {
+        const done = () => { speechSynthesis.removeEventListener?.('voiceschanged', done); r(); };
+        speechSynthesis.addEventListener?.('voiceschanged', done);
+        setTimeout(done, 1500);
+      });
       vs = speechSynthesis.getVoices();
       if (!vs.length) return null;
     }

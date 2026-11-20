@@ -63,7 +63,7 @@ export const native = {
 
   /** The app draws edge-to-edge, so the page shows through the system bars; we only flip the
    *  bar icon colour to stay readable. dark = dark background, so light icons. */
-  statusBar(color, dark) {
+  statusBar(dark) {
     const S = plugin('SystemBars');
     if (!S) return;
     quiet(S.setStyle({ style: dark ? 'DARK' : 'LIGHT' }));

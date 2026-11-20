@@ -2,7 +2,7 @@
 import { cpSync, rmSync, mkdirSync } from 'node:fs';
 
 const OUT = 'www';
-const FILES = ['index.html', 'styles.css', 'manifest.webmanifest', 'sw.js', 'js', 'icons'];
+const FILES = ['index.html', 'styles.css', 'manifest.webmanifest', 'sw.js', 'js', 'icons', 'fonts'];
 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT);

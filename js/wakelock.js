@@ -33,7 +33,6 @@ document.addEventListener('visibilitychange', () => {
 });
 
 export const wakeLock = {
-  supported: 'wakeLock' in navigator,
   on() {
     wanted = true;
     if (native.keepAwake(true)) { nativeOn = true; emit(); return Promise.resolve(); }

@@ -1,5 +1,5 @@
 // Optional cloud save in the player's Google Play Games account (Android app only).
-// Everything the app stores under "limber." in localStorage goes into one saved-game slot as JSON.
+// All progress ("limber." keys, except per-device settings; see js/storage.js) goes into one saved-game slot as JSON.
 //
 // No clocks are compared between devices. Each device remembers the version (`base`) of the cloud
 // copy it last downloaded or uploaded, and whether it changed anything since (`dirty`):
@@ -8,41 +8,25 @@
 //   cloud != base, not dirty  -> another device saved: download
 //   cloud != base, dirty      -> both changed: the player chooses which copy to keep
 import { native } from './native.js';
+import { snapshotProgress as snapshotLocal, replaceProgress, readJSON, writeJSON, xpOf, DEVICE_KEYS } from './storage.js';
 
 const SLOT = 'fibbies-save';
 const META = 'fibbies.cloud'; // per-device, never synced
-const PREFIX = 'limber.';
 const PG = native.playGames;
 const DEFAULT = { on: false, base: null, dirty: false, seq: 0, synced: 0, name: '', signedOut: false };
 
-const readMeta = () => {
-  try { return Object.assign({}, DEFAULT, JSON.parse(localStorage.getItem(META) || '{}')); } catch { return { ...DEFAULT }; }
-};
-let meta = readMeta();
-const saveMeta = () => { try { localStorage.setItem(META, JSON.stringify(meta)); } catch { /* ignore */ } };
+let meta = Object.assign({}, DEFAULT, readJSON(META, {}));
+const saveMeta = () => writeJSON(META, meta);
 
-function snapshotLocal() {
-  const data = {};
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith(PREFIX)) data[k] = localStorage.getItem(k);
-    }
-  } catch { /* ignore */ }
-  return data;
-}
-/** Replace local data with the cloud copy. Writes everything first, deletes leftovers after,
- *  and only records the sync if every write succeeded. */
+/** Replace local progress with the cloud copy. Writes everything first, deletes leftovers after,
+ *  and only records the sync if every write succeeded. Device settings (language, theme) stay. */
 function applyRemote(remote) {
-  const stale = Object.keys(snapshotLocal()).filter((k) => !(k in remote.data));
-  for (const [k, v] of Object.entries(remote.data)) if (k.startsWith(PREFIX) && typeof v === 'string') localStorage.setItem(k, v);
-  for (const k of stale) localStorage.removeItem(k);
+  replaceProgress(remote.data);
   meta.base = remote.at;
   meta.dirty = false;
   meta.synced = Date.now();
   saveMeta();
 }
-const xpOf = (data) => { try { return JSON.parse(data['limber.profile'] || 'null')?.xp || 0; } catch { return 0; } };
 
 let available = null;
 let inited = null;
@@ -62,13 +46,19 @@ async function load() {
   const r = JSON.parse(data);
   return r && r.at != null && r.data && typeof r.data === 'object' ? r : null;
 }
+// Older app versions delete local keys the cloud copy lacks, so uploads keep carrying the device settings
+// (this version ignores them on download: see replaceProgress).
+function withDeviceKeys(data) {
+  for (const k of DEVICE_KEYS) { const v = localStorage.getItem(k); if (v != null) data[k] = v; }
+  return data;
+}
 async function push(remote) {
   clearTimeout(pushTimer);
   const seq = meta.seq;
   // A fresh version id, always different from what the cloud holds now.
   let at = Date.now();
   if (remote && at <= remote.at) at = remote.at + 1;
-  await PG.save({ name: SLOT, data: JSON.stringify({ v: 1, at, data: snapshotLocal() }), description: 'Fibbies' });
+  await PG.save({ name: SLOT, data: JSON.stringify({ v: 1, at, data: withDeviceKeys(snapshotLocal()) }), description: 'Fibbies' });
   meta.base = at;
   meta.dirty = meta.seq !== seq; // something changed while uploading: upload again later
   meta.synced = Date.now();

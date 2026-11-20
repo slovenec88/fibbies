@@ -3,31 +3,33 @@ import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
-import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, levelProgress, fmtBig, QUESTS } from './rewards.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS } from './rewards.js';
 import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
-import { critterSVG, chestSVG } from './critter.js';
+import { critterSVG, chestSVG, esc, stars } from './critter.js';
 import { playReward } from './reward-screen.js';
 import { playMerge } from './merge-fx.js';
 import { native, isNative } from './native.js';
 import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
 import { cloud } from './cloud.js';
+import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
 import { localizeContent } from './localize.js';
 
 const $ = (s, r = document) => r.querySelector(s);
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // ---------- Storage ----------
-const store = {
-  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* ignore */ } },
-};
+// All reads and writes go through js/storage.js (unreadable data is rescued, failed writes reported).
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const readSettings = () => { const v = readJSON('limber.settings', {}); return isObj(v) ? v : {}; };
 const settings = Object.assign(
   { voice: true, sound: true, haptics: true, scale: 1, mode: 'system', hue: 165, lang: getLang() },
-  store.get('limber.settings', {}),
+  readSettings(),
 );
-let log = store.get('limber.history', []);
-const saveSettings = () => store.set('limber.settings', settings);
+// Session history. Streaks are counted from it, so keep plenty: 3000 entries is years of use (~250 KB).
+const HISTORY_MAX = 3000;
+const readLog = () => { const v = readJSON('limber.history', []); return Array.isArray(v) ? v.filter((h) => h && typeof h.day === 'string') : []; };
+let log = readLog();
+const saveSettings = () => writeJSON('limber.settings', settings);
 
 function applySettings() {
   voiceGuide.enabled = settings.voice;
@@ -45,7 +47,7 @@ function updateThemeColor() {
   const view = $('.view.active');
   if (view && view.id === 'view-done') {
     $('meta[name="theme-color"]').setAttribute('content', '#140e26');
-    native.statusBar('#140e26', true);
+    native.statusBar(true);
     return;
   }
   const opaque = (c) => c && c !== 'transparent' && !/rgba\(.*,\s*0\)$/.test(c) && !/\/\s*0\)$/.test(c);
@@ -59,8 +61,7 @@ function updateThemeColor() {
   x.fillRect(0, 0, 1, 1);
   const [r, g, b] = x.getImageData(0, 0, 1, 1).data;
   $('meta[name="theme-color"]').setAttribute('content', `rgb(${r},${g},${b})`);
-  const hex = `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
-  native.statusBar(hex, (r * 299 + g * 587 + b * 114) / 1000 < 128);
+  native.statusBar((r * 299 + g * 587 + b * 114) / 1000 < 128);
 }
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => requestAnimationFrame(updateThemeColor));
 
@@ -85,18 +86,16 @@ function staticFig(stretch, t = 0.5, opts) {
 
 // Animated figures registry (single rAF loop)
 const animated = new Set();
-let animClock = 0;
 let lastFrame = performance.now();
 function frame(ts) {
   const dt = Math.min(0.1, (ts - lastFrame) / 1000);
   lastFrame = ts;
   for (const a of animated) {
     if (!a.fig.svg.isConnected) { animated.delete(a); continue; }
-    if (a.paused?.()) continue;
+    if (a.paused?.() || a.fig.svg.closest('.view:not(.active)')) continue;
     a.time += dt * (a.speed || 1);
     a.fig.animate(a.time);
   }
-  animClock += dt;
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -106,8 +105,6 @@ function animate(fig, opts = {}) {
   return a;
 }
 
-// Only sessions at least half completed count toward streaks, quests and bonuses.
-const counts = (h) => (h.ratio ?? 1) >= 0.5;
 function streak() {
   const days = new Set(log.filter(counts).map((h) => h.day));
   let n = 0;
@@ -142,6 +139,9 @@ document.addEventListener('pointerdown', (e) => {
 
 // ---------- Views ----------
 let currentView = null;
+let pendingReload = false; // a new app version is waiting for a safe moment to load
+// Nothing in progress that a reload would lose: a session, the chest show, or any open sheet or dialog.
+const safeToReload = () => !session && !rewardPlayer && !document.querySelector('dialog[open]');
 // Scroll position of each screen (by URL), so Back returns to where you were instead of the top.
 // New screens opened by a tap still start at the top.
 const scrollMemory = new Map();
@@ -151,7 +151,7 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 function show(name) {
   if (shownHash != null && currentView && currentView !== 'player') scrollMemory.set(shownHash, window.scrollY);
   const target = location.hash || '#/';
-  const restoreTo = backNav ? scrollMemory.get(target) : undefined;
+  const restoreTo = backNav ? scrollMemory.get(target) : target === shownHash ? window.scrollY : undefined;
   shownHash = target;
   const swap = () => {
     document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === name));
@@ -169,7 +169,7 @@ function show(name) {
 }
 
 // ---------- Home ----------
-let activeCat = store.get('limber.cat', 'all');
+let activeCat = readJSON('limber.cat', 'all');
 
 function suggestion() {
   const h = new Date().getHours();
@@ -186,7 +186,7 @@ function renderHome() {
   const st = streak();
 
   // Week strip
-  const days = new Set(log.map((x) => x.day));
+  const days = new Set(log.filter(counts).map((x) => x.day));
   const today = new Date();
   const monday = new Date(today);
   monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
@@ -199,11 +199,11 @@ function renderHome() {
     const k = dayKey(d);
     const done = days.has(k);
     if (done) weekCount++;
-    dots += `<div class="wd${done ? ' done' : ''}${k === dayKey(today) ? ' today' : ''}"><span>${letters[i]}</span><i>${done ? '<span class="ms">check</span>' : ''}</i></div>`;
+    dots += `<div class="wd${done ? ' done' : ''}${k === dayKey(today) ? ' today' : ''}"><span>${letters[i]}</span><i>${done ? '<span aria-hidden="true" class="ms">check</span>' : ''}</i></div>`;
   }
   $('#week-card').innerHTML = `
     <div class="streak">
-      <div class="streak-icon"><span class="ms filled">local_fire_department</span></div>
+      <div class="streak-icon"><span aria-hidden="true" class="ms filled">local_fire_department</span></div>
       <div><b>${t('days', { n: st })}</b><small>${t('thisWeek', { n: weekCount })}</small></div>
     </div>
     <div class="week-dots" aria-label="${t('thisWeekAria')}">${dots}</div>`;
@@ -216,10 +216,10 @@ function renderHome() {
   hero.innerHTML = `
     <button class="hero ripple" data-hue style="--h:${r.hue}" data-open="${r.id}">
       <div class="hero-body">
-        <span class="hero-kicker"><span class="ms filled">${r.icon}</span>${esc(why)}</span>
+        <span class="hero-kicker"><span aria-hidden="true" class="ms filled">${r.icon}</span>${esc(why)}</span>
         <span class="hero-title">${esc(r.title)}</span>
         <span class="hero-meta">${minutes(r)} min · ${t('stretches', { n: r.items.length })}</span>
-        <span class="hero-play"><span class="ms filled">play_arrow</span>${t('start')}</span>
+        <span class="hero-play"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('start')}</span>
       </div>
       <div class="hero-fig"></div>
     </button>`;
@@ -237,7 +237,7 @@ function renderHome() {
   // Chips
   $('#chips').innerHTML = CATEGORIES.map((c) => `
     <button class="chip ripple" role="tab" aria-selected="${c.id === activeCat}" data-cat="${c.id}">
-      <span class="ms">${c.id === activeCat ? 'check' : c.icon}</span>${c.label}
+      <span aria-hidden="true" class="ms">${c.id === activeCat ? 'check' : c.icon}</span>${c.label}
     </button>`).join('');
 
   renderList();
@@ -259,24 +259,23 @@ function renderProgress() {
       </div>
     </div>
     <div class="quests" aria-label="${esc(t('questsAria'))}">
-      ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}"><span class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span>${q.label}</div>`).join('')}
+      ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}"><span aria-hidden="true" class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span>${q.label}</div>`).join('')}
     </div>
-    <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
+    <div class="quest-hint"><span aria-hidden="true" class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
 }
 
-const stars = (n) => `<span class="stars" role="img" aria-label="${esc(t('stageN', { n }))}">${'<span class="ms filled">star</span>'.repeat(n)}<i>${'<span class="ms filled">star</span>'.repeat(MAX_STAGE - n)}</i></span>`;
 
 function renderCollection() {
   const p = loadProfile();
   const gs = groups(p);
   const items = gs.map((g) => `
-    <button class="col-item owned${g.canMerge ? ' can-merge' : ''}" data-fib="${g.key}">
+    <button class="col-item owned${g.canMerge ? ' can-merge' : ''}" data-fib="${esc(g.key)}">
       ${g.count > 1 ? `<span class="col-count">×${g.count}</span>` : ''}
       ${critterSVG(g.fib)}<span class="col-name">${esc(g.fib.name)}</span>${stars(g.fib.stage)}
     </button>`).join('');
   $('#collection').innerHTML = `
     <div class="col-head"><h2>${t('fibbieFriends')}</h2>
-      <button class="col-album ripple" id="btn-album"><span class="ms">auto_stories</span>${t('discovered', { n: discovered(p) })}<span class="ms">chevron_right</span></button></div>
+      <button class="col-album ripple" id="btn-album"><span aria-hidden="true" class="ms">auto_stories</span>${t('discovered', { n: discovered(p) })}<span aria-hidden="true" class="ms">chevron_right</span></button></div>
     ${gs.length ? `<div class="col-row">${items}</div>` : `<div class="col-empty">${critterSVG(null, { locked: true })}<span>${t('moreToFind')}</span></div>`}`;
 }
 
@@ -302,12 +301,12 @@ function renderFib(born = false) {
     <div class="fs-chips"><span class="rar-chip" data-r="${f.rarity}">${t('rarity')[f.rarity]}</span>${stars(stage)}</div>
     <p class="fs-blurb">${esc(f.blurb)}</p>
     ${next ? `<div class="fs-evo">
-      <div class="fs-mini">${critterSVG(f)}<b>×2</b></div><span class="ms">arrow_forward</span>
+      <div class="fs-mini">${critterSVG(f)}<b>×2</b></div><span aria-hidden="true" class="ms">arrow_forward</span>
       <div class="fs-mini">${critterSVG(next, { className: knowNext ? '' : 'sil' })}<b>${knowNext ? esc(next.name) : '?'}</b></div>
     </div>` : ''}
     <div class="fs-owned">${t('owned', { n })}</div>
-    ${next ? `<button class="btn filled ripple fs-merge" id="fs-merge" ${n >= 2 ? '' : 'disabled'}><span class="ms filled">auto_awesome</span>${n >= 2 ? t('merge') : t('needOne')}</button>`
-    : `<div class="fs-max"><span class="ms filled">workspace_premium</span>${t('maxEvo')}</div>`}`;
+    ${next ? `<button class="btn filled ripple fs-merge" id="fs-merge" ${n >= 2 ? '' : 'disabled'}><span aria-hidden="true" class="ms filled">auto_awesome</span>${n >= 2 ? t('merge') : t('needOne')}</button>`
+    : `<div class="fs-max"><span aria-hidden="true" class="ms filled">workspace_premium</span>${t('maxEvo')}</div>`}`;
   const mb = $('#fs-merge');
   if (mb) mb.onclick = doMerge;
 }
@@ -349,11 +348,6 @@ async function runMerge(key, sp, stage) {
   if (albumSheet.open) renderAlbum();
   if (currentView === 'home') { renderCollection(); renderProgress(); }
 }
-fibSheet.addEventListener('click', (e) => {
-  if (e.target !== fibSheet || merging) return;
-  const r = fibSheet.getBoundingClientRect();
-  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) fibSheet.close();
-});
 $('#fib-close').onclick = () => { if (!merging) fibSheet.close(); };
 fibSheet.addEventListener('cancel', (e) => { if (merging) e.preventDefault(); });
 
@@ -377,8 +371,7 @@ function renderAlbum() {
   const p = loadProfile();
   const found = new Map(); // sp -> { stages, first }
   for (const [k, at] of Object.entries(p.dex || {})) {
-    const { sp, stage: raw } = parseKey(k);
-    const stage = Math.max(1, Math.min(MAX_STAGE, Math.round(raw) || 1));
+    const { sp, stage } = parseKey(k);
     const e = found.get(sp) || { stages: [], first: Infinity };
     e.stages.push(stage);
     e.first = Math.min(e.first, Number(at) || 0);
@@ -420,10 +413,10 @@ function renderFlexCard() {
   const sub = since == null ? t('flexFirst') : due ? t('flexDue') : t('flexNext', { n: WEEK_DAYS - since });
   $('#flex-card').classList.toggle('due', due);
   $('#flex-card').innerHTML = `
-    <span class="fx-icon"><span class="ms filled">accessibility_new</span></span>
+    <span class="fx-icon"><span aria-hidden="true" class="ms filled">accessibility_new</span></span>
     <span class="fx-text"><b>${t('flexTitle')}</b><small>${esc(sub)}</small></span>
     ${last ? `<span class="fx-score"><b>${scoreOf(last)}</b>${list.length > 1 ? flexChartSVG(list, { w: 96, h: 40, mini: true }) : ''}</span>` : ''}
-    <span class="ms fx-go" aria-hidden="true">chevron_right</span>`;
+    <span aria-hidden="true" class="ms fx-go">chevron_right</span>`;
   $('#flex-card').setAttribute('aria-label', `${t('flexTitle')}. ${sub} ${due ? t('flexStart') : t('flexView')}`);
 }
 function renderFlex() {
@@ -458,16 +451,16 @@ function renderFlex() {
   const tight = last ? imbalances(last).map(({ test, side }) => t(side === 'L' ? 'flexTightL' : 'flexTightR', { test: t('flexTests')[test.id].name })) : [];
   const since = first && list.length > 1 ? scoreOf(last) - scoreOf(first) : null;
   $('#flex-body').innerHTML = `
-    ${flexNote ? `<div class="flex-note"><span class="ms filled">check_circle</span>${esc(flexNote)}</div>` : ''}
+    ${flexNote ? `<div class="flex-note"><span aria-hidden="true" class="ms filled">check_circle</span>${esc(flexNote)}</div>` : ''}
     ${list.length ? `<div class="flex-chart-box">
       <div class="fcb-head"><b>${t('flexScore')}</b>${since != null ? `<small>${esc(t('flexSince', { n: since }))}</small>` : ''}</div>
       ${flexChartSVG(list)}
       <div class="fcb-read" id="flex-read">${esc(list.length > 1 ? t('flexTapPoint') : t('flexOnePoint'))}</div>
-      ${tight.map((s) => `<div class="flex-tight"><span class="ms">balance</span><span>${esc(s)}</span></div>`).join('')}
+      ${tight.map((s) => `<div class="flex-tight"><span aria-hidden="true" class="ms">balance</span><span>${esc(s)}</span></div>`).join('')}
     </div>` : ''}
     <p class="flex-intro">${t('flexIntro')}</p>
     ${rows}
-    <button class="btn filled ripple flex-save" id="flex-save" ${done ? '' : 'aria-disabled="true"'}><span class="ms filled">save</span>${t('flexSave')}</button>
+    <button class="btn filled ripple flex-save" id="flex-save" ${done ? '' : 'aria-disabled="true"'}><span aria-hidden="true" class="ms filled">save</span>${t('flexSave')}</button>
     <p class="flex-need" id="flex-need" hidden>${t('flexPickAll')}</p>`;
   for (const x of FLEX_TESTS) {
     const box = $(`#flex-body .ft[data-t="${x.id}"] .ft-fig`);
@@ -545,7 +538,7 @@ function renderList() {
       <div class="rc-thumb"></div>
       <div>
         <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${t('stretches', { n: r.items.length })}</span></div>
+        <div class="rc-meta">${r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${t('stretches', { n: r.items.length })}</span></div>
       </div>
       <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
@@ -558,7 +551,7 @@ function renderRanking() {
   const box = $('#ranking');
   const cat = catOf(activeCat);
   if (activeCat === 'all') {
-    box.innerHTML = `<div class="rank-hint"><span class="ms">leaderboard</span><span>${t('rankHint')}</span></div>`;
+    box.innerHTML = `<div class="rank-hint"><span aria-hidden="true" class="ms">leaderboard</span><span>${t('rankHint')}</span></div>`;
     return;
   }
   const rows = RANKINGS[activeCat];
@@ -582,7 +575,7 @@ function renderRanking() {
     if (i === 4) {
       const sep = document.createElement('li');
       sep.className = 'rank-sep';
-      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span class="ms filled">play_arrow</span>${t('playTop5', { m: minutes(top) })}</button>`;
+      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('playTop5', { m: minutes(top) })}</button>`;
       ol.appendChild(sep);
     }
   });
@@ -592,7 +585,7 @@ $('#chips').addEventListener('click', (e) => {
   const c = e.target.closest('[data-cat]');
   if (!c) return;
   activeCat = c.dataset.cat;
-  store.set('limber.cat', activeCat);
+  writeJSON('limber.cat', activeCat);
   document.querySelectorAll('#chips .chip').forEach((ch) => {
     const on = ch.dataset.cat === activeCat;
     ch.setAttribute('aria-selected', on);
@@ -617,25 +610,25 @@ function renderDetail(r) {
   v.style.setProperty('--h', r.hue);
   v.innerHTML = `
     <div class="detail-top">
-      <button class="icon-btn ripple" id="dt-back" aria-label="${t('back')}"><span class="ms">arrow_back</span></button>
-      <button class="icon-btn ripple" id="dt-settings" aria-label="${t('settings')}"><span class="ms">tune</span></button>
+      <button class="icon-btn ripple" id="dt-back" aria-label="${t('back')}"><span aria-hidden="true" class="ms">arrow_back</span></button>
+      <button class="icon-btn ripple" id="dt-settings" aria-label="${t('settings')}"><span aria-hidden="true" class="ms">tune</span></button>
     </div>
     <div class="detail-hero">
-      <div class="kicker"><span class="ms filled">${r.icon}</span>${catOf(r.cat).label}</div>
+      <div class="kicker"><span aria-hidden="true" class="ms filled">${r.icon}</span>${catOf(r.cat).label}</div>
       <h1>${esc(r.title)}</h1>
       <p>${esc(r.blurb)}</p>
       <div class="detail-stats">
-        <span class="stat-pill"><span class="ms">schedule</span>${fmtTime(total)}</span>
-        <span class="stat-pill"><span class="ms">format_list_bulleted</span>${t('stretches', { n: r.items.length })}</span>
-        ${moves.some((m) => m.side) ? `<span class="stat-pill"><span class="ms">swap_horiz</span>${t('bothSides')}</span>` : ''}
-        ${settings.scale === 'flex' ? `<span class="stat-pill"><span class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
+        <span class="stat-pill"><span aria-hidden="true" class="ms">schedule</span>${fmtTime(total)}</span>
+        <span class="stat-pill"><span aria-hidden="true" class="ms">format_list_bulleted</span>${t('stretches', { n: r.items.length })}</span>
+        ${moves.some((m) => m.side) ? `<span class="stat-pill"><span aria-hidden="true" class="ms">swap_horiz</span>${t('bothSides')}</span>` : ''}
+        ${settings.scale === 'flex' ? `<span class="stat-pill"><span aria-hidden="true" class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
       </div>
       <div class="detail-fig"></div>
     </div>
-    <div class="detail-tip"><span class="ms">volume_up</span><span>${t('soundTip')}</span></div>
+    <div class="detail-tip"><span aria-hidden="true" class="ms">volume_up</span><span>${t('soundTip')}</span></div>
     <div class="move-list"><h3>${t('whatYoullDo')}</h3></div>
     <div class="start-bar">
-      <button class="fab-ext ripple" id="dt-start"><span class="ms filled">play_arrow</span>${t('startMin', { m: minutes(r) })}</button>
+      <button class="fab-ext ripple" id="dt-start"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('startMin', { m: minutes(r) })}</button>
     </div>`;
   const df = new Figure(firstStretch(r));
   v.querySelector('.detail-fig').appendChild(df.svg);
@@ -712,7 +705,7 @@ function renderStep(s) {
   const side = $('#pl-side');
   if (move.side) {
     side.hidden = false;
-    side.innerHTML = `<span class="ms">${move.side === 'L' ? 'west' : 'east'}</span>${sideLabel(move)}`;
+    side.innerHTML = `<span aria-hidden="true" class="ms">${move.side === 'L' ? 'west' : 'east'}</span>${sideLabel(move)}`;
   } else side.hidden = true;
   $('#pl-target').textContent = st.kind === 'hold' ? stretch.target : t(st.kind === 'prep' ? 'firstUp' : st.switchSides ? 'otherSide' : 'nextUp');
   $('#pl-name').textContent = stretch.name;
@@ -730,9 +723,9 @@ function renderStep(s) {
     nextFig = staticFig(nextMove.stretch, 0.5, { mirror: nextMove.side === 'R' });
     un.querySelector('.un-thumb').appendChild(nextFig);
   } else if (st.kind === 'hold') {
-    un.innerHTML = '<span class="ms filled" style="color:var(--primary);margin-left:8px">flag</span><span>' + t('lastOne') + '</span>';
+    un.innerHTML = '<span aria-hidden="true" class="ms filled" style="color:var(--primary);margin-left:8px">flag</span><span>' + t('lastOne') + '</span>';
   } else {
-    un.innerHTML = `<span class="ms" style="margin-left:8px">timer</span><span>${esc(move.stretch.target)}</span><span class="un-time">${move.secs}${t('sec')}</span>`;
+    un.innerHTML = `<span aria-hidden="true" class="ms" style="margin-left:8px">timer</span><span>${esc(move.stretch.target)}</span><span class="un-time">${move.secs}${t('sec')}</span>`;
   }
   // segments
   const segs = $('#pl-segments').children;
@@ -769,11 +762,11 @@ function setPausedUI(p) {
 }
 
 $('#pl-play').onclick = () => {
-  if (!session) return;
+  if (!session || session.finished) return;
   unlockAudio();
   session.toggle();
   setPausedUI(session.paused);
-  if (!session.paused) wakeLock.on();
+  if (session.paused) wakeLock.off(); else wakeLock.on();
 };
 $('#pl-stage').addEventListener('click', () => $('#pl-play').click());
 $('#pl-next').onclick = () => session?.next();
@@ -794,26 +787,38 @@ function confirmEnd() {
   const wasPaused = session.paused;
   session.pause();
   setPausedUI(true);
+  wakeLock.off();
   dlgEnd.showModal();
   dlgEnd.onclose = () => {
     if (dlgEnd.returnValue === 'end') leavePlayer();
-    else if (!wasPaused) { session.resume(); setPausedUI(false); }
+    else if (!wasPaused) { session.resume(); setPausedUI(false); wakeLock.on(); }
     dlgEnd.returnValue = '';
   };
 }
 $('#dlg-keep').onclick = () => dlgEnd.close('keep');
 $('#dlg-end-ok').onclick = () => dlgEnd.close('end');
 
-function leavePlayer() {
+// A finished session left before the chest screen: say what was banked.
+function announceBanked() {
   clearTimeout(doneTimer);
-  if (lastResult && !lastResult.shown && lastResult.reward) {
-    lastResult.shown = true;
-    const rw = lastResult.reward;
-    setTimeout(() => snackbar(rw.ranAway ? t('chestBankedRan', { f: fmtBig(rw.total) }) : t('chestBanked', { f: fmtBig(rw.total), name: rw.fibbie.name })), 400);
-  }
-  session?.destroy();
+  if (!lastResult || lastResult.shown || !lastResult.reward) return false;
+  lastResult.shown = true;
+  const rw = lastResult.reward;
+  setTimeout(() => snackbar(rw.ranAway ? t('chestBankedRan', { f: fmtBig(rw.total) }) : t('chestBanked', { f: fmtBig(rw.total), name: rw.fibbie.name })), 400);
+  return true;
+}
+/** Ends the current session. Returns true when a "chest banked" message was queued. */
+function endSession() {
+  if (!session) return false;
+  const banked = session.finished && announceBanked();
+  session.destroy();
   session = null;
   wakeLock.off();
+  return banked;
+}
+function leavePlayer() {
+  if (!session?.finished) announceBanked();
+  endSession();
   allowLeave = true;
   back();
 }
@@ -834,15 +839,15 @@ let lastResult = null;
 let doneTimer = null;
 let rewardPlayer = null;
 function finish(s) {
+  log = readLog(); // re-read, so another open copy of the app (tab, installed app) can't be overwritten
   const secs = Math.round(s.activeSeconds());
   const day = dayKey();
   const ratio = Math.max(0, Math.min(1, s.activeSeconds() / Math.max(1, s.total * 0.9)));
   const priorToday = todaysCats(log, day);
   const firstToday = !log.some((h) => h.day === day && counts(h));
   log.push({ day, id: s.routine.id, cat: s.routine.cat, secs, ratio: Math.round(ratio * 100) / 100, at: Date.now() });
-  log = log.slice(-500);
-  store.set('limber.history', log);
-  cloud.touch();
+  log = log.slice(-HISTORY_MAX);
+  if (writeJSON('limber.history', log)) cloud.touch();
   const profile = loadProfile();
   const reward = ratio < 0.5 ? null : computeReward({
     routine: s.routine,
@@ -872,6 +877,7 @@ function renderDone() {
   if (!res || res.shown) { replace('#/'); return; }
   res.shown = true;
   const r = res.routine;
+  const again = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
   rewardPlayer?.stop();
   if (!res.reward) {
     v.innerHTML = `
@@ -880,18 +886,19 @@ function renderDone() {
         <h1>${t('soClose')}</h1>
         <p>${t('soCloseBody')}</p>
         <div class="rw-actions">
-          <button class="rw-btn primary ripple" id="rw-again"><span class="ms filled">replay</span>${t('tryAgain')}</button>
-          <button class="rw-btn ripple" id="rw-home" aria-label="${t('home')}"><span class="ms">home</span></button>
+          <button class="rw-btn primary ripple" id="rw-again"><span aria-hidden="true" class="ms filled">replay</span>${t('tryAgain')}</button>
+          <button class="rw-btn ripple" id="rw-home" aria-label="${t('home')}"><span aria-hidden="true" class="ms">home</span></button>
         </div>
       </div></div>`;
-    $('#rw-again').onclick = () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); };
+    $('#rw-again').onclick = again;
     $('#rw-home').onclick = () => replace('#/');
     return;
   }
+  const st = streak();
   rewardPlayer = playReward(v, res.reward, {
-    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [String(streak()), t('statStreak', { n: streak() })]],
+    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [String(st), t('statStreak', { n: st })]],
     onHome: () => replace('#/'),
-    onAgain: () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); },
+    onAgain: again,
   });
 }
 
@@ -946,12 +953,6 @@ function syncSeg(sel, val) {
 }
 $('#btn-settings').onclick = openSettings;
 $('#set-close').onclick = () => sheet.close();
-sheet.addEventListener('click', (e) => {
-  if (e.target !== sheet) return;
-  const r = sheet.getBoundingClientRect();
-  const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-  if (!inside) sheet.close();
-});
 sheet.addEventListener('close', () => {
   setSoundIcon();
   if (currentView === 'home') renderHome();
@@ -1019,7 +1020,7 @@ function route() {
   if (view !== 'done' && rewardPlayer) { rewardPlayer.stop(); rewardPlayer = null; voiceGuide.stop(); haptics.stop(); }
 
   if (view === 'r' && routineById(id)) {
-    if (session) { session.destroy(); session = null; wakeLock.off(); }
+    endSession();
     renderDetail(routineById(id));
     show('detail');
   } else if (view === 'play' && routineById(id)) {
@@ -1037,7 +1038,8 @@ function route() {
     show('done');
     renderDone();
   } else {
-    if (session) { session.destroy(); session = null; wakeLock.off(); }
+    const banked = endSession();
+    if (pendingReload && !banked && safeToReload()) { location.reload(); return; }
     renderHome();
     show('home');
   }
@@ -1069,8 +1071,7 @@ let cloudMsg = null;
 sheet.addEventListener('close', () => { cloudMsg = null; });
 const dlgCloud = $('#dlg-cloud');
 function chooseCopy(remote) {
-  let lvl = 1;
-  try { lvl = levelProgress(JSON.parse(remote.data['limber.profile'] || '{}').xp || 0).level; } catch { /* ignore */ }
+  const lvl = levelProgress(xpOf(remote.data)).level;
   const here = levelProgress(loadProfile().xp).level;
   const fmt = (ms) => new Date(ms).toLocaleString(numLocale(), { dateStyle: 'medium', timeStyle: 'short' });
   $('#dlg-cloud-body').textContent = t('cloudChoose', { cloud: lvl, when: fmt(remote.at), here });
@@ -1126,6 +1127,12 @@ function reloadAfterPull() {
 // Dragging down from the handle, or anywhere while the sheet is scrolled to the top, moves the
 // sheet with the finger; letting go far enough (or with a quick flick) closes it.
 function dragToClose(dlg, canClose = () => true) {
+  // A tap on the dimmed area around the sheet (the dialog itself, outside its box) closes it too.
+  dlg.addEventListener('click', (e) => {
+    if (e.target !== dlg || !canClose()) return;
+    const r = dlg.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+  });
   let y0 = 0, t0 = 0, dy = 0, active = false, dragging = false;
   const reset = () => { dlg.style.transition = ''; dlg.style.translate = ''; };
   dlg.addEventListener('touchstart', (e) => {
@@ -1165,23 +1172,15 @@ function dragToClose(dlg, canClose = () => true) {
   dlg.addEventListener('touchend', end);
   dlg.addEventListener('touchcancel', end);
 }
-dragToClose(sheet);
+for (const s of [sheet, flexSheet, albumSheet]) dragToClose(s);
 dragToClose(fibSheet, () => !merging);
-for (const s of [flexSheet, albumSheet]) {
-  dragToClose(s);
-  s.addEventListener('click', (e) => {
-    if (e.target !== s) return;
-    const r = s.getBoundingClientRect();
-    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) s.close();
-  });
-}
 
 // ---------- Safety note ----------
 // Shown once on first launch (and any time from the link at the bottom of home).
 const dlgSafety = $('#dlg-safety');
 const SAFETY_ICONS = ['local_fire_department', 'warning', 'air', 'medical_services'];
 function openSafety() {
-  $('#safety-list').innerHTML = t('safetyItems').map((s, i) => `<li><span class="ms">${SAFETY_ICONS[i] || 'check'}</span><span>${esc(s)}</span></li>`).join('');
+  $('#safety-list').innerHTML = t('safetyItems').map((s, i) => `<li><span aria-hidden="true" class="ms">${SAFETY_ICONS[i] || 'check'}</span><span>${esc(s)}</span></li>`).join('');
   if (!dlgSafety.open) dlgSafety.showModal();
 }
 $('#btn-safety').onclick = openSafety;
@@ -1203,8 +1202,72 @@ let dialogSeq = 0;
 const dialogWatch = new MutationObserver((ms) => ms.forEach((m) => { if (m.target.open) m.target.dataset.seq = String(++dialogSeq); }));
 document.querySelectorAll('dialog').forEach((d) => dialogWatch.observe(d, { attributes: true, attributeFilter: ['open'] }));
 
+// ---------- Keeping data safe ----------
+// Another open copy of the app (a browser tab next to the installed app) changed the saved data.
+window.addEventListener('storage', (e) => {
+  if (e.storageArea !== localStorage) return;
+  if (e.key === null || e.key === 'limber.history') log = readLog();
+  if (e.key === null || e.key === 'limber.settings') {
+    Object.assign(settings, readSettings());
+    applySettings();
+    if (settings.lang && settings.lang !== getLang()) setLang(settings.lang);
+  }
+  if (!session && currentView === 'home' && !document.querySelector('dialog[open]')) renderHome();
+});
+onSaveFail(() => setTimeout(() => snackbar(t('saveFailed')), 300));
+
+// Backup code: copy all progress as text, or restore it on this phone (works without Google Play).
+const dlgBackup = $('#dlg-backup');
+$('#set-backup-copy').onclick = async () => {
+  const code = makeBackupCode();
+  let copied = false;
+  try { await navigator.clipboard.writeText(code); copied = true; } catch { /* fall back to showing it */ }
+  if (copied) { cloudMsgSet(t('backupCopied')); return; }
+  openBackup(code); // no clipboard access: show the code selected so it can be copied by hand
+};
+$('#set-backup-restore').onclick = () => openBackup('');
+function openBackup(code) {
+  const ta = $('#backup-text');
+  ta.value = code;
+  ta.readOnly = !!code;
+  $('#backup-msg').textContent = code ? t('backupCopyHand') : '';
+  $('#dlg-backup-ok').hidden = !!code;
+  $('#dlg-backup-ok').textContent = t('backupRestoreBtn');
+  backupPending = null;
+  dlgBackup.showModal();
+  if (code) { ta.focus(); ta.select(); } else ta.focus();
+}
+$('#dlg-backup-cancel').onclick = () => dlgBackup.close();
+let backupPending = null; // a valid code waiting for the second tap ("Replace")
+$('#backup-text').addEventListener('input', () => { backupPending = null; $('#dlg-backup-ok').textContent = t('backupRestoreBtn'); });
+$('#dlg-backup-ok').onclick = () => {
+  if (!backupPending) {
+    const b = readBackupCode($('#backup-text').value);
+    if (!b) { $('#backup-msg').textContent = t('backupInvalid'); return; }
+    backupPending = b;
+    const lvl = levelProgress(xpOf(b.data)).level;
+    $('#backup-msg').textContent = t('backupConfirm', { level: lvl, here: levelProgress(loadProfile().xp).level });
+    $('#dlg-backup-ok').textContent = t('backupReplace');
+    return;
+  }
+  const b = backupPending;
+  try { replaceProgress(b.data); } catch { $('#backup-msg').textContent = t('saveFailed'); return; }
+  cloud.touch(); // with cloud save on, the restored copy is what gets uploaded next
+  try { sessionStorage.setItem('fibbies.restored-backup', '1'); } catch { /* ignore */ }
+  location.reload();
+};
+// A short note in place of the backup row's subtitle (snackbars sit behind the open sheet).
+function cloudMsgSet(text) {
+  const el = $('#set-backup-copy small');
+  el.textContent = text;
+  clearTimeout(cloudMsgSet.t);
+  cloudMsgSet.t = setTimeout(() => { el.textContent = t('backupCopySub'); }, 3500);
+}
+
 // ---------- Boot ----------
 if (isNative) document.documentElement.classList.add('native');
+else requestPersistence(); // ask the browser not to clear the site's data when space runs low
+if (!history.state) history.replaceState({ d: 0 }, '', location.href);
 if (settings.lang !== getLang()) setLang(settings.lang);
 localizeContent();
 translateDom();
@@ -1223,11 +1286,17 @@ window.__booted = true;
 native.hideSplash();
 try {
   if (sessionStorage.getItem('fibbies.restored')) { sessionStorage.removeItem('fibbies.restored'); setTimeout(() => snackbar(t('cloudRestored')), 600); }
+  if (sessionStorage.getItem('fibbies.restored-backup')) { sessionStorage.removeItem('fibbies.restored-backup'); setTimeout(() => snackbar(t('backupDone')), 600); }
 } catch { /* ignore */ }
 if (cloud.on) cloudSync();
 setTimeout(maybeShowSafety, 700);
 native.onResume(() => { if (cloud.on) cloudSync(); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && cloud.on) cloud.sync().catch(() => {}); });
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) return;
+  if (session && !session.finished && !session.paused) { session.pause(); setPausedUI(true); wakeLock.off(); }
+  if (cloud.on) cloud.sync().catch(() => {});
+  if (pendingReload && safeToReload()) location.reload(); // apply a waiting update while nobody is looking
+});
 
 // Android hardware back: close dialogs first, confirm before leaving a session, exit from home.
 native.onBackButton(() => {
@@ -1254,7 +1323,8 @@ if (!isNative && 'serviceWorker' in navigator && location.protocol.startsWith('h
     let reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (skipNext) { skipNext = false; return; }
-      if (reloaded || session) return; // never interrupt a running session
+      if (reloaded) return;
+      if (!safeToReload() || currentView !== 'home') { pendingReload = true; return; }
       reloaded = true;
       location.reload();
     });

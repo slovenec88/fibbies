@@ -18,5 +18,9 @@
       "insetsHandling": "css",
       "initialViewportFitValueHint": "cover"
     }
+  },
+  "server": {
+    "androidScheme": "https",
+    "hostname": "localhost"
   }
 }

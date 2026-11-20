@@ -1,4 +1,11 @@
 // Cute collectible "Fibbie" critters, drawn as inline SVG strings from a genome (see fibbies.js).
+import { t } from './i18n.js';
+import { MAX_STAGE } from './fibbies.js';
+
+/** Escape text for HTML. */
+export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+/** Evolution stars. With `label`, screen readers hear "stage n of 4"; without, they skip it. */
+export const stars = (n, label = true) => `<span class="stars" ${label ? `role="img" aria-label="${esc(t('stageN', { n }))}"` : 'aria-hidden="true"'}>${'<span aria-hidden="true" class="ms filled">star</span>'.repeat(n)}<i>${'<span aria-hidden="true" class="ms filled">star</span>'.repeat(MAX_STAGE - n)}</i></span>`;
 // Everything is plain shapes: no images. The 12 originals use the 'bean' body and classic face.
 const INK = '#2b2233';
 let uidN = 0;

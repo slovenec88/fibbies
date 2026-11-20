@@ -4,6 +4,7 @@
 import { t, getLang, numLocale } from './i18n.js';
 import { fibbie, keyOf, countOf, dropFibbie, addFibbie, migrateProfile } from './fibbies.js';
 import { cloud } from './cloud.js';
+import { readJSON, writeJSON } from './storage.js';
 
 export const FIBERS_PER_SEC = 1337;
 
@@ -14,18 +15,14 @@ export const TIERS = [
   { name: 'Legendary', label: 'Legendary chest' },
 ];
 
-export { FIBBIES } from './fibbies.js';
-
 // ---------- Profile storage ----------
 const KEY = 'limber.profile';
 export function loadProfile() {
-  let p = null;
-  try { p = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { /* ignore */ }
-  return migrateProfile(Object.assign({ xp: 0, fibers: 0, chests: 0, buddy: null }, p || {}));
+  const p = readJSON(KEY, null);
+  return migrateProfile(Object.assign({ xp: 0, fibers: 0, chests: 0, buddy: null }, p && typeof p === 'object' && !Array.isArray(p) ? p : {}));
 }
 export function saveProfile(p) {
-  try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ }
-  cloud.touch();
+  if (writeJSON(KEY, p)) cloud.touch();
 }
 
 // ---------- Levels ----------
@@ -70,9 +67,11 @@ export const QUESTS = [
   { cat: 'evening', icon: 'bedtime', label: 'Evening wind-down' },
 ];
 
-/** Categories completed today, from the session log (entries count when at least half done). */
+/** Only sessions at least half completed count toward streaks, quests and bonuses. */
+export const counts = (h) => (h.ratio ?? 1) >= 0.5;
+/** Categories completed today, from the session log. */
 export function todaysCats(log, day) {
-  return new Set(log.filter((h) => h.day === day && h.cat && (h.ratio ?? 1) >= 0.5).map((h) => h.cat));
+  return new Set(log.filter((h) => h.day === day && h.cat && counts(h)).map((h) => h.cat));
 }
 
 // ---------- Reward computation ----------

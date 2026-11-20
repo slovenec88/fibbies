@@ -2,20 +2,21 @@
 // Every deploy bumps VERSION. A new worker downloads the whole app shell fresh
 // (bypassing the HTTP cache) before it takes over, and pages are always served
 // from one consistent cache, so old and new files can never be mixed.
-const VERSION = 'fibbies-v24';
+const VERSION = 'fibbies-v28';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest',
   'js/app.js', 'js/data.js', 'js/figure.js', 'js/audio.js', 'js/session.js', 'js/wakelock.js',
-  'js/rewards.js', 'js/critter.js', 'js/reward-screen.js', 'js/native.js', 'js/i18n.js', 'js/localize.js', 'js/fibbies.js', 'js/cloud.js', 'js/flex.js', 'js/merge-fx.js',
-  'js/lang/de.js', 'js/lang/es.js', 'js/lang/fr.js', 'js/lang/it.js', 'js/lang/pt.js',
+  'js/rewards.js', 'js/critter.js', 'js/reward-screen.js', 'js/native.js', 'js/i18n.js', 'js/localize.js', 'js/fibbies.js', 'js/cloud.js', 'js/flex.js', 'js/merge-fx.js', 'js/storage.js',
+  'js/lang/de.js', 'js/lang/es.js', 'js/lang/fr.js', 'js/lang/it.js', 'js/lang/pt.js', 'js/lang/sl.js',
+  'fonts/fonts.css', 'fonts/material-symbols-rounded-fallback.woff2', 'fonts/roboto-flex-latin.woff2', 'fonts/roboto-flex-latin-ext.woff2',
+  'fonts/bricolage-grotesque-latin.woff2', 'fonts/bricolage-grotesque-latin-ext.woff2',
   'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
 ];
-const FONTS = 'fibbies-fonts';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(VERSION)
-      .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'no-cache' }))))
       .then(() => self.skipWaiting()),
   );
 });
@@ -23,7 +24,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== FONTS).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -33,13 +34,6 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  if (url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com')) {
-    e.respondWith(caches.open(FONTS).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => {
-      if (res.ok || res.type === 'opaque') c.put(req, res.clone());
-      return res;
-    }))));
-    return;
-  }
   if (url.origin !== location.origin) return;
 
   // App shell: serve from this version's cache; fall back to the network for anything else.

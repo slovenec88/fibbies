@@ -533,8 +533,6 @@ export const RANKINGS = {
   ],
 };
 
-export const topFive = (cat) => RANKINGS[cat].slice(0, 5).map(([id]) => id);
-
 // items: [stretchId, seconds per side]
 export const ROUTINES = [
   {
@@ -613,11 +611,6 @@ export const PREP_SECS = 8;
 export const SWITCH_SECS = 4;
 export const REST_SECS = 6;
 
-export function getStretch(id) {
-  return STRETCHES[id];
-}
-
-/** Expand a routine into a playable timeline of steps. */
 /**
  * Hold length for one stretch. `scale` is a multiplier (0.8, 1, 1.25) or 'flex':
  * Flexibility mode brings every static hold up to 60 s per side (ACSM's ~60 s per

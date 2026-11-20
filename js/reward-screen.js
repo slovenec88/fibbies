@@ -1,15 +1,13 @@
 // The end-of-session payoff: chest drop, open, count-up, multipliers, loot, XP.
 import { TIERS, levelProgress, fmtBig } from './rewards.js';
-import { critterSVG, chestSVG } from './critter.js';
+import { critterSVG, chestSVG, esc, stars } from './critter.js';
 import { fx, voiceGuide, haptics } from './audio.js';
 import { t, getLang, numLocale } from './i18n.js';
 
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 let numFmt = null; // one formatter per show (creating one every frame is slow)
 const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
 
 const TAPS = 3; // taps to break the chest open
-const stars = (n) => `<span class="stars" aria-hidden="true">${'<span class="ms filled">star</span>'.repeat(n)}<i>${'<span class="ms filled">star</span>'.repeat(4 - n)}</i></span>`;
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
   numFmt = null;
@@ -30,14 +28,14 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-fx" aria-hidden="true"></div>
       <div class="rw-flash" aria-hidden="true"></div>
       <div class="rw-banner" aria-hidden="true"></div>
-      <button class="rw-skip" id="rw-skip"><span>${t('skip')}</span><span class="ms">fast_forward</span></button>
+      <button class="rw-skip" id="rw-skip"><span>${t('skip')}</span><span aria-hidden="true" class="ms">fast_forward</span></button>
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
         <button class="rw-chest" aria-label="${t('openChest')}"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
-        <div class="rw-tap"><span class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
+        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
         <div class="rw-count">
           <div class="rw-label">${t('fibersLabel')}</div>
-          <div class="rw-big-wrap" data-n="0"><div class="rw-big" aria-live="polite">0</div></div>
+          <div class="rw-big-wrap" data-n="0"><div class="rw-big">0</div></div>
           <div class="rw-mults"></div>
         </div>
         <div class="rw-loot"></div>
@@ -51,8 +49,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         </div>
         <div class="rw-stats">${stats.map(([v, l]) => `<span><b>${esc(v)}</b>${esc(l)}</span>`).join('')}</div>
         <div class="rw-actions">
-          <button class="rw-btn primary ripple" id="rw-home"><span class="ms filled">check</span>${t('collect')}</button>
-          <button class="rw-btn ripple" id="rw-again"><span class="ms">replay</span>${t('again')}</button>
+          <button class="rw-btn primary ripple" id="rw-home"><span aria-hidden="true" class="ms filled">check</span>${t('collect')}</button>
+          <button class="rw-btn ripple" id="rw-again"><span aria-hidden="true" class="ms">replay</span>${t('again')}</button>
         </div>
       </div>
     </div>`;
@@ -328,7 +326,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       if (!alive) return;
       const pill = document.createElement('div');
       pill.className = `rw-mult${m.hot ? ' hot' : ''}`;
-      pill.innerHTML = `<span class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${m.x}</b>`;
+      pill.innerHTML = `<span aria-hidden="true" class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${m.x}</b>`;
       ml.appendChild(pill);
       fx.slam(m.hot);
       haptics.buzz(m.hot ? [40, 30, 80] : 60);
@@ -390,7 +388,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         <div class="rw-card-text">
           <span class="rw-new">${rw.isNew ? t('newFriend') : t('dupe', { n: rw.copies })}</span>
           <b>${esc(f.name)}</b>
-          <span class="rw-rarity">${t('rarity')[f.rarity]}</span>${stars(f.stage)}
+          <span class="rw-rarity">${t('rarity')[f.rarity]}</span>${stars(f.stage, false)}
           <small${rw.copies >= 2 ? ' class="rw-merge"' : ''}>${esc(rw.copies >= 2 ? t('mergeHint') : f.blurb)}</small>
         </div>
       </div>`;

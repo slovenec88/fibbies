@@ -97,7 +97,7 @@ export const keyOf = (sp, stage) => `${sp}@${stage}`;
 export function parseKey(key) {
   const i = key.lastIndexOf('@');
   if (i < 0) return { sp: key, stage: 1 };
-  return { sp: key.slice(0, i), stage: Number(key.slice(i + 1)) || 1 };
+  return { sp: key.slice(0, i), stage: Math.min(MAX_STAGE, Math.max(1, Math.round(Number(key.slice(i + 1))) || 1)) };
 }
 
 /** A displayable Fibbie: species + evolution stage, with the genome evolved for that stage. */
