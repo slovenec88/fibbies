@@ -142,11 +142,22 @@ document.addEventListener('pointerdown', (e) => {
 
 // ---------- Views ----------
 let currentView = null;
+// Scroll position of each screen (by URL), so Back returns to where you were instead of the top.
+// New screens opened by a tap still start at the top.
+const scrollMemory = new Map();
+let shownHash = null;
+let backNav = false; // set while handling a Back (popstate) navigation
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 function show(name) {
+  if (shownHash != null && currentView && currentView !== 'player') scrollMemory.set(shownHash, window.scrollY);
+  const target = location.hash || '#/';
+  const restoreTo = backNav ? scrollMemory.get(target) : undefined;
+  shownHash = target;
   const swap = () => {
     document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.dataset.view === name));
     currentView = name;
-    if (name !== 'player') window.scrollTo(0, 0);
+    if (restoreTo != null) window.scrollTo(0, restoreTo);
+    else if (name !== 'player') window.scrollTo(0, 0);
     updateThemeColor();
   };
   if (document.startViewTransition && currentView && currentView !== name && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -983,7 +994,10 @@ function back() {
   if (depth() > 0) window.history.back();
   else replace('#/');
 }
-window.addEventListener('popstate', route);
+window.addEventListener('popstate', () => {
+  backNav = true;
+  try { route(); } finally { backNav = false; }
+});
 // Only for manually edited URLs (pushState/popstate entries already carry state).
 window.addEventListener('hashchange', () => {
   if (window.history.state) return;
