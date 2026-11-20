@@ -3,11 +3,18 @@ import { TIERS, levelProgress, fmtBig } from './rewards.js';
 import { critterSVG, chestSVG, esc, stars } from './critter.js';
 import { fx, voiceGuide, haptics } from './audio.js';
 import { t, getLang, numLocale } from './i18n.js';
+import { createFx, raysCanvas, pillarCanvas, coreCanvas, flareCanvas } from './fx-canvas.js';
 
 let numFmt = null; // one formatter per show (creating one every frame is slow)
 const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
 
 const TAPS = 3; // taps to break the chest open
+
+// Chest colours (the same as --tc / --tc2 in styles.css) and how big the show gets:
+// a wooden chest gets the basic show, a rare one a stronger show, epic and legendary the biggest.
+const TIER_COLORS = [['#f2c14e', '#ff9f1c'], ['#5aa9e6', '#4cc9f0'], ['#b388ff', '#ff5fa2'], ['#ffd60a', '#ff5fa2']];
+const POWER = [1, 2, 3, 3];
+const RAINBOW = ['#ff5fa2', '#ffd60a', '#4cc9f0', '#5ee38f', '#b388ff'];
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
   numFmt = null;
@@ -24,8 +31,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
 
   root.innerHTML = `
     <div class="reward" data-tier="${rw.tier}">
-      <div class="rw-beams" aria-hidden="true"></div>
-      <div class="rw-fx" aria-hidden="true"></div>
+      <div class="rw-light" aria-hidden="true"><div class="rw-beams"></div></div>
       <div class="rw-flash" aria-hidden="true"></div>
       <div class="rw-banner" aria-hidden="true"></div>
       <button class="rw-skip" id="rw-skip"><span>${t('skip')}</span><span aria-hidden="true" class="ms">fast_forward</span></button>
@@ -35,7 +41,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
         <div class="rw-count">
           <div class="rw-label">${t('fibersLabel')}</div>
-          <div class="rw-big-wrap" data-n="0"><div class="rw-big">0</div></div>
+          <div class="rw-big-wrap"><div class="rw-big">0</div></div>
           <div class="rw-mults"></div>
         </div>
         <div class="rw-loot"></div>
@@ -59,7 +65,26 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const wrap = $('.reward');
   wrap.style.setProperty('--levelup-text', JSON.stringify(t('levelUp')));
   const big = $('.rw-big');
-  const fxLayer = $('.rw-fx');
+  const bigWrap = big.parentElement;
+  const inner = $('.rw-inner');
+  const P = POWER[rw.tier];
+  const [tc, tc2] = TIER_COLORS[rw.tier];
+  const legendary = rw.tier === 3;
+  const fxAll = createFx(wrap, { colors: [tc, tc2], reduce });
+  // After Skip the show races to the end: effects stay quiet instead of all firing at once.
+  const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' ? f : (...a) => { if (!fast) f(...a); }]));
+  // Lighting: god rays (two layers turning opposite ways), a white-hot core behind the chest and a
+  // lens-flare streak. All are small pre-drawn canvases that the graphics chip scales, spins and fades.
+  const rayCount = [14, 18, 22][P - 1];
+  const raysA = raysCanvas(legendary ? RAINBOW : [tc, tc, tc2], rayCount, { seed: rw.tier + 1 });
+  const raysB = raysCanvas(legendary ? [...RAINBOW].reverse() : [tc2, '#ffffff', tc], Math.round(rayCount * 0.6), { soft: 1.6, seed: rw.tier + 7 });
+  raysA.className = 'ray-a'; raysB.className = 'ray-b';
+  $('.rw-beams').append(raysA, raysB);
+  const core = coreCanvas(tc); core.className = 'rw-core';
+  const flare = flareCanvas(legendary ? '#ffe680' : tc2); flare.className = 'rw-flare';
+  $('.rw-light').append(core, flare);
+  $('.rw-pillar').append(pillarCanvas(tc));
+  wrap.dataset.power = String(P);
   $('#rw-home').onclick = () => { stop(); onHome(); };
   // Taps never cut the show short; only this small Skip button does.
   let releaseTaps = null;
@@ -86,7 +111,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (animate) tierEl.style.transition = '';
     else requestAnimationFrame(() => { tierEl.style.transition = ''; });
   };
-  const onResize = () => centerChest();
+  const onResize = () => { centerChest(); chestAt = null; placeLight(); };
   addEventListener('resize', onResize);
   $('#rw-again').onclick = () => { stop(); onAgain(); };
 
@@ -107,88 +132,47 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.musicStop();
     clearInterval(ambient);
     for (const id of timers) clearTimeout(id);
+    vfx.stop();
   }
 
   let ambient = null;
   const PRAISE = t('praise');
 
+  // Flash, shake and bump run as Web Animations on one element each: toggling classes on the
+  // screen made the browser re-style everything under it on every hit.
   function flash(strong = true) {
-    if (reduce) return;
-    const f = $('.rw-flash');
-    f.classList.remove('go', 'soft');
-    void f.offsetWidth;
-    f.classList.add('go');
-    if (!strong) f.classList.add('soft');
+    if (reduce || fast) return;
+    $('.rw-flash').animate([{ opacity: strong ? 0.95 : 0.35 }, { opacity: 0 }], { duration: strong ? 500 + P * 120 : 250, easing: 'ease-out' });
   }
-
-  /** Coins arc up out of the chest and rain down past the bottom of the screen. */
-  const MAX_PARTICLES = 80; // keeps low-end phones smooth
-  const room = (n) => Math.max(0, Math.min(n, MAX_PARTICLES - fxLayer.childElementCount));
-
-  // Each measurement forces a layout, so the chest position is cached while numbers count.
-  let fountainAt = null;
-  function fountain(n) {
-    if (reduce) return;
-    n = room(n);
-    if (!n) return;
-    if (!fountainAt) {
-      const fr = $('.rw-chest').getBoundingClientRect();
-      const r = wrap.getBoundingClientRect();
-      fountainAt = { cx: fr.left + fr.width / 2 - r.left, cy: fr.top + fr.height * 0.45 - r.top, width: r.width, height: r.height };
-    }
-    const { cx, cy } = fountainAt;
-    const wr = fountainAt;
-    for (let i = 0; i < n; i++) {
-      const p = document.createElement('i');
-      p.className = `pt fall ${Math.random() < 0.75 ? 'coin' : Math.random() < 0.5 ? 'star' : 'gem'}`;
-      p.style.left = `${cx}px`;
-      p.style.top = `${cy}px`;
-      p.style.setProperty('--tx', `${(Math.random() - 0.5) * wr.width * 1.1}px`);
-      p.style.setProperty('--peak', `${-60 - Math.random() * 140}px`);
-      p.style.setProperty('--fall', `${wr.height - cy + 40}px`);
-      p.style.setProperty('--r', `${Math.random() * 1080 - 540}deg`);
-      p.style.setProperty('--s', `${0.7 + Math.random() * 0.8}`);
-      p.style.animationDuration = `${1.3 + Math.random() * 0.9}s`;
-      fxLayer.appendChild(p);
-      setTimeout(() => p.remove(), 2400);
-    }
+  function shake(power = P) {
+    if (reduce || fast) return;
+    const a = 3 + power * 3;
+    inner.animate([
+      { transform: 'none' }, { transform: `translate(${-a}px, ${a / 2}px)` }, { transform: `translate(${a}px, ${-a * 0.6}px)` },
+      { transform: `translate(${-a * 0.7}px, ${a * 0.6}px)` }, { transform: `translate(${a * 0.5}px, ${-a / 4}px)` }, { transform: 'none' },
+    ], { duration: 220 + power * 70, easing: 'linear' });
   }
-
-  function fireworks(count) {
-    if (reduce) return;
-    const wr = wrap.getBoundingClientRect();
-    for (let k = 0; k < count; k++) {
-      const id = setTimeout(() => {
-        timers.delete(id);
-        if (!alive) return;
-        const x = wr.width * (0.15 + Math.random() * 0.7);
-        const y = wr.height * (0.12 + Math.random() * 0.35);
-        const hue = Math.floor(Math.random() * 360);
-        const sparks = Math.max(6, room(14));
-        for (let i = 0; i < sparks; i++) {
-          const p = document.createElement('i');
-          p.className = 'pt spark fw';
-          const ang = (i / sparks) * Math.PI * 2;
-          const d = 70 + Math.random() * 50;
-          p.style.left = `${x}px`;
-          p.style.top = `${y}px`;
-          // Glow drawn into the background (a box-shadow per spark is far slower on phones).
-          const c = `hsl(${hue + Math.random() * 60} 100% 65%)`;
-          p.style.background = `radial-gradient(circle, ${c} 0 30%, hsl(${hue} 100% 65% / .45) 42%, transparent 70%)`;
-          p.style.setProperty('--tx', `${Math.cos(ang) * d}px`);
-          p.style.setProperty('--ty', `${Math.sin(ang) * d}px`);
-          p.style.setProperty('--r', '0deg');
-          p.style.setProperty('--s', '1');
-          p.style.animationDuration = `${0.9 + Math.random() * 0.4}s`;
-          fxLayer.appendChild(p);
-          setTimeout(() => p.remove(), 1500);
-        }
-        fx.pop();
-      }, k * 380);
-      timers.add(id);
-    }
+  /** Zoom punch for the big chests: the whole screen kicks toward you and settles. */
+  function punch() {
+    if (reduce || fast) return;
+    inner.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.07)', offset: 0.25 }, { transform: 'scale(1)' }], { duration: 520, easing: 'ease-out', composite: 'add' });
   }
-
+  /** The light reacts to a hit: the core flares up and the rays swell for a moment. */
+  function lightPulse(k = 1) {
+    if (reduce || fast) return;
+    core.animate([{ transform: 'scale(1)' }, { transform: `scale(${1 + 0.25 * k})`, offset: 0.3 }, { transform: 'scale(1)' }], { duration: 450, easing: 'ease-out' });
+    $('.rw-beams').animate([{ transform: 'scale(1)' }, { transform: `scale(${1 + 0.08 * k})`, offset: 0.3 }, { transform: 'scale(1)' }], { duration: 450, easing: 'ease-out' });
+    if (P >= 2) flare.animate([{ opacity: 0.45 }, { opacity: 1, offset: 0.25 }, { opacity: 0.45 }], { duration: 450, easing: 'ease-out' });
+  }
+  /** Moves the light so it sits right behind the chest (after the chest shrinks). */
+  function placeLight() {
+    const c = chestPos();
+    $('.rw-light').style.top = `${c.y - wrap.getBoundingClientRect().top}px`;
+  }
+  function bump() {
+    if (reduce || fast) return;
+    bigWrap.animate([{ transform: 'scale(1)' }, { transform: `scale(${1.12 + P * 0.05})`, offset: 0.4 }, { transform: 'scale(1)' }], { duration: 350, easing: 'ease-out' });
+  }
   function stamp(text) {
     const b = $('.rw-banner');
     b.textContent = text;
@@ -197,42 +181,15 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     b.classList.add('go');
   }
 
-  // ---- particles ----
-  function burst(fromEl, n, kinds = ['coin', 'star', 'spark']) {
-    if (reduce) return;
-    n = room(n);
-    if (!n) return;
-    const fr = fromEl.getBoundingClientRect();
-    const wr = wrap.getBoundingClientRect();
-    const cx = fr.left + fr.width / 2 - wr.left;
-    const cy = fr.top + fr.height / 2 - wr.top;
-    for (let i = 0; i < n; i++) {
-      const p = document.createElement('i');
-      p.className = `pt ${kinds[i % kinds.length]}`;
-      const ang = Math.random() * Math.PI * 2;
-      const dist = 90 + Math.random() * 220;
-      p.style.left = `${cx}px`;
-      p.style.top = `${cy}px`;
-      p.style.setProperty('--tx', `${Math.cos(ang) * dist}px`);
-      p.style.setProperty('--ty', `${Math.sin(ang) * dist - 60}px`);
-      p.style.setProperty('--r', `${Math.random() * 720 - 360}deg`);
-      p.style.setProperty('--s', `${0.6 + Math.random() * 0.9}`);
-      p.style.animationDuration = `${0.8 + Math.random() * 0.7}s`;
-      fxLayer.appendChild(p);
-      setTimeout(() => p.remove(), 1700);
-    }
-  }
+  /** Centre of an element in viewport pixels (the effects canvas covers the viewport). */
+  const centerOf = (el, dy = 0.5) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * dy }; };
+  // Measuring forces a layout, so positions are cached while numbers count.
+  let chestAt = null;
+  const chestPos = () => (chestAt ||= centerOf($('.rw-chest'), 0.45));
 
-  function shake() {
-    if (reduce) return;
-    wrap.classList.remove('shake');
-    void wrap.offsetWidth;
-    wrap.classList.add('shake');
-  }
-
-  function setBig(v) { const s = fmt(v); big.textContent = s; big.parentElement.dataset.n = s; }
+  function setBig(v) { big.textContent = fmt(v); }
   function countTo(from, to, ms) {
-    fountainAt = null; // re-measure once per count, not on every coin
+    chestAt = null; // re-measure once per count, not on every particle
     return new Promise((res) => {
       if (fast || ms <= 0) { setBig(to); res(); return; }
       let t0 = null;
@@ -243,7 +200,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         const p = Math.max(0, Math.min(1, (now - t0) / ms));
         const e = 1 - Math.pow(1 - p, 3);
         setBig(from + (to - from) * e);
-        if (now - lastTick > 55 && p < 1) { lastTick = now; fx.count(p); haptics.buzz(5); fountain(2); }
+        if (now - lastTick > 55 && p < 1) {
+          lastTick = now; fx.count(p); haptics.buzz(5);
+          const c = chestPos();
+          vfx.fountain(c.x, c.y, P + 1, P >= 2);
+          if (P >= 2) vfx.twinkles(P - 1, 0.7);
+        }
         if (p >= 1 || fast) { setBig(to); res(); } else requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -255,6 +217,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     while (alive && !wrap.getBoundingClientRect().height) await new Promise((r) => requestAnimationFrame(r));
     if (!alive) return;
     centerChest(false);
+    placeLight(); // the light sits behind the chest, also for the glow on each tap
     // 1. drop in
     wrap.classList.add('dropping');
     await sleep(420);
@@ -276,6 +239,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       function onTap() {
         hits++;
         wrap.dataset.hits = String(hits);
+        if (!reduce) core.animate([{ opacity: 0 }, { opacity: 0.25 + hits * 0.15, offset: 0.2 }, { opacity: 0 }], { duration: 500 });
         if (hits >= TAPS) { done(); return; }
         chest.classList.remove('hit');
         void chest.offsetWidth;
@@ -284,7 +248,10 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         fx.rattle();
         fx.pop();
         haptics.buzz(30 + hits * 25);
-        burst(chest, 6 + hits * 6, ['spark', 'star', 'coin']);
+        const c = centerOf(chest);
+        vfx.burst(c.x, c.y, 5 + hits * 4 * P, ['spark', 'star', 'band'], 0.7);
+        if (P >= 2) vfx.ring(c.x, c.y, { color: tc, speed: 500, width: 6, life: 0.35 });
+        shake(1);
         $('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
       }
       chest.addEventListener('click', onTap);
@@ -295,7 +262,10 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.add('opening');
     fx.charge();
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
-    await sleep(950);
+    // Light swirls in and gets sucked into the chest: longer and denser for better chests.
+    const chargeMs = [950, 1150, 1400][P - 1];
+    { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, [18, 45, 90][P - 1], chargeMs); }
+    await sleep(chargeMs);
     if (!alive) return;
     flash();
     wrap.classList.add('opened', 'collapse', 'party');
@@ -304,12 +274,37 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.open();
     haptics.buzz(160);
     shake();
-    burst($('.rw-chest'), rw.tier >= 2 ? 60 : 40, ['coin', 'star', 'spark', 'gem']);
-    fountain(rw.tier >= 2 ? 30 : 18);
+    if (P >= 3) punch();
+    chestAt = null; // the chest just shrank: measure it after that layout
+    placeLight();
+    if (P >= 2 && !reduce) {
+      // Lens flare: a streak that shoots out sideways and then glows on, dimmer.
+      flare.animate([
+        { transform: 'scaleX(0)', opacity: 1 }, { transform: `scaleX(${P >= 3 ? 1.5 : 1.15})`, opacity: 1, offset: 0.35 }, { transform: 'scaleX(1)', opacity: 0.45 },
+      ], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+    }
+    {
+      const c = chestPos();
+      vfx.ring(c.x, c.y, { color: '#fff', speed: 1100, width: 12 + P * 4, life: 0.5 + P * 0.08 });
+      if (P >= 2) vfx.ring(c.x, c.y, { color: tc, speed: 750, width: 10, life: 0.75 });
+      if (P >= 3) vfx.ring(c.x, c.y, { color: tc2, speed: 450, width: 8, life: 1 });
+      vfx.burst(c.x, c.y, [40, 80, 130][P - 1], P >= 2 ? ['band', 'star', 'spark', 'fiber', 'gem'] : ['band', 'star', 'spark', 'fiber'], 0.9 + P * 0.15);
+      vfx.fountain(c.x, c.y, [16, 28, 45][P - 1], P >= 2);
+      if (P >= 3) {
+        // Epic and legendary: a second blast a moment later.
+        const id = setTimeout(() => {
+          timers.delete(id);
+          if (!alive || fast) return;
+          flash(false); shake(2); fx.pop(); lightPulse(1.4);
+          vfx.ring(c.x, c.y, { color: '#fff', speed: 1300, width: 10, life: 0.6 });
+          vfx.burst(c.x, c.y, 70, ['band', 'fiber', 'gem', 'spark'], 1.3);
+        }, 320);
+        timers.add(id);
+      }
+    }
     voiceGuide.say(t('say.chest', { name: getLang() === 'en' ? TIERS[rw.tier].name : TIERS[rw.tier].label }));
     musicWanted = true;
     fx.musicStart(rw.tier);
-
 
     await sleep(550);
     if (!alive) return;
@@ -330,12 +325,17 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       ml.appendChild(pill);
       fx.slam(m.hot);
       haptics.buzz(m.hot ? [40, 30, 80] : 60);
-      shake();
+      shake(m.hot ? P + 1 : P);
       flash(false);
-      fountain(m.hot ? 16 : 8);
-      big.parentElement.classList.remove('bump');
-      void big.offsetWidth;
-      big.parentElement.classList.add('bump');
+      bump();
+      lightPulse(m.hot ? 1.2 : 0.7);
+      {
+        const b = centerOf(pill);
+        vfx.ring(b.x, b.y, { color: m.hot ? '#ff9f1c' : tc, speed: 420 + P * 120, width: 6, life: 0.4 });
+        vfx.burst(b.x, b.y, (m.hot ? 14 : 8) * P, ['spark', 'star', 'band'], 0.6);
+        const c = chestPos();
+        vfx.fountain(c.x, c.y, (m.hot ? 10 : 5) * P, P >= 2);
+      }
       await countTo(rw.steps[i], rw.steps[i + 1], 650);
       if (!alive) return;
     }
@@ -349,10 +349,25 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.fanfare();
     fx.coins();
     flash();
-    burst(big, 34, ['coin', 'spark', 'gem']);
-    fountain(30);
+    lightPulse(1.5);
+    {
+      const b = centerOf(bigWrap);
+      vfx.ring(b.x, b.y, { color: '#fff', speed: 900, width: 10 + P * 3, life: 0.5 });
+      vfx.burst(b.x, b.y, [30, 55, 90][P - 1], ['band', 'spark', 'star', 'fiber'], 1);
+      // Loot from all around flies into the total, some pieces landing with a little spark.
+      vfx.magnet(b.x, b.y, [10, 26, 44][P - 1]);
+      const c = chestPos();
+      vfx.fountain(c.x, c.y, [20, 26, 30][P - 1], P >= 2);
+      if (P >= 2) vfx.rain([0, 24, 40][P - 1]);
+      vfx.rockets([2, 4, 7][P - 1]);
+      vfx.twinkles(P * 6);
+      if (P >= 3) {
+        punch();
+        const id = setTimeout(() => { timers.delete(id); if (alive && !fast) { vfx.rockets(5); vfx.twinkles(20); } }, 1300);
+        timers.add(id);
+      }
+    }
     stamp(PRAISE[Math.floor(Math.random() * PRAISE.length)]);
-    fireworks(rw.tier + 2);
     haptics.buzz([30, 30, 60, 30, 120]);
     await sleep(900);
     if (!alive) return;
@@ -395,7 +410,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.add('show-loot');
     fx.boing();
     haptics.buzz(50);
-    burst(loot, 16, ['heart', 'star', 'spark']);
+    { const l = centerOf(loot.querySelector('.rw-critter') || loot); vfx.burst(l.x, l.y, 10 + P * 6, ['heart', 'star', 'spark'], 0.6); }
     voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false });
     }
 
@@ -410,7 +425,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (!alive) return;
     wrap.classList.add('done');
     $('#rw-skip').hidden = true;
-    if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) fountain(1); }, 450);
+    if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) { vfx.embers(1); if (P >= 3) vfx.twinkles(1, 0.6); } }, 450);
     const act = $('.rw-actions');
     if (act.getBoundingClientRect().bottom > innerHeight) act.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
   }
@@ -442,7 +457,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         lv.classList.remove('levelup');
         void lv.offsetWidth;
         lv.classList.add('levelup');
-        burst($('#rw-lv-next'), 18, ['star', 'spark']);
+        { const l = centerOf($('#rw-lv-next')); vfx.burst(l.x, l.y, 14 + P * 6, ['star', 'spark', 'band'], 0.6); vfx.ring(l.x, l.y, { color: '#ffd60a', speed: 400, width: 6, life: 0.4 }); }
         voiceGuide.say(t('say.levelUp', { n: levelProgress(xp).level }), { interrupt: false });
         show(xp);
         await sleep(650);
