@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Fibbies: stretch & loot. Web app (GitHub Pages) and Android app (Capacitor) from one codebase.",
+  "author": "Davor Val Vega",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "type": "module",
   "scripts": {
     "build:web": "node scripts/build-web.mjs",
