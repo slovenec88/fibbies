@@ -142,7 +142,7 @@ await test('voice: never a voice for another language', () => {
 
 // ---- recorded voice: every spoken line has a recording (re-record after changing spoken text) ----
 const { missingRecordings } = await import(new URL('../scripts/check-voice.mjs', root));
-await test('voice: every spoken line has a recording', async () => {
+await test('voice: recorded languages have every spoken line', async () => {
   const missing = await missingRecordings();
   const summary = Object.entries(missing).map(([l, m]) => `${l}: ${m.length} (e.g. "${m[0]}")`).join('; ');
   assert.equal(summary, '', `run: node scripts/record-voice.mjs ${Object.keys(missing).join(' ')}`);
