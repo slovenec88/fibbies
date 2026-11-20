@@ -2,6 +2,7 @@
 import { native } from './native.js';
 import { speechLang, onLangChange } from './i18n.js';
 import { bestVoice, PACE } from './voice-pick.js';
+import { clipFor, playClip, stopClips, hasClips, afterClips } from './voice-clips.js';
 let ctx = null;
 let music = null;
 let master = null;
@@ -224,8 +225,23 @@ function primeVoice() {
 
 export const voiceGuide = {
   enabled: true,
-  say(text, { interrupt = true } = {}) {
+  /**
+   * Speaks `text`: the recorded neural voice when this line was recorded, otherwise the device voice.
+   * `alt`: a name-free version of a line with a name in it (Fibbie names can't be recorded), used
+   * when only that one has a recording.
+   */
+  say(text, { interrupt = true, alt = null } = {}) {
     if (!this.enabled || !text) return;
+    const clip = ctx && (clipFor(text) || (alt && clipFor(alt)));
+    if (clip) {
+      if (interrupt) this.stopDevice();
+      playClip(ctx, master, clip, interrupt).then((ok) => { if (!ok) this.sayDevice(text, interrupt); });
+      return;
+    }
+    if (interrupt) { stopClips(); this.sayDevice(text, true); }
+    else afterClips(() => this.sayDevice(text, false)); // after any recorded line still playing
+  },
+  sayDevice(text, interrupt) {
     if (native.speak(text, interrupt, speechLang())) return;
     if (!('speechSynthesis' in window)) return;
     if (!voice && voicesKnown) return; // no voice for this language on this device
@@ -242,6 +258,7 @@ export const voiceGuide = {
   },
   /** Resolves true/false for "this device has a voice for the app language", or null if unknown. */
   async hasVoice() {
+    if (await hasClips()) return true; // recorded voice for this language
     if (native.isNative) return native.ttsSupports(speechLang());
     if (!('speechSynthesis' in window)) return false;
     let vs = speechSynthesis.getVoices();
@@ -259,6 +276,10 @@ export const voiceGuide = {
     return !!voice;
   },
   stop() {
+    stopClips();
+    this.stopDevice();
+  },
+  stopDevice() {
     native.stopSpeaking();
     try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch { /* ignore */ }
   },

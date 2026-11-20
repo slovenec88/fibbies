@@ -1,0 +1,7 @@
+#!/bin/sh
+# Warns (never blocks) when a commit changes spoken text that has no recording yet.
+# Enabled per clone with: git config core.hooksPath .githooks
+if git diff --cached --name-only | grep -qE '^(js/(i18n|data|localize|rewards|voice-lines)\.js|js/lang/|voice/)'; then
+  node scripts/check-voice.mjs --warn
+fi
+exit 0

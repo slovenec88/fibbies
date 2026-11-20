@@ -88,6 +88,47 @@ To switch it on:
 
 `js/cloud.js` handles the syncing. The newest copy wins, and the app asks which copy to keep when two phones both have progress.
 
+## Recorded voice
+
+The voice guide plays recordings made with Azure neural text-to-speech, one gentle female voice per language. Lines without a recording use the device's own voice: the nicest one it has (`js/voice-pick.js`).
+
+- `js/voice-lines.js` lists every line the app can say, built from the same texts the app speaks.
+- `voice/voices.json` sets the Azure voice and pace for each language.
+- `voice/<lang>/index.json` maps each exact text to its recording (`<hash>.ogg`, Ogg Opus).
+- `js/voice-clips.js` plays them. Once the voice is used, the service worker keeps a language's recordings in a cache that outlives app updates.
+
+Recording needs [ffmpeg](https://ffmpeg.org/) on `PATH`: each line is re-compressed to 24 kbit/s Opus, about a third of Azure's own size. That keeps all 7 languages at about 18 MB.
+
+To record, put a Speech resource key in `~/.azure-speech.env`. The file lives outside the repo, and the script never prints the key:
+
+```
+AZURE_SPEECH_KEY=...
+AZURE_SPEECH_REGION=westeurope
+```
+
+Then run:
+
+```bash
+node scripts/record-voice.mjs --audition
+```
+
+This saves one sample per candidate voice to `dist/voice-audition.html`. Pick one voice per language in `voice/voices.json`, then record:
+
+```bash
+node scripts/record-voice.mjs
+```
+
+That records all languages; to record only some, list them, e.g. `node scripts/record-voice.mjs de sl`. The free tier allows about 20 lines a minute, so a full run takes about 1.5 hours. You can stop it and run it again: it skips lines already recorded and re-records only changed lines. **After changing any spoken text (stretch names, cues, `say.*` strings), run it again** so the new lines get recorded too.
+
+Recordings are committed to git with the app. Nothing can slip through unrecorded:
+- `node scripts/check-voice.mjs` lists spoken lines with no recording.
+- `npm test` fails while any line is missing.
+- The commit hook in `.githooks/` prints the same list when a commit touches spoken text. It only warns, so you can commit text now and record later. Turn it on once per clone with:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Deploy (web)
 
 **Before every release, bump `VERSION` in `sw.js`.** The service worker serves the app cache-first, so returning users only get changes when the version changes.

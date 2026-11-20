@@ -4,7 +4,8 @@ import { createHash } from 'node:crypto';
 import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const OUT = 'www';
-const FILES = ['index.html', 'styles.css', 'manifest.webmanifest', 'sw.js', 'js', 'icons', 'fonts'];
+// FIBBIES_NO_VOICE=1 leaves the recorded voice out (a quick test build while recordings are being made).
+const FILES = ['index.html', 'styles.css', 'manifest.webmanifest', 'sw.js', 'js', 'icons', 'fonts', ...(process.env.FIBBIES_NO_VOICE ? [] : ['voice'])];
 
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT);

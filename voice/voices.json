@@ -1,0 +1,9 @@
+{
+  "en": { "voice": "en-US-AvaNeural", "rate": "-8%" },
+  "de": { "voice": "de-DE-SeraphinaMultilingualNeural", "rate": "-8%" },
+  "es": { "voice": "es-ES-ElviraNeural", "rate": "-8%" },
+  "fr": { "voice": "fr-FR-VivienneMultilingualNeural", "rate": "-8%" },
+  "it": { "voice": "it-IT-IsabellaNeural", "rate": "-8%" },
+  "pt": { "voice": "pt-BR-ThalitaNeural", "rate": "-8%" },
+  "sl": { "voice": "sl-SI-PetraNeural", "rate": "-8%" }
+}

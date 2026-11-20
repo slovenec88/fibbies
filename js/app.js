@@ -21,10 +21,10 @@ const $ = (s, r = document) => r.querySelector(s);
 // All reads and writes go through js/storage.js (unreadable data is rescued, failed writes reported).
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
 const readSettings = () => { const v = readJSON('limber.settings', {}); return isObj(v) ? v : {}; };
-const settings = Object.assign(
-  { voice: true, sound: true, haptics: true, scale: 1, mode: 'system', hue: 165, lang: getLang() },
-  readSettings(),
-);
+const settings = Object.assign({ voice: true, scale: 1, lang: getLang() }, readSettings());
+// Sound cues and vibration are always on, and the look follows the phone (light/dark) in the app's
+// own colour: these were settings once, so drop any saved choice.
+for (const k of ['sound', 'haptics', 'mode', 'hue']) delete settings[k];
 // Session history. Streaks are counted from it, so keep plenty: 3000 entries is years of use (~250 KB).
 const HISTORY_MAX = 3000;
 const readLog = () => { const v = readJSON('limber.history', []); return Array.isArray(v) ? v.filter((h) => h && typeof h.day === 'string') : []; };
@@ -33,12 +33,6 @@ const saveSettings = () => writeJSON('limber.settings', settings);
 
 function applySettings() {
   voiceGuide.enabled = settings.voice;
-  sfx.enabled = settings.sound;
-  haptics.enabled = settings.haptics;
-  const root = document.documentElement;
-  root.style.setProperty('--h', settings.hue);
-  if (settings.mode === 'system') delete root.dataset.theme;
-  else root.dataset.theme = settings.mode;
   requestAnimationFrame(updateThemeColor);
 }
 
@@ -249,11 +243,14 @@ function renderProgress() {
   const bk = p.buddy && parseKey(p.buddy);
   const buddy = bk ? fibbie(bk.sp, bk.stage) : null;
   const done = todaysCats(log, dayKey());
+  // The top of the home screen: buddy, level and XP, with Settings in the corner (no separate app bar).
   $('#progress-card').innerHTML = `
     <div class="pc-top">
       <div class="pc-buddy">${critterSVG(buddy, { locked: !buddy })}</div>
-      <div>
-        <div class="pc-line"><b>${t('level', { n: lp.level })}</b><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
+      <div class="pc-main">
+        <div class="pc-head"><b>${t('level', { n: lp.level })}</b>
+          <button class="icon-btn ripple" id="btn-settings" aria-label="${esc(t('settings'))}"><span aria-hidden="true" class="ms">tune</span></button></div>
+        <div class="pc-line"><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
         <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
         <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${t('chestsFriends', { c: p.chests, d: discovered(p) })}</small></div>
       </div>
@@ -777,7 +774,7 @@ $('#pl-sound').onclick = openSettings;
 wakeLock.onChange((on) => { $('#pl-awake').hidden = !on; });
 
 function setSoundIcon() {
-  $('#pl-sound .ms').textContent = !settings.sound && !settings.voice ? 'volume_off' : settings.voice ? 'record_voice_over' : 'volume_up';
+  $('#pl-sound .ms').textContent = settings.voice ? 'record_voice_over' : 'volume_up';
 }
 
 const dlgEnd = $('#dlg-end');
@@ -904,15 +901,10 @@ function renderDone() {
 
 // ---------- Settings sheet ----------
 const sheet = $('#sheet-settings');
-const HUES = [165, 235, 290, 15, 45, 130, 200, 340];
 function openSettings() {
   $('#set-voice').checked = settings.voice;
-  $('#set-sound').checked = settings.sound;
-  $('#set-haptics').checked = settings.haptics;
   syncSeg('#set-scale', String(settings.scale));
   setScaleNote();
-  syncSeg('#set-mode', settings.mode);
-  $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="${t('colorN', { h })}"></button>`).join('');
   $('#set-lang').innerHTML = LANGS.map((l) => `<button class="m3-item ripple" data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}"><span class="li-text"><b>${l.label}</b></span><span class="m3-radio" aria-hidden="true"></span></button>`).join('');
   checkVoice();
   renderCloud();
@@ -942,6 +934,7 @@ $('#set-lang').onclick = (e) => {
   setLang(b.dataset.v);
 };
 onLangChange(() => {
+  hideLangHint(); // they found the language setting
   localizeContent();
   translateDom();
   setScaleNote();
@@ -951,33 +944,45 @@ onLangChange(() => {
 function syncSeg(sel, val) {
   document.querySelectorAll(`${sel} button`).forEach((b) => b.setAttribute('aria-checked', b.dataset.v === val));
 }
-$('#btn-settings').onclick = openSettings;
+document.addEventListener('click', (e) => { if (e.target.closest('#btn-settings')) openSettings(); }); // the button is redrawn with the level card
 $('#set-close').onclick = () => sheet.close();
 sheet.addEventListener('close', () => {
   setSoundIcon();
-  if (currentView === 'home') renderHome();
+  if (currentView === 'home') {
+    renderHome();
+    // The Settings button was redrawn with the level card: give it back the focus closing moved to it.
+    if (document.activeElement === document.body) $('#btn-settings')?.focus({ preventScroll: true });
+  }
   else if (currentView === 'detail') route();
 });
 $('#set-voice').onchange = (e) => {
   settings.voice = e.target.checked; saveSettings(); applySettings();
   if (settings.voice) { unlockAudio(); voiceGuide.say(t('say.voiceOn')); } else voiceGuide.stop();
 };
-$('#set-sound').onchange = (e) => { settings.sound = e.target.checked; saveSettings(); applySettings(); if (settings.sound) { unlockAudio(); sfx.go(); } };
-$('#set-haptics').onchange = (e) => { settings.haptics = e.target.checked; saveSettings(); applySettings(); haptics.buzz(40); };
 $('#set-scale').onclick = (e) => {
   const b = e.target.closest('button'); if (!b) return;
   settings.scale = b.dataset.v === 'flex' ? 'flex' : Number(b.dataset.v); saveSettings(); syncSeg('#set-scale', b.dataset.v);
   setScaleNote();
   if (session && !session.finished) snackbar(t('holdNextSession'));
 };
-$('#set-mode').onclick = (e) => {
-  const b = e.target.closest('button'); if (!b) return;
-  settings.mode = b.dataset.v; saveSettings(); applySettings(); syncSeg('#set-mode', b.dataset.v);
-};
-$('#set-hue').onclick = (e) => {
-  const b = e.target.closest('button'); if (!b) return;
-  settings.hue = Number(b.dataset.v); saveSettings(); applySettings();
-  document.querySelectorAll('#set-hue .swatch').forEach((s) => s.setAttribute('aria-checked', s === b));
+
+// ---------- First launch: a quiet offer to change the language ----------
+// The app guesses the language from the phone. The first time it opens, a small line at the top
+// offers to change it; it never comes back after that first visit.
+const LANG_HINT_KEY = 'fibbies.lang-hint-seen'; // per device, like the language itself
+function showLangHint() {
+  let seen = true;
+  try { seen = !!localStorage.getItem(LANG_HINT_KEY); localStorage.setItem(LANG_HINT_KEY, '1'); } catch { /* ignore */ }
+  if (seen || log.length) return; // only for someone opening the app for the very first time
+  $('#lang-hint-name').textContent = LANGS.find((l) => l.id === getLang())?.label || '';
+  $('#lang-hint').hidden = false;
+}
+const hideLangHint = () => { $('#lang-hint').hidden = true; };
+$('#lang-hint-close').onclick = hideLangHint;
+$('#lang-hint-pick').onclick = () => {
+  hideLangHint();
+  openSettings();
+  $('#sec-lang').scrollIntoView({ block: 'start' });
 };
 
 // ---------- Router ----------
@@ -1280,8 +1285,8 @@ try {
   }
 } catch { /* ignore */ }
 setSoundIcon();
-$('.brand-mark').innerHTML = critterSVG(fibbie('quaddy', 1));
 route();
+if (currentView === 'home') showLangHint();
 window.__booted = true;
 native.hideSplash();
 try {

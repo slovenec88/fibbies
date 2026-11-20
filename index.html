@@ -16,28 +16,19 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="styles.css">
-  <script>
-    // Apply saved theme before first paint to avoid a flash.
-    try {
-      const s = JSON.parse(localStorage.getItem('limber.settings') || '{}');
-      if (s.hue != null) document.documentElement.style.setProperty('--h', s.hue);
-      if (s.mode && s.mode !== 'system') document.documentElement.dataset.theme = s.mode;
-    } catch (e) {}
-  </script>
 </head>
 <body>
   <div id="app">
     <!-- HOME -->
     <section id="view-home" class="view" data-view="home" aria-label="Home" data-i18n-aria="home">
-      <header class="top-bar large">
-        <div class="top-bar-row">
-          <div class="brand">
-            <span class="brand-mark" aria-hidden="true"><span aria-hidden="true" class="ms filled">self_improvement</span></span>
-            <span class="brand-name">Fibbies</span>
-          </div>
-          <button class="icon-btn ripple" id="btn-settings" aria-label="Settings" data-i18n-aria="settings"><span aria-hidden="true" class="ms">tune</span></button>
-        </div>
-      </header>
+      <h1 class="visually-hidden">Fibbies</h1>
+      <!-- First launch only: a quiet offer to change the language the app guessed. -->
+      <div class="lang-hint" id="lang-hint" hidden>
+        <span aria-hidden="true" class="ms">translate</span>
+        <span class="lang-hint-text" data-i18n="langHint">Not your language?</span>
+        <button class="lang-hint-pick ripple" id="lang-hint-pick"><span id="lang-hint-name"></span><span aria-hidden="true" class="ms">expand_more</span></button>
+        <button class="icon-btn lang-hint-close ripple" id="lang-hint-close" aria-label="Close" data-i18n-aria="close"><span aria-hidden="true" class="ms">close</span></button>
+      </div>
 
       <div class="progress-card" id="progress-card"></div>
       <div class="week-card" id="week-card"></div>
@@ -110,22 +101,12 @@
     <div class="sheet-handle" aria-hidden="true"></div>
     <h2 class="sheet-title" data-i18n="settings">Settings</h2>
 
-    <h3 class="m3-section" data-i18n="soundAndFeel">Sound and vibration</h3>
+    <h3 class="m3-section" data-i18n="voiceSection">Voice</h3>
     <div class="m3-group">
       <label class="m3-item ripple">
         <span class="m3-lead"><span aria-hidden="true" class="ms">record_voice_over</span></span>
         <span class="li-text"><b data-i18n="voiceGuidance">Voice guidance</b><small data-i18n="voiceGuidanceSub">Spoken names, tips and side switches</small></span>
         <input type="checkbox" class="switch" id="set-voice">
-      </label>
-      <label class="m3-item ripple">
-        <span class="m3-lead"><span aria-hidden="true" class="ms">notifications_active</span></span>
-        <span class="li-text"><b data-i18n="soundCues">Sound cues</b><small data-i18n="soundCuesSub">Chimes and 3-2-1 countdown beeps</small></span>
-        <input type="checkbox" class="switch" id="set-sound">
-      </label>
-      <label class="m3-item ripple">
-        <span class="m3-lead"><span aria-hidden="true" class="ms">vibration</span></span>
-        <span class="li-text"><b data-i18n="vibration">Vibration</b><small data-i18n="vibrationSub">Haptic taps on supported phones</small></span>
-        <input type="checkbox" class="switch" id="set-haptics">
       </label>
     </div>
 
@@ -139,21 +120,6 @@
           <button data-v="flex" role="radio" data-i18n="flex60">Flex 60s</button>
         </div>
         <p class="set-note" id="set-scale-note"></p>
-      </div>
-    </div>
-
-    <h3 class="m3-section" id="sec-look" data-i18n="appearance">Appearance</h3>
-    <div class="m3-group">
-      <div class="m3-item col">
-        <div class="segmented" id="set-mode" role="radiogroup" aria-labelledby="sec-look">
-          <button data-v="system" role="radio"><span aria-hidden="true" class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
-          <button data-v="light" role="radio"><span aria-hidden="true" class="ms">light_mode</span><span data-i18n="light">Light</span></button>
-          <button data-v="dark" role="radio"><span aria-hidden="true" class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
-        </div>
-      </div>
-      <div class="m3-item col">
-        <span class="m3-item-label" data-i18n="color">Color</span>
-        <div class="swatches" id="set-hue"></div>
       </div>
     </div>
 

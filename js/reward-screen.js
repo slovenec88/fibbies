@@ -34,7 +34,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-light" aria-hidden="true"><div class="rw-beams"></div></div>
       <div class="rw-flash" aria-hidden="true"></div>
       <div class="rw-banner" aria-hidden="true"></div>
-      <button class="rw-skip" id="rw-skip"><span>${t('skip')}</span><span aria-hidden="true" class="ms">fast_forward</span></button>
+      <button class="rw-skip ripple" id="rw-skip"><span>${t('skip')}</span><span aria-hidden="true" class="ms">fast_forward</span></button>
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
         <button class="rw-chest" aria-label="${t('openChest')}"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
@@ -395,7 +395,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       if (!alive) return;
       fx.runAway();
       haptics.buzz([20, 30, 20, 30, 60]);
-      voiceGuide.say(t('say.ranAway', { name: f.name }), { interrupt: false });
+      voiceGuide.say(t('say.ranAway', { name: f.name }), { interrupt: false, alt: t('say.ranAwayAny') });
     } else {
     loot.innerHTML = `
       <div class="rw-card" data-rarity="${f.rarity}">
@@ -411,7 +411,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.boing();
     haptics.buzz(50);
     { const l = centerOf(loot.querySelector('.rw-critter') || loot); vfx.burst(l.x, l.y, 10 + P * 6, ['heart', 'star', 'spark'], 0.6); }
-    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false });
+    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false, alt: t(rw.isNew ? 'say.newFriendAny' : 'say.copyAny') });
     }
 
     // 7. XP bar (can cross several levels)
@@ -458,7 +458,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         void lv.offsetWidth;
         lv.classList.add('levelup');
         { const l = centerOf($('#rw-lv-next')); vfx.burst(l.x, l.y, 14 + P * 6, ['star', 'spark', 'band'], 0.6); vfx.ring(l.x, l.y, { color: '#ffd60a', speed: 400, width: 6, life: 0.4 }); }
-        voiceGuide.say(t('say.levelUp', { n: levelProgress(xp).level }), { interrupt: false });
+        voiceGuide.say(t('say.levelUp', { n: levelProgress(xp).level }), { interrupt: false, alt: t('say.levelUpAny') });
         show(xp);
         await sleep(650);
         if (!alive) return;

@@ -84,7 +84,7 @@ export function playMerge(dlg, from, to) {
       // Stars light up one by one.
       const st = dlg.querySelectorAll('.mx-stars i.on');
       st.forEach((s, i) => later(650 + i * 230, () => { s.classList.add('lit'); fx.star(i + 1); haptics.buzz(25); }));
-      later(700, () => voiceGuide.say(t('evolved', { name: to.name })));
+      later(700, () => voiceGuide.say(t('evolved', { name: to.name }), { alt: t('say.evolvedAny') }));
       later(900 + st.length * 230, () => { canClose = true; root.classList.add('can-close'); });
     };
 

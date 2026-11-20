@@ -19,12 +19,15 @@ const rgba = (hex, a) => {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`;
 };
+/** Ray image size for this screen: the rays fill 120vmax, drawn at about two thirds of the screen's pixels
+ *  (soft light needs no more), so a big monitor stays sharp and a phone stays cheap. */
+const raySize = () => Math.min(1536, Math.max(512, Math.round((Math.max(innerWidth, innerHeight) * 1.2 * Math.min(devicePixelRatio || 1, 2)) / 1.5 / 64) * 64));
 /**
  * God rays: shafts of light of different widths, lengths and strengths, each with soft edges
  * (a wide faint wedge under a narrow bright one) and a white-hot start near the centre.
  * Two of these turning in opposite directions make the light shimmer.
  */
-export function raysCanvas(colors, count = 16, { soft = 1, seed = 1 } = {}) {
+export function raysCanvas(colors, count = 16, { soft = 1, seed = 1, size = raySize() } = {}) {
   let r = seed * 9301 + 49297;
   const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
   return sprite((g, s) => {
@@ -49,7 +52,7 @@ export function raysCanvas(colors, count = 16, { soft = 1, seed = 1 } = {}) {
         g.arc(c, c, len, mid - (width * w) / 2, mid + (width * w) / 2); g.closePath(); g.fill();
       }
     }
-  }, 384, 384);
+  }, size, size);
 }
 /** The white-hot light behind the open chest: a bright core fading through the chest colour. */
 export function coreCanvas(color) {
