@@ -32,7 +32,7 @@ export function playMerge(dlg, from, to) {
       <div class="mx-text">
         <div class="mx-kicker">${esc(t('evolvedKicker'))}</div>
         <div class="mx-name">${esc(to.name)}</div>
-        <div class="mx-stars">${Array.from({ length: 4 }, (_, i) => `<i class="${i < to.stage ? 'on' : ''}">★</i>`).join('')}</div>
+        <div class="mx-stars" aria-hidden="true">${Array.from({ length: 4 }, (_, i) => `<i class="${i < to.stage ? 'on' : ''}"><span class="ms filled">star</span></i>`).join('')}</div>
         <div class="mx-tap">${esc(t('tapToContinue'))}</div>
       </div>
     </div>`;

@@ -212,6 +212,7 @@ export const UI = {
   chestBankedRan: ({ f }) => `Forziere ottenuto: +${f} fibre. Il Fibbie è scappato!`,
   evolvedKicker: "EVOLUTO!",
   tapToContinue: "Tocca per continuare",
+  soundAndFeel: "Suono e vibrazione",
 };
 
 export const CONTENT = {

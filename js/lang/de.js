@@ -212,6 +212,7 @@ export const UI = {
   chestBankedRan: ({ f }) => `Truhe gesichert: +${f} Fasern. Der Fibbie ist weggelaufen!`,
   evolvedKicker: "ENTWICKELT!",
   tapToContinue: "Tippen zum Weitermachen",
+  soundAndFeel: "Ton und Vibration",
 };
 
 export const CONTENT = {

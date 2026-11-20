@@ -212,6 +212,7 @@ export const UI = {
   chestBankedRan: ({ f }) => `Cofre guardado: +${f} fibras. ¡El Fibbie se escapó!`,
   evolvedKicker: "¡EVOLUCIONÓ!",
   tapToContinue: "Toca para continuar",
+  soundAndFeel: "Sonido y vibración",
 };
 
 export const CONTENT = {

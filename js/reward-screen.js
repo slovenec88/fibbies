@@ -9,7 +9,7 @@ let numFmt = null; // one formatter per show (creating one every frame is slow)
 const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
 
 const TAPS = 3; // taps to break the chest open
-const stars = (n) => `<span class="stars">${'★'.repeat(n)}<i>${'★'.repeat(4 - n)}</i></span>`;
+const stars = (n) => `<span class="stars" aria-hidden="true">${'<span class="ms filled">star</span>'.repeat(n)}<i>${'<span class="ms filled">star</span>'.repeat(4 - n)}</i></span>`;
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
   numFmt = null;

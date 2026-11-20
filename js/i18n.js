@@ -257,6 +257,7 @@ const EN = {
   chestBankedRan: ({ f }) => `Chest banked: +${f} fibers. The Fibbie ran away!`,
   evolvedKicker: "EVOLVED!",
   tapToContinue: "Tap to continue",
+  soundAndFeel: "Sound and vibration",
 };
 
 const SL = {
@@ -470,6 +471,7 @@ const SL = {
   chestBankedRan: ({ f }) => `Skrinja shranjena: +${f} vlaken. Fibbie je pobegnil!`,
   evolvedKicker: "RAZVIL SE JE!",
   tapToContinue: "Tapni za nadaljevanje",
+  soundAndFeel: "Zvok in vibriranje",
 };
 
 const DICTS = { en: EN, sl: SL, de: DE, es: ES, fr: FR, it: IT, pt: PT };

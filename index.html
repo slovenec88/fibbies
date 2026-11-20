@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,300..900&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,300..900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400..600,0..1,0&display=block">
   <link rel="stylesheet" href="styles.css">
   <script>
@@ -109,61 +109,69 @@
   </div>
 
   <!-- Settings sheet -->
-  <dialog class="sheet" id="sheet-settings" aria-label="Settings" data-i18n-aria="settings">
+  <dialog class="sheet settings-sheet" id="sheet-settings" aria-label="Settings" data-i18n-aria="settings">
     <div class="sheet-handle" aria-hidden="true"></div>
     <h2 class="sheet-title" data-i18n="settings">Settings</h2>
-    <div class="list">
-      <label class="list-item">
-        <span class="ms li-icon">record_voice_over</span>
+
+    <h3 class="m3-section" data-i18n="soundAndFeel">Sound and vibration</h3>
+    <div class="m3-group">
+      <label class="m3-item ripple">
+        <span class="m3-lead"><span class="ms">record_voice_over</span></span>
         <span class="li-text"><b data-i18n="voiceGuidance">Voice guidance</b><small data-i18n="voiceGuidanceSub">Spoken names, tips and side switches</small></span>
         <input type="checkbox" class="switch" id="set-voice">
       </label>
-      <label class="list-item">
-        <span class="ms li-icon">notifications_active</span>
+      <label class="m3-item ripple">
+        <span class="m3-lead"><span class="ms">notifications_active</span></span>
         <span class="li-text"><b data-i18n="soundCues">Sound cues</b><small data-i18n="soundCuesSub">Chimes and 3-2-1 countdown beeps</small></span>
         <input type="checkbox" class="switch" id="set-sound">
       </label>
-      <label class="list-item">
-        <span class="ms li-icon">vibration</span>
+      <label class="m3-item ripple">
+        <span class="m3-lead"><span class="ms">vibration</span></span>
         <span class="li-text"><b data-i18n="vibration">Vibration</b><small data-i18n="vibrationSub">Haptic taps on supported phones</small></span>
         <input type="checkbox" class="switch" id="set-haptics">
       </label>
     </div>
-    <div class="set-group">
-      <div class="set-label" data-i18n="holdLength">Hold length</div>
-      <div class="segmented" id="set-scale" role="radiogroup">
-        <button data-v="0.8" role="radio" data-i18n="short">Short</button>
-        <button data-v="1" role="radio" data-i18n="standard">Standard</button>
-        <button data-v="1.25" role="radio" data-i18n="long">Long</button>
-        <button data-v="flex" role="radio" data-i18n="flex60">Flex 60s</button>
-      </div>
-      <p class="set-note" id="set-scale-note"></p>
-    </div>
-    <div class="set-group">
-      <div class="set-label" data-i18n="appearance">Appearance</div>
-      <div class="segmented" id="set-mode" role="radiogroup">
-        <button data-v="system" role="radio"><span class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
-        <button data-v="light" role="radio"><span class="ms">light_mode</span><span data-i18n="light">Light</span></button>
-        <button data-v="dark" role="radio"><span class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
+
+    <h3 class="m3-section" id="sec-hold" data-i18n="holdLength">Hold length</h3>
+    <div class="m3-group">
+      <div class="m3-item col">
+        <div class="segmented" id="set-scale" role="radiogroup" aria-labelledby="sec-hold">
+          <button data-v="0.8" role="radio" data-i18n="short">Short</button>
+          <button data-v="1" role="radio" data-i18n="standard">Standard</button>
+          <button data-v="1.25" role="radio" data-i18n="long">Long</button>
+          <button data-v="flex" role="radio" data-i18n="flex60">Flex 60s</button>
+        </div>
+        <p class="set-note" id="set-scale-note"></p>
       </div>
     </div>
-    <div class="set-group">
-      <div class="set-label" data-i18n="color">Color</div>
-      <div class="swatches" id="set-hue"></div>
-    </div>
-    <div class="set-group">
-      <div class="set-label" data-i18n="language">Language</div>
-      <div class="lang-grid" id="set-lang" role="radiogroup"></div>
-      <div class="set-note lang-note" id="set-lang-note" hidden>
-        <span data-i18n="noVoice"></span>
-        <button class="btn tonal ripple" id="set-lang-install" hidden><span class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+
+    <h3 class="m3-section" id="sec-look" data-i18n="appearance">Appearance</h3>
+    <div class="m3-group">
+      <div class="m3-item col">
+        <div class="segmented" id="set-mode" role="radiogroup" aria-labelledby="sec-look">
+          <button data-v="system" role="radio"><span class="ms">brightness_auto</span><span data-i18n="auto">Auto</span></button>
+          <button data-v="light" role="radio"><span class="ms">light_mode</span><span data-i18n="light">Light</span></button>
+          <button data-v="dark" role="radio"><span class="ms">dark_mode</span><span data-i18n="dark">Dark</span></button>
+        </div>
+      </div>
+      <div class="m3-item col">
+        <span class="m3-item-label" data-i18n="color">Color</span>
+        <div class="swatches" id="set-hue"></div>
       </div>
     </div>
-    <div class="set-group" id="set-cloud-group" hidden>
-      <div class="set-label">Google Play Games</div>
-      <div class="list">
-        <label class="list-item">
-          <span class="ms li-icon">cloud_sync</span>
+
+    <h3 class="m3-section" id="sec-lang" data-i18n="language">Language</h3>
+    <div class="m3-group" id="set-lang" role="radiogroup" aria-labelledby="sec-lang"></div>
+    <div class="set-note lang-note" id="set-lang-note" hidden>
+      <span data-i18n="noVoice"></span>
+      <button class="btn tonal ripple" id="set-lang-install" hidden><span class="ms">download</span><span data-i18n="installVoice">Install voice</span></button>
+    </div>
+
+    <div id="set-cloud-group" hidden>
+      <h3 class="m3-section">Google Play Games</h3>
+      <div class="m3-group">
+        <label class="m3-item ripple">
+          <span class="m3-lead"><span class="ms">cloud_sync</span></span>
           <span class="li-text"><b data-i18n="cloudSave">Cloud save</b><small id="set-cloud-sub"></small></span>
           <input type="checkbox" class="switch" id="set-cloud">
         </label>

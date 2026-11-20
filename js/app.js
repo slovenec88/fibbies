@@ -253,7 +253,7 @@ function renderProgress() {
     <div class="quest-hint"><span class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
 }
 
-const stars = (n) => `<span class="stars" aria-label="${esc(t('stageN', { n }))}">${'★'.repeat(n)}<i>${'★'.repeat(MAX_STAGE - n)}</i></span>`;
+const stars = (n) => `<span class="stars" role="img" aria-label="${esc(t('stageN', { n }))}">${'<span class="ms filled">star</span>'.repeat(n)}<i>${'<span class="ms filled">star</span>'.repeat(MAX_STAGE - n)}</i></span>`;
 
 function renderCollection() {
   const p = loadProfile();
@@ -534,7 +534,7 @@ function renderList() {
       <div class="rc-thumb"></div>
       <div>
         <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>·`} ${t('stretches', { n: r.items.length })}</div>
+        <div class="rc-meta">${r.top ? '<span class="top-badge"><span class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${t('stretches', { n: r.items.length })}</span></div>
       </div>
       <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
@@ -878,7 +878,7 @@ function renderDone() {
     return;
   }
   rewardPlayer = playReward(v, res.reward, {
-    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [`${streak()}🔥`, t('statStreak', { n: streak() })]],
+    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [String(streak()), t('statStreak', { n: streak() })]],
     onHome: () => replace('#/'),
     onAgain: () => { unlockAudio(); wakeLock.on(); pendingStart = r.id; replace(`#/play/${r.id}`); },
   });
@@ -895,7 +895,7 @@ function openSettings() {
   setScaleNote();
   syncSeg('#set-mode', settings.mode);
   $('#set-hue').innerHTML = HUES.map((h) => `<button class="swatch" data-hue style="--h:${h}" data-v="${h}" role="radio" aria-checked="${h === settings.hue}" aria-label="${t('colorN', { h })}"></button>`).join('');
-  $('#set-lang').innerHTML = LANGS.map((l) => `<button data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}">${l.label}</button>`).join('');
+  $('#set-lang').innerHTML = LANGS.map((l) => `<button class="m3-item ripple" data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}"><span class="li-text"><b>${l.label}</b></span><span class="m3-radio" aria-hidden="true"></span></button>`).join('');
   checkVoice();
   renderCloud();
   sheet.showModal();
