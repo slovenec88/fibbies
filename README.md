@@ -61,6 +61,6 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 
 Building or contributing? See [DEVELOPING.md](DEVELOPING.md). Ideas for what's next are in [TODO.md](TODO.md).
 
-Created by **Davor Val Vega**. The source is open to read and learn from under the [PolyForm Noncommercial License 1.0.0](LICENSE). Personal, non-commercial use is welcome as long as the credit stays with it. Selling Fibbies or using it commercially is not allowed without permission.
+Fibbies was created by **Davor Val Vega**. It's free and open source under the [GNU Affero General Public License v3.0 only](LICENSE). You may use, change and share it, but any copy or changed version must stay open source under the same licence, including versions run as a website, and must keep this credit (see [NOTICE](NOTICE)).
 
 *Fibbies is a general wellness app, not medical advice. If you're injured or recovering, ask a doctor or physio before stretching.*

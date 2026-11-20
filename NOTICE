@@ -1,0 +1,18 @@
+Fibbies
+Copyright (C) 2026 Davor Val Vega (https://github.com/slovenec88)
+https://juringari.com/fibbies/
+
+This program is free software: you can redistribute it and/or modify it under the terms of
+the GNU Affero General Public License as published by the Free Software Foundation,
+version 3 of the License only (AGPL-3.0-only). See the LICENSE file.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU Affero General Public License for more details.
+
+Additional term (AGPL section 7(b)): copies and modified versions must keep the author
+attribution "Fibbies was created by Davor Val Vega" in this NOTICE file and in the
+README, or in an equivalent place that users can see.
+
+The bundled fonts in fonts/ keep their own licences (SIL Open Font License 1.1 for
+Roboto Flex and Bricolage Grotesque, Apache License 2.0 for Material Symbols).
