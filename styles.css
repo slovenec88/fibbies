@@ -772,6 +772,9 @@ html:has(dialog[open]) { overflow: hidden; }
 @media (max-height: 720px) {
   .reward.collapse .rw-chest { width: min(26vw, 100px); margin-top: 22px; }
 }
+/* Until it opens, the screen holds still: the centring margin pushes the still-invisible payout
+   below the fold, so cut it off at one screen instead of letting the page scroll. */
+.reward:not(.collapse) .rw-inner:not(.rw-nochest) { height: 100dvh; overflow-y: clip; }
 @media (max-height: 680px) {
   .rw-big-wrap { font-size: clamp(36px, 12vw, 52px); }
   .rw-mult { height: 30px; font-size: 12px; }
