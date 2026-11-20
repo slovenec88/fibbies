@@ -48,7 +48,7 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 
 - **Weekly flexibility check:** four quick self-tests (both sides where it matters) give you a score and a chart over time.
 - **Streaks and levels:** a day streak, a weekly tracker, XP levels and daily quests.
-- **Your progress stays yours.** It's saved on your phone, with no account and no tracking. You can copy a backup code to move it to another phone. Cloud save through Google Play Games is on the way for the Android app.
+- **Your progress stays yours.** It's saved in your browser or on your Android device, with no account and no tracking. You can copy a backup code to move it between devices. Cloud save through Google Play Games is on the way for the Android app.
 
 ## Made for phones
 
