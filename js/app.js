@@ -3,7 +3,7 @@ import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
-import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS } from './rewards.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS, dailyBonus, DAILY_STEP } from './rewards.js';
 import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG, esc, stars } from './critter.js';
@@ -168,7 +168,7 @@ let activeCat = readJSON('limber.cat', 'all');
 function suggestion() {
   const h = new Date().getHours();
   const done = todaysCats(log, dayKey());
-  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: t('sug.sandwich') };
+  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: t('sug.cooldown') };
   if (done.has('after') && !done.has('evening') && h >= 18) return { r: routineById('top5-evening'), why: t('sug.evening') };
   if (h < 11) return { r: routineById('top5-before'), why: t('sug.morning') };
   if (h < 16) return { r: routineById('five-minute-fix'), why: t('sug.midday') };
@@ -243,6 +243,8 @@ function renderProgress() {
   const bk = p.buddy && parseKey(p.buddy);
   const buddy = bk ? fibbie(bk.sp, bk.stage) : null;
   const done = todaysCats(log, dayKey());
+  const x = dailyBonus(done);
+  const shown = bonusShownAt(done); // the value last seen: it grows to x on screen
   // The top of the home screen: buddy, level and XP, with Settings in the corner (no separate app bar).
   $('#progress-card').innerHTML = `
     <div class="pc-top">
@@ -252,13 +254,70 @@ function renderProgress() {
           <button class="icon-btn ripple" id="btn-settings" aria-label="${esc(t('settings'))}"><span aria-hidden="true" class="ms">tune</span></button></div>
         <div class="pc-line"><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
         <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
-        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small><small>${t('chestsFriends', { c: p.chests, d: discovered(p) })}</small></div>
+        <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small></div>
       </div>
     </div>
-    <div class="quests" aria-label="${esc(t('questsAria'))}">
-      ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}"><span aria-hidden="true" class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span>${q.label}</div>`).join('')}
-    </div>
-    <div class="quest-hint"><span aria-hidden="true" class="ms filled">lunch_dining</span><span>${t('sandwichHint')}</span></div>`;
+    <div class="bonus${shown > 1 ? ' on' : ''}">
+      <div class="bonus-head"><span>${t('todayBonus')}</span><b class="bonus-x" id="bonus-x">×${fmtX(shown)}</b></div>
+      <div class="bonus-bar" aria-hidden="true"><i style="transform:scaleX(${(shown - 1) / (DAILY_STEP * QUESTS.length)})"></i></div>
+      <div class="quests" aria-label="${esc(t('questsAria'))}">
+        ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}" data-cat="${q.cat}"><span aria-hidden="true" class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span><span>${q.label}</span>${done.has(q.cat) ? '' : `<span class="q-plus">+${Math.round(DAILY_STEP * 100)}%</span>`}</div>`).join('')}
+      </div>
+    </div>`;
+  celebrateBonus(done);
+}
+
+// The daily bonus grows with each kind of routine done today. When it has grown since the home
+// screen was last seen, the number counts up and the new tile lights up: a small, happy moment.
+let xFmt = null;
+const fmtX = (x) => (xFmt ||= new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 2 })).format(x);
+onLangChange(() => { xFmt = null; });
+const BONUS_SEEN = 'fibbies.bonus-seen';
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Categories already celebrated today. */
+function bonusSeen() {
+  const v = readJSON(BONUS_SEEN, null);
+  return new Set(v && v.day === dayKey() && Array.isArray(v.cats) ? v.cats : []);
+}
+const freshCats = (done, seen) => [...done].filter((c) => !seen.has(c) && QUESTS.some((q) => q.cat === c));
+/** The bonus the card starts at: the last value seen when there's a rise to show, else the real one. */
+const bonusShownAt = (done) => (!reduceMotion() && freshCats(done, bonusSeen()).length ? dailyBonus(bonusSeen()) : dailyBonus(done));
+let bonusTimer = 0;
+function celebrateBonus(done) {
+  clearTimeout(bonusTimer); // the card was redrawn: only the latest one celebrates
+  const day = dayKey();
+  // Wait until the home screen is actually on screen, so the moment isn't spent unseen.
+  bonusTimer = setTimeout(() => {
+    if (currentView !== 'home' || document.hidden) return;
+    const seen = bonusSeen();
+    const fresh = freshCats(done, seen);
+    if (!fresh.length) return;
+    writeJSON(BONUS_SEEN, { day, cats: [...done] });
+    const el = $('#bonus-x');
+    if (!el || reduceMotion()) return;
+    const from = dailyBonus(seen), to = dailyBonus(done), t0 = performance.now();
+    const bar = $('.bonus-bar i');
+    if (bar) bar.style.transform = `scaleX(${(to - 1) / (DAILY_STEP * QUESTS.length)})`; // grows (CSS transition)
+    el.closest('.bonus')?.classList.add('on');
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / 900);
+      el.textContent = `×${fmtX(Math.round((from + (to - from) * (1 - (1 - k) ** 3)) * 100) / 100)}`;
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)', offset: 0.35 }, { transform: 'scale(1)' }], { duration: 700, easing: 'ease-out' });
+    for (const c of fresh) $(`.quest[data-cat="${c}"]`)?.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)', offset: 0.4 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
+    const head = el.parentElement;
+    for (let i = 0; i < 7; i++) {
+      const s = document.createElement('i');
+      s.className = 'bonus-spark';
+      s.style.setProperty('--a', `${-160 + i * 23}deg`);
+      s.style.animationDelay = `${i * 40}ms`;
+      head.appendChild(s);
+      setTimeout(() => s.remove(), 1400);
+    }
+    haptics.buzz(20);
+  }, 450);
 }
 
 

@@ -67,6 +67,11 @@ export const QUESTS = [
   { cat: 'evening', icon: 'bedtime', label: 'Evening wind-down' },
 ];
 
+/** Today's bonus: +25% on every chest for each kind of routine (warm-up, cool-down, evening)
+ *  already done today, so it grows through the day: x1, x1.25, x1.5, x1.75. */
+export const DAILY_STEP = 0.25;
+export const dailyBonus = (cats) => 1 + DAILY_STEP * QUESTS.filter((q) => cats.has(q.cat)).length;
+
 /** Only sessions at least half completed count toward streaks, quests and bonuses. */
 export const counts = (h) => (h.ratio ?? 1) >= 0.5;
 /** Categories completed today, from the session log. */
@@ -92,15 +97,13 @@ export function computeReward(o, rand = Math.random) {
   const { routine, holdSecs, ratio, skips, scale, priorToday, firstToday, streak, profile } = o;
   const base = Math.max(1000, Math.round((holdSecs * FIBERS_PER_SEC * ratio) / 10) * 10);
   const perfect = skips === 0 && ratio >= 0.95;
-  // Once per day: only the first qualifying session of this category completes the sandwich.
-  const sandwich = ratio >= 0.5 && !priorToday.has(routine.cat)
-    && ((routine.cat === 'after' && priorToday.has('before')) || (routine.cat === 'before' && priorToday.has('after')));
+  const daily = dailyBonus(priorToday);
   const lucky = rand() < 0.08;
 
   const mults = [];
   if (firstToday) mults.push({ icon: 'wb_sunny', label: t('m.first'), x: 1.2 });
   if (streak >= 2) mults.push({ icon: 'local_fire_department', label: t('m.streak', { n: streak }), x: round2(1 + 0.1 * Math.min(streak, 20)) });
-  if (sandwich) mults.push({ icon: 'lunch_dining', label: t('m.sandwich'), x: 2, hot: true });
+  if (daily > 1) mults.push({ icon: 'trending_up', label: t('todayBonus'), x: daily, hot: daily >= 1.5 });
   if (scale === 'flex') mults.push({ icon: 'self_improvement', label: t('m.flex'), x: 1.5 });
   if (perfect) mults.push({ icon: 'verified', label: t('m.perfect'), x: 1.25 });
   if (lucky) mults.push({ icon: 'casino', label: t('m.lucky'), x: 3, hot: true });
@@ -113,12 +116,12 @@ export function computeReward(o, rand = Math.random) {
   }
 
   // Chest tier is a roll: wooden chests are the usual result, so a rare one feels special.
-  // Luck (streaks, a stretch sandwich, Flex 60s) tilts the odds; a lucky stretch is at least rare.
+  // Luck (streaks, a big daily bonus, Flex 60s) tilts the odds; a lucky stretch is at least rare.
   // No luck: 75 % wooden, 20 % rare, 4 % epic, 1 % legendary. All four: about 32/44/18/6 %.
   let luck = 0;
   if (streak >= 3) luck++;
   if (streak >= 7) luck++;
-  if (sandwich) luck++;
+  if (daily >= 1.5) luck++;
   if (scale === 'flex') luck++;
   const pLeg = 0.01 + 0.012 * luck;
   const pEpic = 0.04 + 0.035 * luck;
@@ -137,7 +140,7 @@ export function computeReward(o, rand = Math.random) {
   const before = levelProgress(profile.xp);
   const after = levelProgress(profile.xp + total);
   return {
-    base, mults, steps, total, tier, perfect, sandwich, lucky, ranAway,
+    base, mults, steps, total, tier, perfect, daily, lucky, ranAway,
     fibbie: fib, isNew: !profile.dex[fib.key], copies,
     xpBefore: profile.xp, xpAfter: profile.xp + total,
     levelBefore: before.level, levelAfter: after.level,

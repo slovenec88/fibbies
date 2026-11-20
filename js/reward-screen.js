@@ -7,6 +7,7 @@ import { createFx, raysCanvas, pillarCanvas, coreCanvas, flareCanvas } from './f
 
 let numFmt = null; // one formatter per show (creating one every frame is slow)
 const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
+const fmtX = (x) => new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 2 }).format(x); // ×1,25 in most languages
 
 const TAPS = 3; // taps to break the chest open
 
@@ -321,7 +322,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       if (!alive) return;
       const pill = document.createElement('div');
       pill.className = `rw-mult${m.hot ? ' hot' : ''}`;
-      pill.innerHTML = `<span aria-hidden="true" class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${m.x}</b>`;
+      pill.innerHTML = `<span aria-hidden="true" class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${fmtX(m.x)}</b>`;
       ml.appendChild(pill);
       fx.slam(m.hot);
       haptics.buzz(m.hot ? [40, 30, 80] : 60);

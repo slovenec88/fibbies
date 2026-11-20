@@ -2,7 +2,7 @@
 // Every deploy bumps VERSION. A new worker downloads the whole app shell fresh
 // (bypassing the HTTP cache) before it takes over, and pages are always served
 // from one consistent cache, so old and new files can never be mixed.
-const VERSION = 'fibbies-v38';
+const VERSION = 'fibbies-v39';
 const SHELL = [
   './', 'styles.css', 'manifest.webmanifest',
   'js/app.js', 'js/data.js', 'js/figure.js', 'js/audio.js', 'js/session.js', 'js/wakelock.js',

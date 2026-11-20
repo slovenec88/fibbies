@@ -51,7 +51,7 @@ const EN = {
   // home
   suggestedNow: 'Suggested now',
   footnote: 'Stretch gently. Mild tension is good, pain is not.',
-  'sug.sandwich': 'Done training? Stretch Sandwich ×2!',
+  'sug.cooldown': "Done training? Grow today's bonus.",
   'sug.evening': 'Finish the day strong',
   'sug.morning': 'Working out? Warm up first',
   'sug.midday': 'A quick midday reset',
@@ -67,10 +67,9 @@ const EN = {
   level: ({ n }) => `Level ${n}`,
   lv: ({ n }) => `Lv ${n}`,
   fibersStretched: ({ x }) => `${x} fibers stretched`,
-  chestsFriends: ({ c, d }) => `${c} ${en(c, 'chest', 'chests')} · ${d} discovered`,
   discovered: ({ n }) => `${n} discovered`,
   questsAria: "Today's quests",
-  sandwichHint: 'Warm up <b>and</b> cool down on the same day for a <b>Stretch Sandwich ×2</b> and better chests.',
+  'todayBonus': 'Today\'s bonus',
   fibbieFriends: 'Fibbie friends',
   rarity: ['Common', 'Rare', 'Epic', 'Legendary'],
   moreToFind: 'Endless Fibbies hide in chests. Finish a routine to find your first!',
@@ -176,7 +175,6 @@ const EN = {
   // multipliers
   'm.first': 'First stretch today',
   'm.streak': ({ n }) => `${n}-day streak`,
-  'm.sandwich': 'Stretch Sandwich!',
   'm.flex': 'Flex 60s',
   'm.perfect': 'Perfect session',
   'm.lucky': 'LUCKY STRETCH!',

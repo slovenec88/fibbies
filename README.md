@@ -33,8 +33,8 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 ## A reward every time
 
 - **A treasure chest after every session.** Tap to open it and watch the counter of "muscle fibers stretched" spin up.
-- **Multipliers stack up.** You get them for a daily streak, a perfect session, a lucky roll and the *Stretch Sandwich*: warming up and cooling down on the same day doubles your reward.
-- **Chests come in four tiers,** from Wooden to Legendary. Most are Wooden, so a Legendary one feels special. Streaks improve your odds.
+- **Multipliers stack up.** You get them for a daily streak, a perfect session, a lucky roll and *today's bonus*: each kind of routine you do in a day (warm-up, cool-down, evening wind-down) adds +25% to every chest for the rest of that day.
+- **Chests come in four tiers,** from Wooden to Legendary. Most are Wooden, so a Legendary one feels special. Streaks and a big daily bonus improve your odds.
 - **Skipping doesn't pay.** Sessions less than half done earn nothing.
 
 ## Meet the Fibbies
