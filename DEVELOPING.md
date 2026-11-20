@@ -12,6 +12,17 @@ Then open http://localhost:5173. ES modules need an HTTP server, so opening `ind
 
 `gallery.html` is a dev page that renders every pose for checking the figures.
 
+## Cloudflare web deployment
+
+[Fibbies on the web](https://fibbies.juringari.com/) uses Workers Static Assets. Build and deploy from this repository:
+
+```bash
+npm test && npm run build:web -- --cloudflare
+npx --yes --package=cf@1.0.0-rc.2 cf deploy ./www
+```
+
+Use these as the build and deploy commands in the `fibbies` Worker's Builds settings, with `main` as the production branch. The Cloudflare build gives the offline cache a version based on the Git commit. `npm run build:web` without `--cloudflare` still prepares the Android wrapper.
+
 ## Tests
 
 ```bash
