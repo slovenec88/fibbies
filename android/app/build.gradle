@@ -11,7 +11,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // Optional Google Play Games cloud save. Put your Play Games project id in
-        // android/gradle.properties as playGamesAppId=1234567890 (see README). Empty = off.
+        // android/gradle.properties as playGamesAppId=1234567890 (see DEVELOPING.md). Empty = off.
         resValue "string", "game_services_project_id", (project.findProperty('playGamesAppId') ?: '').toString()
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

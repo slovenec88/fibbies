@@ -156,7 +156,7 @@ export const UI = {
   installVoice: "Instalar voz",
   cloudSave: "Salvamento na nuvem",
   cloudConnecting: "Conectando ao Google Play Games…",
-  cloudNeedsSetup: "Ainda não disponível: o salvamento na nuvem vai funcionar quando o app estiver no Google Play com o Play Games configurado (passos no README).",
+  cloudNeedsSetup: "Ainda não disponível: o salvamento na nuvem vai funcionar quando o app estiver no Google Play com o Play Games configurado.",
   cloudSignedOut: "Você saiu do Google Play Games, então nada está sendo salvo. Desative e ative de novo para entrar.",
   cloudSub: "Guarde seus Fibbies e seu progresso de graça na sua conta do Google Play Games.",
   cloudNotSetUp: "O salvamento na nuvem ainda não está configurado nesta versão do app.",

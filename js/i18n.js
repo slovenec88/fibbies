@@ -198,7 +198,7 @@ const EN = {
   installVoice: 'Install voice',
   cloudSave: 'Cloud save',
   cloudConnecting: 'Connecting to Google Play Games…',
-  cloudNeedsSetup: 'Not available yet: cloud save starts working once the app is on Google Play with Play Games set up (steps in the README).',
+  cloudNeedsSetup: 'Not available yet: cloud save starts working once the app is on Google Play with Play Games set up.',
   cloudSignedOut: 'Signed out of Google Play Games, so nothing is being saved. Turn this off and on to sign in again.',
   cloudSub: 'Keep your Fibbies and progress in your Google Play Games account, free.',
   cloudNotSetUp: 'Cloud save isn\'t set up in this version of the app yet.',

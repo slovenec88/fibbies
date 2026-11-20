@@ -160,7 +160,7 @@ export const UI = {
   installVoice: 'Namesti glas',
   cloudSave: 'Shranjevanje v oblak',
   cloudConnecting: 'Povezovanje z Google Play Igrami …',
-  cloudNeedsSetup: 'Še ni na voljo: shranjevanje v oblak bo delovalo, ko bo aplikacija na Google Play in bodo nastavljene Google Play Igre (koraki so v README).',
+  cloudNeedsSetup: 'Še ni na voljo: shranjevanje v oblak bo delovalo, ko bo aplikacija na Google Play in bodo nastavljene Google Play Igre.',
   cloudSignedOut: 'Odjavljen iz Google Play Iger, zato se nič ne shranjuje. Izklopi in znova vklopi za ponovno prijavo.',
   cloudSub: 'Fibbiji in napredek se brezplačno shranijo v tvoj račun Google Play Igre.',
   cloudNotSetUp: 'Shranjevanje v oblak v tej različici aplikacije še ni nastavljeno.',

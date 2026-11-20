@@ -1,87 +1,62 @@
-# Fibbies: stretch & loot
+<div align="center">
 
-A phone-first web app with follow-along stretching routines for before and after exercise, evenings and work breaks, wrapped in a treasure-chest reward loop. Most routines run 2–10 minutes and comes with voice guidance, sound cues, an on-screen timer and animated figures that show each pose. The screen stays awake while you stretch.
+<img src="icons/icon-192.png" width="96" alt="Fibbies icon">
 
-## Features
+# Fibbies
 
-- **14 routines in 4 groups** (After workout, Before workout, Evening, Quick), each led by a research-ranked **Top 5** routine
-- **Top 10 rankings** for each group, ranked by effectiveness versus simplicity (see [RANKINGS.md](RANKINGS.md))
-- **41 stretches** (including standing work-break stretches that need no floor or equipment), each with an animated figure drawn from joint targets (two-bone IK)
-- **Procedural Fibbies**: every chest drops a seeded, code-drawn critter (endless species, 4 rarities). Collect duplicates and merge two identical ones to evolve them, up to 4 stages (`js/fibbies.js`, `js/critter.js`)
-- **Treasure-chest rewards** after every session:
-  - Four chest tiers (Wooden to Legendary) and a slot-machine count-up of "muscle fibers stretched"
-  - Stacking multipliers: streak, Stretch Sandwich ×2 (warm-up and cooldown on the same day), Flex 60s, perfect session, lucky
-  - 12 collectible Fibbie critters, plus XP levels and level-ups
-  - Sessions less than half done earn nothing, so skipping can't farm chests
-- **Daily quests** (before workout, after workout, evening) and a Fibbie collection on the home screen
-- **Weekly flexibility check**: four self-tests (both sides where it matters) with a score and progress chart (`js/flex.js`)
-- **Fibbie album** with shadows of the originals still to find
-- **Audio**: synthesized chimes, a 3-2-1 countdown, halfway and switch-sides cues, plus spoken names and tips through the Web Speech API
-- **Screen Wake Lock**, so the phone doesn't go to sleep mid-stretch
-- **Material You styling**: a tonal palette built from a seed hue in OKLCH, light and dark themes, and 8 color choices
-- **Installable PWA** that works offline after the first visit
-- Hold length setting (short / standard / long), plus an opt-in **Flex 60s** mode that brings every static hold to 60 s per side for flexibility gains, vibration, a streak counter and a weekly tracker
-- **Languages**: English, German, Spanish, French, Italian, Portuguese and Slovenian (Settings → Language), including spoken cues. The first launch follows the phone's language. Picks the device voice for the language, and shows a hint (with an "Install voice" button on Android) if none is installed. English and Slovenian UI strings live in `js/i18n.js` and their stretch and routine text in `js/localize.js`; each other language is one file in `js/lang/` with both
-- No build step and no dependencies, just static HTML, CSS and ES modules
+**Stretch for a few minutes. Open a chest. Collect a critter.**
 
-See [TODO.md](TODO.md) for planned ideas.
+A follow-along stretching app for before and after a workout, at bedtime and during a work break, with a treasure chest at the end of every session.
 
-## Run locally
+<img src="docs/screenshots/home.png" width="230" alt="Home screen with level, streak and a suggested routine">&nbsp;
+<img src="docs/screenshots/stretch.png" width="230" alt="A stretch in progress with an animated figure and timer">&nbsp;
+<img src="docs/screenshots/album.png" width="230" alt="The Fibbie album with collected critters and shadows still to find">
 
-```bash
-python -m http.server 5173
-```
+</div>
 
-Then open http://localhost:5173. ES modules need an HTTP server, so opening `index.html` straight from disk won't work.
+## Stretching that's easy to keep doing
 
-`gallery.html` is a dev page that renders every pose for checking the figures.
+Most people know they should stretch, and most skip it. Fibbies makes it short, guided and worth coming back to.
 
-## Android app (Capacitor)
+- **Press Start and follow along.** An animated figure shows each pose. A voice tells you what's next and when to switch sides, so you don't need to watch the screen. The screen stays on until you're done.
+- **Two to ten minutes.** There are 14 routines for warming up, cooling down, winding down for bed, and quick breaks, including a 2-minute routine for busy days.
+- **Stretches chosen by research.** Each group starts with a *Top 5* routine. Its stretches are ranked by how well they work and how simple they are, based on physical therapist and coaching advice ([see the rankings](RANKINGS.md)).
+- **Desk-friendly.** The work-break stretches need no floor, no mat and no equipment. You can do them in office clothes next to your desk.
 
-The Android app is built from the same web code. Capacitor wraps it in a native shell and uses native features where they work better than the browser version:
-- text-to-speech for the voice;
-- crisp haptics;
-- keep-awake;
-- edge-to-edge system bars;
-- the hardware back button;
-- a critter splash screen.
+<div align="center">
+<img src="docs/screenshots/routine.png" width="230" alt="A routine page listing its stretches">&nbsp;
+<img src="docs/screenshots/flexibility.png" width="230" alt="The flexibility check with a progress chart">
+</div>
 
-These live in `js/native.js` and do nothing on the web.
+## A reward every time
 
-**Setup (once):**
-1. Install Node.js LTS, JDK 21 and the Android SDK (`ANDROID_HOME`).
-2. Run `npm install`.
+- **A treasure chest after every session.** Tap to open it and watch the counter of "muscle fibers stretched" spin up.
+- **Multipliers stack up.** You get them for a daily streak, a perfect session, a lucky roll and the *Stretch Sandwich*: warming up and cooling down on the same day doubles your reward.
+- **Chests come in four tiers,** from Wooden to Legendary. Most are Wooden, so a Legendary one feels special. Streaks improve your odds.
+- **Skipping doesn't pay.** Sessions less than half done earn nothing.
 
-**Common commands:**
+## Meet the Fibbies
 
-| Command | What it does |
-|---|---|
-| `npm run android:debug` | Copy the web app into `www/`, sync it to `android/`, and build `android/app/build/outputs/apk/debug/app-debug.apk` |
-| `npm run android:run` | Build and launch on a connected phone or emulator |
-| `npm run android:open` | Open the project in Android Studio |
+- **Every chest holds a Fibbie,** a little critter drawn by code. There are 12 originals to find and an endless number of wild ones, so a chest can hold one nobody has seen.
+- **Merge two of the same Fibbie** to evolve it through four stages, with a big show at each evolution.
+- **Fill the album.** The originals you haven't found yet show up as shadows.
+- **Some Fibbies are shy.** Now and then one runs off before you can catch it.
 
-### Optional: cloud save with Google Play Games
+## See your progress
 
-The Android app can keep the player's progress (Fibbies, level, history, settings) in their own Google Play Games account through the free [Saved Games](https://developer.android.com/games/pgs/savedgames) service. It's off until the app is set up in the Play Console; until then Settings shows "Cloud save isn't set up". Separately, Android's own Auto Backup (`allowBackup`) already copies the app's data to the user's Google Drive backup and restores it on a reinstall.
+- **Weekly flexibility check:** four quick self-tests (both sides where it matters) give you a score and a chart over time.
+- **Streaks and levels:** a day streak, a weekly tracker, XP levels and daily quests.
+- **Your progress stays yours.** It's saved on your phone, with no account and no tracking. You can copy a backup code to move it to another phone. Cloud save through Google Play Games is on the way for the Android app.
 
-To switch it on:
-1. Upload the app to the Play Console (an internal testing track is enough) and add yourself as a tester.
-2. In Play Console → **Play Games Services → Setup and management → Configuration**, create a games project for the app.
-3. Add an **Android credential** with package `io.github.slovenec88.fibbies` and the SHA-1 of the signing key (the upload key's and the Play app signing key's; for debug builds run `cd android && ./gradlew signingReport`).
-4. Under **Saved Games**, turn the feature on, then publish the Play Games configuration and add testers.
-5. Copy the **project ID** (a number) into `android/gradle.properties` as `playGamesAppId=1234567890`, and rebuild.
+## Made for phones
 
-The native side is `android/app/src/main/java/io/github/slovenec88/fibbies/PlayGamesPlugin.java`; the syncing (newest copy wins, and the app asks which to keep when two phones both have progress) is in `js/cloud.js`.
+- **Material You design** in light and dark mode, with 8 colours to choose from.
+- **Works offline.** Install it to your home screen as a web app, or use the Android app.
+- **7 languages,** spoken cues included: English, German, Spanish, French, Italian, Portuguese and Slovenian.
+- **Safety first:** a short note on how to stretch safely, and hold lengths you can change. *Flex 60s* mode stretches every still hold to 60 seconds a side when you're working on flexibility.
 
-Change the web code at the repo root, then run `npm run sync`. Don't edit `www/` or `android/app/src/main/assets`; both are generated.
+---
 
-## Deploy
+Building or contributing? See [DEVELOPING.md](DEVELOPING.md). Ideas for what's next are in [TODO.md](TODO.md).
 
-**Before every push, bump `VERSION` in `sw.js`.** The service worker serves the app cache-first, so returning users only get changes when the version changes.
-
-Everything is static. GitHub Pages serves it straight from the `main` branch root.
-
-## Notes
-
-- iOS: audio and voice only start after you tap a button, which the Start button handles. With the hardware mute switch on, sound effects stay silent.
-- Wake Lock needs HTTPS (or localhost) and is supported in Chrome, Edge and Safari 16.4+.
+*Fibbies is a general wellness app, not medical advice. If you're injured or recovering, ask a doctor or physio before stretching.*

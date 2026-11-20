@@ -1,15 +1,15 @@
-# Top 10 stretches for runners, by section
+# Top 10 stretches, by section
 
-Each list ranks stretches by **effectiveness for runners weighed against simplicity**. Simple means no equipment, easy to learn and safe to do alone. Stretches that more expert sources agree on rank higher. In the app, each section's top 5 make up its **Top 5** routine.
+Each list ranks stretches by **effectiveness weighed against simplicity**. Much of the research and coaching advice behind it comes from running, the most studied sport for stretching, but the picks suit any workout. Simple means no equipment, easy to learn and safe to do alone. Stretches that more expert sources agree on rank higher. In the app, each section's top 5 make up its **Top 5** routine.
 
 ## How the ranking was made
 
-- **After run:** hold static stretches for about 20–30 seconds while your muscles are still warm, ideally after a short walking cooldown. Physical therapists most often name the quads, calves, hip flexors, hamstrings and glutes/outer hips.
-- **Before run:** use dynamic moves only. A Florida State study found static stretching before running made trained runners less efficient and cut how far they ran in a time trial. Later studies found dynamic stretching improved flexibility without that cost, and moderate dynamic stretching may even improve running economy.
+- **After exercise:** hold static stretches for about 20–30 seconds while your muscles are still warm, ideally after a short walking cooldown. Physical therapists most often name the quads, calves, hip flexors, hamstrings and glutes/outer hips.
+- **Before exercise:** use dynamic moves only. A Florida State study found static stretching before running made trained runners less efficient and cut how far they ran in a time trial. Later studies found dynamic stretching improved flexibility without that cost, and moderate dynamic stretching may even improve running economy.
 - **Evening:** gentle floor stretches about 30–60 minutes before bed, chosen to calm the body as well as stretch it.
 - **Quick:** the most muscle groups covered per minute.
 
-## After run
+## After exercise
 
 | # | Stretch | Why |
 |---|---|---|
@@ -24,7 +24,7 @@ Each list ranks stretches by **effectiveness for runners weighed against simplic
 | 9 | Standing IT Band Stretch | Outer hip, standing |
 | 10 | Child's Pose | Calm finish for back and hips |
 
-## Before run (dynamic)
+## Before exercise (dynamic)
 
 | # | Stretch | Why |
 |---|---|---|

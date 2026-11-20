@@ -157,7 +157,7 @@ export const UI = {
   installVoice: "Installer une voix",
   cloudSave: "Sauvegarde cloud",
   cloudConnecting: "Connexion à Google Play Jeux…",
-  cloudNeedsSetup: "Pas encore disponible : la sauvegarde cloud fonctionnera quand l'appli sera sur Google Play avec Play Jeux configuré (étapes dans le README).",
+  cloudNeedsSetup: "Pas encore disponible : la sauvegarde cloud fonctionnera quand l'appli sera sur Google Play avec Play Jeux configuré.",
   cloudSignedOut: "Déconnecté de Google Play Jeux : rien n'est sauvegardé. Désactive puis réactive pour te reconnecter.",
   cloudSub: "Garde tes Fibbies et ta progression gratuitement dans ton compte Google Play Jeux.",
   cloudNotSetUp: "La sauvegarde cloud n'est pas encore configurée dans cette version de l'appli.",
