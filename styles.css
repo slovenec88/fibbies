@@ -789,8 +789,9 @@ html:has(dialog[open]) { overflow: hidden; }
   .rw-btn { height: 52px; }
 }
 
-/* After opening, the chest shrinks so the payout fits on the screen */
-/* The size change happens under the white flash in one step (animating width/margin re-lays out the page every frame). */
+/* After the opening burst, the chest shrinks and moves up so the payout fits on the screen.
+   The size changes in one layout step; js then glides it there with a transform (animating
+   width/margin would re-lay out the page every frame). */
 .reward.collapse .rw-tier { transition: none; }
 .reward.collapse .rw-tap { display: none; }
 .reward.collapse .rw-chest { width: min(34vw, 140px); margin-top: 30px; }

@@ -94,6 +94,11 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fast = true;
     skipped = true;
     $('#rw-skip').hidden = true;
+    // Jump any one-off animation (shake, punch, glide, flare) to its end, so nothing is left
+    // half-way; the endless ones (rays turning, glow breathing) keep going.
+    for (const a of wrap.getAnimations({ subtree: true })) {
+      if (a.effect?.getComputedTiming().iterations !== Infinity) { try { a.finish(); } catch {} }
+    }
     releaseTaps?.();
   };
   // Start with the chest in the middle of the screen; it moves up once it opens.
@@ -174,7 +179,29 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (reduce || fast) return;
     bigWrap.animate([{ transform: 'scale(1)' }, { transform: `scale(${1.12 + P * 0.05})`, offset: 0.4 }, { transform: 'scale(1)' }], { duration: 350, easing: 'ease-out' });
   }
+  /** After the opening burst the chest glides up and shrinks, making room for the payout below.
+   *  The layout changes in one step; a transform animation then slides it from where it was. */
+  function moveUp() {
+    const chest = $('.rw-chest');
+    const light = $('.rw-light');
+    const els = [tierEl, chest];
+    const before = els.map((e) => e.getBoundingClientRect());
+    const lightBefore = parseFloat(light.style.top) || 0;
+    wrap.classList.add('collapse');
+    tierEl.style.marginTop = '';
+    chestAt = null;
+    placeLight();
+    if (fast || reduce) return;
+    const opts = { duration: 700, easing: 'cubic-bezier(.3,0,0,1)' };
+    els.forEach((e, i) => {
+      const b = before[i], a = e.getBoundingClientRect();
+      const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
+      e.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${b.width / a.width})` }, { transform: 'none' }], opts);
+    });
+    light.animate([{ transform: `translateY(${lightBefore - (parseFloat(light.style.top) || 0)}px)` }, { transform: 'none' }], opts);
+  }
   function stamp(text) {
+    if (fast) return; // after Skip the praise banner would only cover the payout
     const b = $('.rw-banner');
     b.textContent = text;
     b.classList.remove('go');
@@ -269,15 +296,13 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(chargeMs);
     if (!alive) return;
     flash();
-    wrap.classList.add('opened', 'collapse', 'party');
-    tierEl.style.marginTop = '';
+    // The chest bursts open where it stands, in the middle of the screen; it moves up afterwards.
+    wrap.classList.add('opened', 'party');
     fx.boom();
     fx.open();
     haptics.buzz(160);
     shake();
     if (P >= 3) punch();
-    chestAt = null; // the chest just shrank: measure it after that layout
-    placeLight();
     if (P >= 2 && !reduce) {
       // Lens flare: a streak that shoots out sideways and then glows on, dimmer.
       flare.animate([
@@ -307,7 +332,11 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     musicWanted = true;
     fx.musicStart(rw.tier);
 
-    await sleep(550);
+    // Let the burst play out in the middle, then glide up to make room for the payout.
+    await sleep([1000, 1200, 1400][P - 1]);
+    if (!alive) return;
+    moveUp();
+    await sleep(380);
     if (!alive) return;
     wrap.classList.add('show-count');
     await countTo(0, rw.base, 1500);
@@ -426,6 +455,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (!alive) return;
     wrap.classList.add('done');
     $('#rw-skip').hidden = true;
+    chestAt = null; placeLight(); // in case anything moved while the show raced through
     if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) { vfx.embers(1); if (P >= 3) vfx.twinkles(1, 0.6); } }, 450);
     const act = $('.rw-actions');
     if (act.getBoundingClientRect().bottom > innerHeight) act.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
