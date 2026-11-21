@@ -32,7 +32,7 @@ An animated figure shows each move and a timer keeps you on pace. Spoken cues te
 
 ### Open a chest
 
-Your first warm-up, cooldown, evening routine, and strength session each earn a chest that day. Chests get better as you try more kinds of routines. Tap three times to see what’s inside. Quick resets and repeat routines still earn fibers and XP. Tap the orb to reveal the Well done screen.
+Your first warm-up, cooldown, evening routine, and strength session each earn a chest that day. Chests get better as you try more kinds of routines. Tap three times to see what’s inside. Quick resets and repeat routines still earn fibers and XP. Tap the fiber knot three times to loosen it and watch its face light up.
 
 ### Collect and evolve
 
