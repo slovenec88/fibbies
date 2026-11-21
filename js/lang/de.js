@@ -54,7 +54,7 @@ export const UI = {
   ],
   skip: "Überspringen",
   tapCalls: ["Tippe auf die Truhe!", "Nochmal!", "Noch einmal!"],
-  tapOrb: "Tippe auf die Kugel!",
+  tapKnot: "Lös den Knoten!",
   levelsRebalanced: "Level neu ausbalanciert: Aufsteigen dauert jetzt länger und lohnt sich mehr. Deine Fasern und Freunde bleiben erhalten.",
   back: "Zurück",
   settings: "Einstellungen",

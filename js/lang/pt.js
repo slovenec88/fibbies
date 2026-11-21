@@ -54,7 +54,7 @@ export const UI = {
   ],
   skip: "Pular",
   tapCalls: ["Toque no baú!", "De novo!", "Mais uma vez!"],
-  tapOrb: "Toque na esfera!",
+  tapKnot: "Afrouxe o nó!",
   levelsRebalanced: "Níveis rebalanceados: agora subir de nível é mais lento e vale mais. Suas fibras e amigos estão a salvo.",
   back: "Voltar",
   settings: "Configurações",

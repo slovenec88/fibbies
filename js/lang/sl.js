@@ -58,7 +58,7 @@ export const UI = {
   ],
   skip: 'Preskoči',
   tapCalls: ['Tapni skrinjo!', 'Še enkrat!', 'Še zadnjič!'],
-  tapOrb: "Tapni kroglo!",
+  tapKnot: "Sprosti vozel!",
   levelsRebalanced: 'Stopnje so prenovljene: napredovanje je zdaj počasnejše in vredno več. Tvoja vlakna in prijatelji so varni.',
   back: 'Nazaj',
   settings: 'Nastavitve',

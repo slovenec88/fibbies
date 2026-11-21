@@ -756,23 +756,29 @@ html:has(dialog[open]) { overflow: hidden; }
 }
 .rw-nochest { justify-content: center; gap: 12px; }
 .rw-nochest .rw-chest { filter: grayscale(.6) brightness(.8); }
-/* Well done: an orb that cracks with three taps, then bursts to show the check */
-.rw-orb-box { position: relative; z-index: 3; width: 128px; height: 128px; display: grid; place-items: center; }
-.rw-orb { width: 128px; height: 128px; padding: 0; border-radius: 50%; background: none; animation: orb-wait 1.6s ease-in-out infinite;
-  filter: drop-shadow(0 0 18px rgba(126, 224, 181, .55)); transition: transform .35s cubic-bezier(.3,1.4,.5,1), opacity .25s; }
-.rw-orb svg { width: 100%; height: 100%; display: block; }
-@keyframes orb-wait { 0%, 100% { scale: 1; } 50% { scale: 1.05; } }
-.orb-crack { fill: none; stroke: #0b3a2a; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 90; stroke-dashoffset: 90; transition: stroke-dashoffset .3s ease-out; }
-.reward[data-hits="1"] .orb-crack.c1, .reward[data-hits="2"] .orb-crack.c1, .reward[data-hits="2"] .orb-crack.c2 { stroke-dashoffset: 0; }
+/* Well done: a knot of muscle fibers that loosens with three taps, then lets go to show the check */
+.rw-knot-box { position: relative; z-index: 3; width: 128px; height: 128px; display: grid; place-items: center; }
+.rw-knot { width: 128px; height: 128px; padding: 0; border-radius: 50%; background: none; animation: knot-wait 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(255, 93, 115, .45)); }
+.rw-knot svg { width: 100%; height: 100%; display: block; overflow: visible; }
+@keyframes knot-wait { 0%, 100% { scale: 1; } 50% { scale: .95; } }
+.kn { fill: none; stroke-width: 7; transform: rotate(var(--a)) scale(.82); transition: transform .45s cubic-bezier(.3,1.6,.5,1), opacity .35s; }
+.kn ellipse { stroke-linecap: round; }
+.kn-hi { stroke-width: 2; stroke-dasharray: 6 5; }
+.reward[data-hits="1"] .kn { transform: rotate(calc(var(--a) + var(--d))) scale(.92); }
+.reward[data-hits="2"] .kn { transform: rotate(calc(var(--a) + var(--d) * 2)) scale(1.02); }
+.kn-glow { transition: opacity .3s; }
+.rw-earned.open .rw-knot { pointer-events: none; animation: none; filter: none; outline: none; }
+.rw-earned.open .kn-glow { opacity: 0; }
+.rw-earned.open .kn { transform: rotate(calc(var(--a) + var(--d) * 4)) scale(1.9); opacity: 0; }
 .rw-earned .rw-done-icon { position: absolute; inset: 0; display: grid; place-items: center; font-size: 104px; color: var(--primary); opacity: 0; pointer-events: none; }
-.rw-earned.open .rw-orb { transform: scale(1.5); opacity: 0; pointer-events: none; animation: none; }
 .rw-earned.open .rw-done-icon { opacity: 1; animation: done-glow 2.4s ease-in-out .8s infinite; }
 @keyframes done-glow { 0%, 100% { filter: drop-shadow(0 0 6px rgba(126, 224, 181, .35)); } 50% { filter: drop-shadow(0 0 22px rgba(126, 224, 181, .9)); } }
 .rw-earned .rw-tap { position: relative; z-index: 3; }
 .rw-earned.open .rw-tap { display: none; }
 .rw-earned h1, .rw-earned p, .rw-earned .rw-actions { position: relative; z-index: 3; transition: opacity .4s .25s, transform .5s .25s cubic-bezier(.2,1.4,.4,1); }
 .rw-earned.waiting h1, .rw-earned.waiting p, .rw-earned.waiting .rw-actions { opacity: 0; transform: translateY(14px); pointer-events: none; }
-@media (prefers-reduced-motion: reduce) { .rw-orb, .rw-earned.open .rw-done-icon { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .rw-knot, .rw-earned.open .rw-done-icon { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .rw-earned .rw-done-icon { animation: none; } }
 .rw-earned .rw-earned-n { font-size: 22px; font-weight: 800; color: #ffd166; }
 .rw-nochest .rw-chest::after { content: none; }

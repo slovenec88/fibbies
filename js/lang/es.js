@@ -54,7 +54,7 @@ export const UI = {
   ],
   skip: "Saltar",
   tapCalls: ["¡Toca el cofre!", "¡Otra vez!", "¡Una más!"],
-  tapOrb: "¡Toca la esfera!",
+  tapKnot: "¡Afloja el nudo!",
   levelsRebalanced: "Niveles reajustados: ahora se sube más despacio y cada nivel vale más. Tus fibras y amigos están a salvo.",
   back: "Atrás",
   settings: "Ajustes",

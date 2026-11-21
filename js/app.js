@@ -981,11 +981,11 @@ function renderDone() {
     const left = rw.kindsLeft.map((c) => catOf(c).label).join(', ');
     v.innerHTML = `
       <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned${reduceMotion() ? '' : ' waiting'}">
-        <div class="rw-orb-box">
-          <button class="rw-orb" aria-label="${esc(t('tapOrb'))}">${ORB_SVG}</button>
+        <div class="rw-knot-box">
+          <button class="rw-knot" aria-label="${esc(t('tapKnot'))}">${KNOT_SVG}</button>
           <span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span>
         </div>
-        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapOrb')}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(3)}</span></div>
+        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapKnot')}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(3)}</span></div>
         <h1>${t('wellDone')}</h1>
         <p class="rw-earned-n">${esc(t('fibersStretched', { x: `+${fmtBig(rw.total)}` }))}</p>
         <p>${esc(left ? t('noChestNext', { kinds: left }) : t('noChestToday'))}</p>
@@ -996,7 +996,7 @@ function renderDone() {
       </div></div>`;
     $('#rw-again').onclick = again;
     $('#rw-home').onclick = () => replace('#/');
-    crackOrb(v, rw.total);
+    loosenKnot(v, rw.total);
     return;
   }
   const st = streak();
@@ -1007,49 +1007,51 @@ function renderDone() {
   });
 }
 
-// A glowing orb that cracks a little more with each of three taps, like a small chest, then bursts
-// to show the check. It waits for you, so the moment isn't spent while the screen slides in.
-const ORB_SVG = `<svg viewBox="0 0 120 120" aria-hidden="true">
-  <defs><radialGradient id="orb-g" cx=".36" cy=".3" r=".75"><stop offset="0" stop-color="#e4fff2"/><stop offset=".45" stop-color="#7ee0b5"/><stop offset="1" stop-color="#1d7a58"/></radialGradient></defs>
-  <circle cx="60" cy="60" r="50" fill="url(#orb-g)"/>
-  <ellipse cx="44" cy="38" rx="15" ry="9" fill="#fff" opacity=".45" transform="rotate(-25 44 38)"/>
-  <path class="orb-crack c1" d="M60 10 L55 27 L64 38 L57 52 L63 60"/>
-  <path class="orb-crack c2" d="M12 66 L30 63 L37 75 L52 71 L60 62"/>
-  <path class="orb-crack c3" d="M104 44 L88 52 L94 65 L78 70 L82 88 M78 70 L63 62"/>
+// A knot of muscle fibers: each of three taps loosens it a little, like a small chest, and the
+// third lets it go to show the check. It waits for you, so the moment isn't spent while the screen slides in.
+const KNOT_SVG = `<svg viewBox="-60 -60 120 120" aria-hidden="true">
+  <defs><radialGradient id="kn-g"><stop offset="0" stop-color="#ffb3c1" stop-opacity=".55"/><stop offset="1" stop-color="#ff5d73" stop-opacity="0"/></radialGradient></defs>
+  <circle class="kn-glow" r="58" fill="url(#kn-g)"/>
+  <g class="kn" style="--a:0deg;--d:14deg"><ellipse cx="-3" cy="2" rx="46" ry="12" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-3" cy="2" rx="46" ry="12" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:27deg;--d:-16deg"><ellipse cx="4" cy="-2" rx="41" ry="16" stroke="#ff7b54"/><ellipse class="kn-hi" cx="4" cy="-2" rx="41" ry="16" stroke="#ffd3a8"/></g>
+  <g class="kn" style="--a:64deg;--d:12deg"><ellipse cx="-2" cy="-4" rx="44" ry="10" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-2" cy="-4" rx="44" ry="10" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:98deg;--d:-14deg"><ellipse cx="3" cy="3" rx="39" ry="17" stroke="#ff7b54"/><ellipse class="kn-hi" cx="3" cy="3" rx="39" ry="17" stroke="#ffd3a8"/></g>
+  <g class="kn" style="--a:131deg;--d:16deg"><ellipse cx="-4" cy="1" rx="45" ry="13" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-4" cy="1" rx="45" ry="13" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:158deg;--d:-12deg"><ellipse cx="2" cy="-3" rx="40" ry="15" stroke="#ff7b54"/><ellipse class="kn-hi" cx="2" cy="-3" rx="40" ry="15" stroke="#ffd3a8"/></g>
 </svg>`;
-function crackOrb(v, total) {
+function loosenKnot(v, total) {
   const wrap = v.querySelector('.reward');
   const box = v.querySelector('.rw-earned');
-  const orb = v.querySelector('.rw-orb');
+  const knot = v.querySelector('.rw-knot');
   if (reduceMotion()) { box.classList.add('open'); return; }
   box.classList.add('waiting');
-  wrap.classList.add('ready'); // the same tap line as a chest: "Tap the orb!", then a dot per tap
-  const fxs = createFx(wrap, { colors: ['#7ee0b5', '#ffd166'], reduce: false });
+  wrap.classList.add('ready'); // the same tap line as a chest: "Loosen the knot!", then a dot per tap
+  const fxs = createFx(wrap, { colors: ['#ff5d73', '#ffd166'], reduce: false });
   const timers = [];
   rewardPlayer = { stop() { timers.forEach(clearTimeout); fxs.stop(); } };
-  const centre = () => { const r = orb.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+  const centre = () => { const r = knot.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
   let hits = 0;
-  orb.focus({ preventScroll: true });
-  orb.addEventListener('click', function onTap() {
+  knot.focus({ preventScroll: true });
+  knot.addEventListener('click', function onTap() {
     hits++;
     wrap.dataset.hits = String(hits);
     const [x, y] = centre();
     if (hits < 3) {
-      // A jolt, a new crack and a few sparks.
-      orb.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12, .9) rotate(-5deg)', offset: 0.3 }, { transform: 'scale(.95, 1.06) rotate(4deg)', offset: 0.6 }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.3,1.8,.5,1)' });
+      // A jolt, the loops turn apart and a few sparks.
+      knot.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12, .9) rotate(-5deg)', offset: 0.3 }, { transform: 'scale(.95, 1.06) rotate(4deg)', offset: 0.6 }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.3,1.8,.5,1)' });
       fxs.burst(x, y, 6 + hits * 5, ['spark', 'star', 'band'], 0.55);
       fx.rattle(); fx.pop();
       haptics.buzz(25 + hits * 20);
       v.querySelector('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
       return;
     }
-    orb.removeEventListener('click', onTap);
-    // The third tap: it bursts, the check pops out, the text rises in and the fibers count up.
+    knot.removeEventListener('click', onTap);
+    // The third tap: the fibers spring free, the check pops out, the text rises in and the fibers count up.
     box.classList.remove('waiting');
     box.classList.add('open');
     fxs.ring(x, y, { color: '#ffffff', speed: 700, width: 8, life: 0.45 });
-    fxs.ring(x, y, { color: '#7ee0b5', speed: 440, width: 5, life: 0.6 });
-    fxs.burst(x, y, 30, ['band', 'spark', 'star', 'fiber'], 0.9);
+    fxs.ring(x, y, { color: '#ff7b54', speed: 440, width: 5, life: 0.6 });
+    fxs.burst(x, y, 30, ['fiber', 'fiber', 'spark', 'star'], 0.9);
     fxs.twinkles(6, 0.7);
     fx.pop();
     haptics.buzz(60);
