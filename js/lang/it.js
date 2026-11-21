@@ -12,6 +12,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} questa settimana`,
   stretches: ({ n }) => `${n} ${pl(n, "esercizio", "esercizi")}`,
   stretchesWord: ({ n }) => pl(n, "esercizio", "esercizi"),
+  exercises: ({ n }) => `${n} ${pl(n, "esercizio", "esercizi")}`,
+  exercisesWord: ({ n }) => pl(n, "esercizio", "esercizi"),
   start: "Inizia",
   level: ({ n }) => `Livello ${n}`,
   lv: ({ n }) => `Liv ${n}`,
@@ -124,6 +126,10 @@ export const UI = {
   "m.flex": "Flex 60 s",
   "m.perfect": "Sessione perfetta",
   "m.lucky": "ALLUNGAMENTO FORTUNATO!",
+  'q.before': "Prima",
+  'q.after': "Dopo",
+  'q.evening': "Sera",
+  'q.strength': "Forza",
   "voiceSection": "Voce",
   voiceGuidance: "Guida vocale",
   voiceGuidanceSub: "Nomi, consigli e cambi di lato ad alta voce",
@@ -201,6 +207,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Squat a corpo libero", "Cosce · Glutei", [
+      "Piedi alla larghezza delle spalle. Porta i fianchi indietro e in basso, braccia avanti.",
+      "Le ginocchia seguono le punte dei piedi, petto alto.",
+      "Spingi con tutto il piede per tornare su."]],
+    pushup: ["Piegamento sulle braccia", "Petto · Braccia · Core", [
+      "Mani sotto le spalle, corpo in linea retta.",
+      "Abbassa il petto verso il pavimento, poi spingi su.",
+      "Troppo difficile? Appoggia le ginocchia o spingi contro un muro."]],
+    plank: ["Plank sugli avambracci", "Core · Spalle", [
+      "Avambracci a terra, gomiti sotto le spalle, corpo lungo e dritto.",
+      "Stringi i glutei e porta l'ombelico verso la colonna.",
+      "Continua a respirare. Non lasciar cadere i fianchi."]],
+    birdDog: ["Bird dog", "Zona lombare · Core · Glutei", [
+      "In quadrupedia, allunga un braccio in avanti e la gamba opposta indietro.",
+      "Schiena piatta, come se ci tenessi sopra un bicchiere.",
+      "Fermati un attimo in alto, poi torna piano."]],
+    superman: ["Superman", "Schiena · Glutei", [
+      "Sdraiati a pancia in giù, braccia tese in avanti.",
+      "Solleva un po' braccia, petto e gambe da terra.",
+      "Tieni per un respiro, sguardo a terra, poi scendi piano."]],
+    deadBug: ["Dead bug", "Core · Zona lombare", [
+      "Sulla schiena, braccia verso il soffitto, ginocchia piegate sopra i fianchi.",
+      "Abbassa un braccio dietro la testa e la gamba opposta verso il pavimento.",
+      "Tieni la zona lombare a terra. Solo fin dove controlli."]],
+    splitSquat: ["Affondo statico", "Cosce · Glutei · Ginocchia", [
+      "Un piede avanti e uno indietro. Abbassa il ginocchio dietro verso il pavimento.",
+      "Ginocchio davanti sopra la caviglia, busto dritto.",
+      "Spingi con il tallone davanti per risalire."]],
+    wallSit: ["Sedia al muro", "Cosce · Ginocchia", [
+      "Schiena al muro, scivola giù finché le ginocchia sono piegate.",
+      "Ginocchia sopra le caviglie, peso sui talloni.",
+      "Troppo difficile? Risali un po'. Continua a respirare."]],
+    slowCalf: ["Discese lente sui polpacci", "Polpacci · Tendine d'Achille", [
+      "Una mano al muro. Sali sulle punte con entrambi i piedi.",
+      "Solleva un piede e scendi piano sull'altro. Conta fino a tre.",
+      "Su un gradino è più intenso: lascia scendere il tallone sotto il bordo."]],
+    goodMorning: ["Cerniera dell'anca", "Femorali · Zona lombare · Glutei", [
+      "Mani sul petto, ginocchia morbide.",
+      "Spingi i fianchi indietro e inclinati con la schiena piatta.",
+      "Stringi i glutei per tornare su."]],
     stand: ["In piedi, dritto", "Preparati", ["Stai dritto e fai un respiro profondo."]],
     quad: ["Quadricipiti in piedi", "Quadricipiti · Flessori dell'anca", [
       "Afferra la caviglia e porta il tallone verso il gluteo.",
@@ -349,8 +395,17 @@ export const CONTENT = {
       "Con l’altra mano tira piano le dita verso di te.",
       "Gomito teso e spalla rilassata. Ottimo dopo tanto scrivere al computer."]],
   },
-  categories: { all: "Tutti", after: "Dopo l’allenamento", before: "Prima dell’allenamento", evening: "Sera", quick: "Veloce" },
+  categories: { all: "Tutti", after: "Dopo l’allenamento", before: "Prima dell’allenamento", evening: "Sera", quick: "Veloce", strength: "Forza" },
   routines: {
+    'runner-warmup': ["Riscaldamento per la corsa", "Polpacci, caviglie e anche pronti per la strada: leggero, elastico e veloce. Ideale prima di una corsa o di una partita."],
+    'upper-warmup': ["Riscaldamento parte alta", "Spalle, parte alta della schiena e colonna, pronte per pesi, arrampicata, nuoto o sport con la racchetta."],
+    'tight-hips': ["Anche rigide", "Anche bloccate dopo corsa, bici o tante ore seduti: flessori, glutei, inguine e anca esterna."],
+    'lower-back-after': ["Sollievo lombare", "Dopo i pesi, la bici o una lunga giornata curvi: togli il carico dalla zona lombare."],
+    'neck-shoulders': ["Collo e spalle", "Lascia andare una giornata di schermi e stress: collo, spalle e petto, piano e con calma. Puoi sederti sul letto."],
+    'back-relief': ["Sollievo dal mal di schiena", "Movimenti dolci a terra per una zona lombare rigida o dolorante, i primi che consigliano i fisioterapisti. Fermati se qualcosa fa più male."],
+    'top5-strength': ["Top 5 forza", "Cinque esercizi semplici per la forza più utile: gambe, spinta, anche, schiena e core. Senza attrezzi, circa cinque minuti. Muoviti a un ritmo che controlli."],
+    'strong-back': ["Schiena forte", "Per una schiena che si lamenta: gli esercizi di forza che danno i fisioterapisti per una zona lombare più forte e tranquilla. Lenti e controllati."],
+    'strong-legs': ["Gambe e polpacci forti", "Polpacci, ginocchia e cosce per camminare, correre e fare le scale, con le discese lente sui polpacci, le preferite dei fisioterapisti per il tendine d'Achille."],
     "top5-after": ["Top 5 dopo l’allenamento", "I cinque allungamenti più efficaci e semplici dopo l’attività fisica, secondo i consigli di fisioterapisti e allenatori. Tieni ciascuno circa 30 secondi finché i muscoli sono ancora caldi."],
     "post-run-reset": ["Reset dopo l’allenamento", "Il defaticamento completo: la Top 5, poi il polpaccio profondo, il cane a testa in giù e un finale tranquillo."],
     "long-run-recovery": ["Dopo una giornata dura", "Allungamenti lunghi e lenti a terra dopo un allenamento lungo o intenso. Ti servono solo un po’ di pavimento e un muro."],

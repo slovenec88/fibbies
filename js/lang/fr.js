@@ -13,6 +13,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} cette semaine`,
   stretches: ({ n }) => `${n} ${pl(n, "étirement", "étirements")}`,
   stretchesWord: ({ n }) => pl(n, "étirement", "étirements"),
+  exercises: ({ n }) => `${n} ${pl(n, "exercice", "exercices")}`,
+  exercisesWord: ({ n }) => pl(n, "exercice", "exercices"),
   start: "Commencer",
   level: ({ n }) => `Niveau ${n}`,
   lv: ({ n }) => `Nv ${n}`,
@@ -125,6 +127,10 @@ export const UI = {
   "m.flex": "Flex 60 s",
   "m.perfect": "Séance parfaite",
   "m.lucky": "ÉTIREMENT CHANCEUX !",
+  'q.before': "Avant",
+  'q.after': "Après",
+  'q.evening': "Soir",
+  'q.strength': "Force",
   "voiceSection": "Voix",
   voiceGuidance: "Guidage vocal",
   voiceGuidanceSub: "Noms, conseils et changements de côté à voix haute",
@@ -202,6 +208,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Squat", "Cuisses · Fessiers", [
+      "Pieds à largeur d'épaules. Descends les hanches en arrière, bras devant.",
+      "Les genoux suivent les orteils, la poitrine reste haute.",
+      "Pousse dans tout le pied pour remonter."]],
+    pushup: ["Pompe", "Pectoraux · Bras · Gainage", [
+      "Mains sous les épaules, le corps bien aligné.",
+      "Descends la poitrine vers le sol, puis repousse.",
+      "Trop dur ? Pose les genoux ou pousse contre un mur."]],
+    plank: ["Planche sur les avant-bras", "Gainage · Épaules", [
+      "Avant-bras au sol, coudes sous les épaules, le corps long et droit.",
+      "Serre les fessiers et rentre le nombril.",
+      "Continue de respirer. Ne laisse pas les hanches s'affaisser."]],
+    birdDog: ["Bird dog", "Bas du dos · Gainage · Fessiers", [
+      "À quatre pattes, tends un bras devant et la jambe opposée derrière.",
+      "Garde le dos plat, comme si tu portais un verre dessus.",
+      "Marque une pause en haut, puis reviens lentement."]],
+    superman: ["Superman", "Dos · Fessiers", [
+      "Allonge-toi sur le ventre, bras tendus devant.",
+      "Décolle un peu les bras, la poitrine et les jambes du sol.",
+      "Tiens une respiration, regard vers le sol, puis redescends lentement."]],
+    deadBug: ["Dead bug", "Gainage · Bas du dos", [
+      "Sur le dos, bras vers le plafond, genoux pliés au-dessus des hanches.",
+      "Descends un bras derrière la tête et la jambe opposée vers le sol.",
+      "Garde le bas du dos au sol. Seulement jusqu'où tu contrôles."]],
+    splitSquat: ["Fente statique", "Cuisses · Fessiers · Genoux", [
+      "Un pied devant, un pied derrière. Descends le genou arrière vers le sol.",
+      "Le genou avant au-dessus de la cheville, le buste droit.",
+      "Pousse dans le talon avant pour remonter."]],
+    wallSit: ["Chaise contre le mur", "Cuisses · Genoux", [
+      "Dos au mur, glisse vers le bas jusqu'à plier les genoux.",
+      "Genoux au-dessus des chevilles, poids dans les talons.",
+      "Trop dur ? Remonte un peu. Continue de respirer."]],
+    slowCalf: ["Descentes lentes des mollets", "Mollets · Tendon d'Achille", [
+      "Une main au mur. Monte sur la pointe des deux pieds.",
+      "Lève un pied et redescends lentement sur l'autre. Compte jusqu'à trois.",
+      "Sur une marche, c'est plus fort : laisse le talon descendre sous le bord."]],
+    goodMorning: ["Charnière de hanche", "Ischio-jambiers · Bas du dos · Fessiers", [
+      "Mains sur la poitrine, genoux souples.",
+      "Recule les hanches et penche-toi, le dos bien plat.",
+      "Serre les fessiers pour te redresser."]],
     stand: ["Tiens-toi droit", "Prépare-toi", ["Tiens-toi droit et inspire profondément."]],
     quad: ["Quadriceps debout", "Quadriceps · Fléchisseurs de hanche", [
       "Attrape ta cheville et ramène ton talon vers la fesse.",
@@ -350,8 +396,17 @@ export const CONTENT = {
       "Avec l’autre main, ramène doucement les doigts vers toi.",
       "Coude tendu, épaule relâchée. Idéal après beaucoup de frappe au clavier."]],
   },
-  categories: { all: "Tout", after: "Après la séance", before: "Avant la séance", evening: "Soir", quick: "Rapide" },
+  categories: { all: "Tout", after: "Après la séance", before: "Avant la séance", evening: "Soir", quick: "Rapide", strength: "Renforcement" },
   routines: {
+    'runner-warmup': ["Échauffement course", "Mollets, chevilles et hanches prêts pour la route : léger, dynamique et rapide. Idéal avant une course ou un match."],
+    'upper-warmup': ["Échauffement du haut du corps", "Épaules, haut du dos et colonne, prêts pour la muscu, l'escalade, la natation ou les sports de raquette."],
+    'tight-hips': ["Hanches raides", "Des hanches bloquées après la course, le vélo ou la position assise : fléchisseurs, fessiers, aine et hanche externe."],
+    'lower-back-after': ["Détente du bas du dos", "Après la muscu, le vélo ou une longue journée penché : soulage le bas du dos."],
+    'neck-shoulders': ["Nuque et épaules", "Relâche une journée d'écrans et de stress : nuque, épaules et poitrine, lentement et en douceur. Tu peux t'asseoir sur le lit."],
+    'back-relief': ["Soulager le mal de dos", "Des mouvements doux au sol pour un bas du dos raide ou douloureux, ceux que les kinés proposent en premier. Arrête si la douleur augmente."],
+    'top5-strength': ["Top 5 renforcement", "Cinq mouvements simples pour la force la plus utile : jambes, poussée, hanches, dos et gainage. Sans matériel, environ cinq minutes. Va à un rythme que tu contrôles."],
+    'strong-back': ["Dos solide", "Pour un dos qui se plaint : les exercices de renforcement que donnent les kinés pour un bas du dos plus fort et plus calme. Lentement et avec contrôle."],
+    'strong-legs': ["Jambes et mollets solides", "Mollets, genoux et cuisses pour marcher, courir et monter les escaliers, avec des descentes lentes des mollets, les préférées des kinés pour le tendon d'Achille."],
     "top5-after": ["Top 5 après la séance", "Les cinq étirements les plus efficaces et les plus simples après l’effort, classés d’après les conseils de kinés et de coachs. Tiens chacun environ 30 secondes tant que les muscles sont chauds."],
     "post-run-reset": ["Reset après la séance", "Le retour au calme complet : le top 5, puis le mollet profond, le chien tête en bas et une fin tout en douceur."],
     "long-run-recovery": ["Récup après une grosse journée", "De longs étirements lents au sol après une séance longue ou intense. Il te faut juste un peu de sol et un mur."],

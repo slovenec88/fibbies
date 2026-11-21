@@ -64,10 +64,11 @@ export const QUESTS = [
   { cat: 'before', icon: 'bolt' },
   { cat: 'after', icon: 'fitness_center' },
   { cat: 'evening', icon: 'bedtime' },
+  { cat: 'strength', icon: 'exercise' },
 ];
 
-/** Today's bonus: +25% on every chest for each kind of routine (warm-up, cool-down, evening)
- *  already done today, so it grows through the day: x1, x1.25, x1.5, x1.75. */
+/** Today's bonus: +25% on every chest for each kind of routine (warm-up, cool-down, evening,
+ *  strength) already done today, so it grows through the day: x1, x1.25, x1.5, x1.75, x2. */
 export const DAILY_STEP = 0.25;
 export const dailyBonus = (cats) => 1 + DAILY_STEP * QUESTS.filter((q) => cats.has(q.cat)).length;
 

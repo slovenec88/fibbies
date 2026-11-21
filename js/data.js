@@ -1,4 +1,4 @@
-// Stretch library + routines for before and after exercise, evenings and short breaks.
+// Stretch library + routines for before and after exercise, evenings, short breaks and strength.
 import { t } from './i18n.js';
 // Poses use a 200x200 canvas, figure faces right, ground at y=180.
 // h = hip, t = torso angle (deg, 0 = right, 90 = down), n = head angle,
@@ -470,6 +470,119 @@ export const STRETCHES = {
       'Keep the elbow straight and the shoulder relaxed. Great after a lot of typing.',
     ],
   },
+  // ---- Strength: simple, safe moves with the biggest payoff. `strength` keeps their set length
+  // fixed (Flex 60s only lengthens stretches). ----
+  airSquat: {
+    name: 'Bodyweight Squat', target: 'Thighs · Glutes', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [152, 60], hF: [148, 62], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [80, 140], t: -58, n: -70, hN: [158, 100], hF: [154, 102], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    cues: [
+      'Feet shoulder-width apart. Sit your hips back and down, arms forward.',
+      'Knees follow your toes, chest stays proud.',
+      'Push through your whole foot to stand tall again.',
+    ],
+  },
+
+  pushup: {
+    name: 'Push-Up', target: 'Chest · Arms · Core', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70], eb: [-1, -1] },
+    b: { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70], eb: [-1, -1] },
+    cues: [
+      'Hands under your shoulders, body in one straight line.',
+      'Lower your chest toward the floor, then press back up.',
+      'Too hard? Put your knees down or push against a wall.',
+    ],
+  },
+
+  plank: {
+    name: 'Forearm Plank', target: 'Core · Shoulders', view: 'side', period: 6, strength: true,
+    a: { h: [98, 163], t: -12, n: -8, hN: [175, 179], hF: [171, 179], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    b: { h: [98, 161], t: -13, n: -9, hN: [175, 179], hF: [171, 179], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    cues: [
+      'Forearms down, elbows under your shoulders, body long and straight.',
+      'Squeeze your glutes and pull your belly button in.',
+      "Keep breathing. Don't let your hips sag.",
+    ],
+  },
+
+  birdDog: {
+    name: 'Bird Dog', target: 'Lower back · Core · Glutes', view: 'side', sided: true, limb: 'side', period: 4, dynamic: true, strength: true,
+    a: { h: [82, 140], t: -12, n: -20, hN: [134, 180], hF: [130, 180], fN: [46, 178], fF: [50, 178], ft: [180, 180] },
+    b: { h: [82, 140], t: -12, n: -14, hN: [186, 118], hF: [130, 180], fN: [46, 178], fF: [8, 134], ft: [180, 175] },
+    cues: [
+      'On hands and knees. Reach one arm forward and the opposite leg back.',
+      'Keep your back flat, as if balancing a glass on it.',
+      'Pause at the top, then return slowly.',
+    ],
+  },
+
+  superman: {
+    name: 'Superman', target: 'Back · Glutes', view: 'side', period: 4, dynamic: true, strength: true,
+    a: { h: [80, 174], t: 0, n: 0, hN: [185, 175], hF: [181, 176], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
+    b: { h: [80, 173], t: -9, n: -14, hN: [182, 152], hF: [178, 154], fN: [6, 160], fF: [8, 162], ft: [180, 180], kb: [1, 1] },
+    cues: [
+      'Lie face down, arms reaching forward.',
+      'Lift your arms, chest and legs a little off the floor.',
+      'Hold for a breath, look at the floor, then lower slowly.',
+    ],
+  },
+
+  deadBug: {
+    name: 'Dead Bug', target: 'Core · Lower back', view: 'side', sided: true, limb: 'side', period: 4, dynamic: true, strength: true,
+    a: { h: [120, 172], t: 180, n: 180, hN: [70, 120], hF: [66, 122], fN: [158, 134], fF: [156, 136] },
+    b: { h: [120, 172], t: 180, n: 180, hN: [20, 166], hF: [66, 122], fN: [158, 134], fF: [194, 168] },
+    cues: [
+      'On your back, arms up, knees bent over your hips.',
+      'Lower one arm overhead and the opposite leg toward the floor.',
+      'Keep your lower back pressed down. Go only as far as you can control.',
+    ],
+  },
+
+  splitSquat: {
+    name: 'Split Squat', target: 'Thighs · Glutes · Knees', view: 'side', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
+    a: { h: [94, 116], t: -90, n: -90, hN: [104, 116], hF: [100, 118], fN: [52, 180], fF: [134, 180], ft: [150, 0] },
+    b: { h: [94, 146], t: -90, n: -90, hN: [104, 146], hF: [100, 148], fN: [52, 180], fF: [134, 180], ft: [150, 0] },
+    cues: [
+      'One foot forward, one back. Lower your back knee toward the floor.',
+      'Front knee over your ankle, torso tall.',
+      'Push through your front heel to come back up.',
+    ],
+  },
+
+  wallSit: {
+    name: 'Wall Sit', target: 'Thighs · Knees', view: 'side', period: 6, strength: true,
+    props: [{ wall: 54 }],
+    a: { h: [62, 142], t: -90, n: -88, hN: [92, 140], hF: [88, 142], fN: [100, 180], fF: [96, 180], ft: [0, 0] },
+    b: { h: [62, 141], t: -90, n: -86, hN: [92, 139], hF: [88, 141], fN: [100, 180], fF: [96, 180], ft: [0, 0] },
+    cues: [
+      'Back against a wall, slide down until your knees are bent.',
+      'Knees over your ankles, weight in your heels.',
+      'Too hard? Slide up a little. Keep breathing.',
+    ],
+  },
+
+  slowCalf: {
+    name: 'Slow Calf Lowers', target: 'Calves · Achilles', view: 'side', sided: true, limb: 'leg', period: 4, dynamic: true, strength: true,
+    props: [{ wall: 150 }],
+    a: { h: [100, 94], t: -90, n: -90, hN: [146, 66], hF: [146, 72], fN: [106, 170], fF: [100, 170], ft: [58, 58] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [146, 76], hF: [146, 82], fN: [104, 180], fF: [82, 148], ft: [0, -70] },
+    cues: [
+      'Hand on a wall. Rise up on both feet.',
+      'Lift one foot and lower slowly on the other. Count to three.',
+      'A step makes it stronger: let your heel drop below it.',
+    ],
+  },
+
+  goodMorning: {
+    name: 'Hip Hinge', target: 'Hamstrings · Lower back · Glutes', view: 'side', period: 4, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [112, 66], hF: [110, 68], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [86, 106], t: -18, n: -10, hN: [126, 100], hF: [124, 102], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    cues: [
+      'Hands on your chest, knees soft.',
+      'Push your hips back and tip forward with a flat back.',
+      'Squeeze your glutes to stand back up.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
@@ -478,6 +591,7 @@ export const CATEGORIES = [
   { id: 'before', label: 'Before workout', icon: 'bolt', hue: 45 },
   { id: 'evening', label: 'Evening', icon: 'bedtime', hue: 290 },
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
+  { id: 'strength', label: 'Strength', icon: 'exercise', hue: 5 },
 ];
 
 // items: [stretchId, seconds per side]
@@ -498,6 +612,16 @@ export const ROUTINES = [
     items: [['legsUpWall', 60], ['lyingHam', 40], ['bridge', 30], ['happyBaby', 40], ['pigeon', 45], ['itband', 25], ['cobra', 30], ['child', 45], ['twist', 35]],
   },
   {
+    id: 'tight-hips', hero: 'pigeon', title: 'Tight Hips', cat: 'after', hue: 130, icon: 'airline_seat_legroom_extra',
+    blurb: 'Hips that feel locked after running, cycling or sitting: hip flexors, glutes, groin and the outer hip.',
+    items: [['lunge', 35], ['pigeon', 40], ['butterfly', 40], ['itband', 25], ['squat', 30]],
+  },
+  {
+    id: 'lower-back-after', hero: 'child', title: 'Lower Back Release', cat: 'after', hue: 180, icon: 'self_improvement',
+    blurb: 'After lifting, cycling or a long day bent over: take the load off your lower back.',
+    items: [['catcow', 40], ['child', 45], ['cobra', 25], ['kneeToChest', 30], ['figureFour', 30], ['twist', 35]],
+  },
+  {
     id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Workout', cat: 'before', hue: 45, icon: 'workspace_premium', top: true,
     blurb: 'Moving stretches only. Research shows long static holds right before exercise can slightly reduce power and speed, while dynamic moves warm you up without that cost.',
     items: [['swingFront', 30], ['lungeReach', 60], ['swingSide', 30], ['highKnees', 45], ['buttKicks', 45]],
@@ -513,6 +637,16 @@ export const ROUTINES = [
     items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['worlds', 30], ['calfRaises', 30], ['armCircles', 20]],
   },
   {
+    id: 'runner-warmup', hero: 'swingFront', title: "Runner's Warm-Up", cat: 'before', hue: 40, icon: 'directions_run',
+    blurb: 'Calves, ankles and hips ready for the road: light, bouncy and quick. Ideal before a run or a game.',
+    items: [['calfRaises', 30], ['hipCircles', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['highKnees', 30], ['lungeReach', 40]],
+  },
+  {
+    id: 'upper-warmup', hero: 'armCircles', title: 'Upper Body Warm-Up', cat: 'before', hue: 55, icon: 'front_hand',
+    blurb: 'Shoulders, upper back and spine, ready for lifting, climbing, swimming or racket sports.',
+    items: [['armCircles', 30], ['catcow', 40], ['worlds', 25], ['inchworm', 40], ['standingTwist', 30]],
+  },
+  {
     id: 'top5-evening', hero: 'child', title: 'Top 5 Evening', cat: 'evening', hue: 290, icon: 'workspace_premium', top: true,
     blurb: 'The five gentlest, most effective wind-down stretches. All on the floor, all easy. Do them half an hour before bed.',
     items: [['child', 50], ['lyingHam', 40], ['twist', 40], ['kneeToChest', 35], ['catcow', 45]],
@@ -526,6 +660,16 @@ export const ROUTINES = [
     id: 'bedtime-hips', hero: 'butterfly', title: 'Bedtime Hips', cat: 'evening', hue: 320, icon: 'nights_stay',
     blurb: 'Gentle hip openers to undo hours of sitting and training. Great right before bed.',
     items: [['squat', 40], ['butterfly', 45], ['figureFour', 40], ['happyBaby', 45], ['twist', 40], ['child', 45], ['legsUpWall', 60]],
+  },
+  {
+    id: 'neck-shoulders', hero: 'neckTilt', title: 'Neck & Shoulders', cat: 'evening', hue: 260, icon: 'spa',
+    blurb: 'Let go of a day of screens and stress: neck, shoulders and chest, slow and easy. You can sit on the bed.',
+    items: [['neckTilt', 25], ['shoulderCross', 25], ['tricep', 20], ['chestOpener', 30], ['catcow', 40], ['child', 45]],
+  },
+  {
+    id: 'back-relief', hero: 'kneeToChest', title: 'Back Pain Relief', cat: 'evening', hue: 300, icon: 'healing',
+    blurb: 'Gentle floor moves for a stiff or sore lower back, the ones physios suggest first. Stop if anything hurts more.',
+    items: [['kneeToChest', 35], ['catcow', 45], ['child', 50], ['twist', 40], ['bridge', 30], ['legsUpWall', 50]],
   },
   {
     id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', hue: 235, icon: 'workspace_premium', top: true,
@@ -552,6 +696,21 @@ export const ROUTINES = [
     blurb: 'Stand up from your desk for a few minutes. Neck, shoulders, wrists, chest, hips, legs and back, all standing, nothing needed.',
     items: [['neckTilt', 20], ['shoulderCross', 20], ['wristStretch', 20], ['chestOpener', 25], ['hipFlexorStand', 25], ['hamstringStand', 25], ['backBend', 20], ['standingTwist', 30]],
   },
+  {
+    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', hue: 5, icon: 'workspace_premium', top: true,
+    blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. No equipment, about five minutes. Move at a pace you can control.',
+    items: [['airSquat', 40], ['pushup', 30], ['bridge', 40], ['birdDog', 30], ['plank', 30]],
+  },
+  {
+    id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', hue: 20, icon: 'accessibility_new',
+    blurb: 'For a back that complains: the strength moves physios give for a stronger, calmer lower back. Slow and controlled.',
+    items: [['birdDog', 30], ['deadBug', 30], ['bridge', 40], ['superman', 30], ['goodMorning', 40], ['plank', 30]],
+  },
+  {
+    id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', hue: 345, icon: 'directions_walk',
+    blurb: 'Calves, knees and thighs for walking, running and stairs, with slow calf lowers, a physio favourite for the Achilles.',
+    items: [['slowCalf', 40], ['airSquat', 40], ['splitSquat', 30], ['wallSit', 40], ['calfRaises', 40]],
+  },
 ];
 
 export const PREP_SECS = 8;
@@ -561,10 +720,10 @@ export const REST_SECS = 6;
 /**
  * Hold length for one stretch. `scale` is a multiplier (0.8, 1, 1.25) or 'flex':
  * Flexibility mode brings every static hold up to 60 s per side (ACSM's ~60 s per
- * muscle group) and leaves moving warm-up drills at their normal length.
+ * muscle group) and leaves moving warm-up drills and strength sets at their normal length.
  */
 export function holdSecs(stretch, secs, scale = 1) {
-  if (scale === 'flex') return stretch.dynamic ? secs : Math.max(60, secs);
+  if (scale === 'flex') return stretch.dynamic || stretch.strength ? secs : Math.max(60, secs);
   return Math.max(10, Math.round(secs * (Number(scale) || 1)));
 }
 

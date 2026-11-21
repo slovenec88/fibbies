@@ -12,6 +12,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} diese Woche`,
   stretches: ({ n }) => `${n} ${pl(n, "Übung", "Übungen")}`,
   stretchesWord: ({ n }) => pl(n, "Übung", "Übungen"),
+  exercises: ({ n }) => `${n} ${pl(n, "Übung", "Übungen")}`,
+  exercisesWord: ({ n }) => pl(n, "Übung", "Übungen"),
   start: "Start",
   level: ({ n }) => `Level ${n}`,
   lv: ({ n }) => `Lv ${n}`,
@@ -124,6 +126,10 @@ export const UI = {
   "m.flex": "Flex 60 s",
   "m.perfect": "Perfekte Einheit",
   "m.lucky": "GLÜCKSTREFFER!",
+  'q.before': "Vorher",
+  'q.after': "Nachher",
+  'q.evening': "Abends",
+  'q.strength': "Kraft",
   "voiceSection": "Stimme",
   voiceGuidance: "Sprachführung",
   voiceGuidanceSub: "Übungsnamen, Tipps und Seitenwechsel",
@@ -201,6 +207,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Kniebeuge", "Oberschenkel · Gesäß", [
+      "Füße schulterbreit. Setz die Hüfte nach hinten und unten, Arme nach vorn.",
+      "Die Knie folgen den Zehen, die Brust bleibt aufrecht.",
+      "Drück dich über den ganzen Fuß wieder hoch."]],
+    pushup: ["Liegestütz", "Brust · Arme · Rumpf", [
+      "Hände unter den Schultern, der Körper in einer geraden Linie.",
+      "Senk die Brust zum Boden und drück dich wieder hoch.",
+      "Zu schwer? Leg die Knie ab oder drück dich gegen eine Wand."]],
+    plank: ["Unterarmstütz", "Rumpf · Schultern", [
+      "Unterarme auf den Boden, Ellbogen unter den Schultern, der Körper lang und gerade.",
+      "Spann das Gesäß an und zieh den Bauchnabel ein.",
+      "Atme weiter. Lass die Hüfte nicht durchhängen."]],
+    birdDog: ["Bird Dog", "Unterer Rücken · Rumpf · Gesäß", [
+      "Im Vierfüßlerstand einen Arm nach vorn und das andere Bein nach hinten strecken.",
+      "Halt den Rücken flach, als stünde ein Glas darauf.",
+      "Oben kurz halten, dann langsam zurück."]],
+    superman: ["Superman", "Rücken · Gesäß", [
+      "Leg dich auf den Bauch, die Arme nach vorn gestreckt.",
+      "Heb Arme, Brust und Beine ein wenig vom Boden.",
+      "Einen Atemzug halten, Blick zum Boden, dann langsam ablegen."]],
+    deadBug: ["Dead Bug", "Rumpf · Unterer Rücken", [
+      "Auf dem Rücken, Arme nach oben, Knie gebeugt über der Hüfte.",
+      "Senk einen Arm über den Kopf und das andere Bein Richtung Boden.",
+      "Der untere Rücken bleibt am Boden. Nur so weit, wie du es kontrollierst."]],
+    splitSquat: ["Ausfallschritt am Platz", "Oberschenkel · Gesäß · Knie", [
+      "Ein Fuß vorn, einer hinten. Senk das hintere Knie Richtung Boden.",
+      "Das vordere Knie über dem Knöchel, der Oberkörper aufrecht.",
+      "Drück dich über die vordere Ferse wieder hoch."]],
+    wallSit: ["Wandsitzen", "Oberschenkel · Knie", [
+      "Rücken an die Wand und hinunterrutschen, bis die Knie gebeugt sind.",
+      "Knie über den Knöcheln, das Gewicht auf den Fersen.",
+      "Zu schwer? Rutsch etwas höher. Atme weiter."]],
+    slowCalf: ["Langsames Fersensenken", "Waden · Achillessehne", [
+      "Eine Hand an die Wand. Drück dich auf beiden Füßen hoch.",
+      "Heb einen Fuß und senk dich auf dem anderen langsam ab. Zähl bis drei.",
+      "Auf einer Stufe wird es stärker: Lass die Ferse unter die Kante sinken."]],
+    goodMorning: ["Hüftbeuge", "Oberschenkel hinten · Unterer Rücken · Gesäß", [
+      "Hände auf die Brust, Knie locker.",
+      "Schieb die Hüfte nach hinten und kipp mit geradem Rücken nach vorn.",
+      "Spann das Gesäß an und richte dich wieder auf."]],
     stand: ["Aufrecht stehen", "Mach dich bereit", ["Steh aufrecht und atme tief ein."]],
     quad: ["Oberschenkel im Stehen", "Oberschenkel vorne · Hüftbeuger", [
       "Greif deinen Knöchel und zieh die Ferse Richtung Po.",
@@ -349,8 +395,17 @@ export const CONTENT = {
       "Zieh die Finger mit der anderen Hand sanft zu dir.",
       "Ellbogen gestreckt, Schulter locker. Ideal nach viel Tippen."]],
   },
-  categories: { all: "Alle", after: "Nach dem Training", before: "Vor dem Training", evening: "Abends", quick: "Schnell" },
+  categories: { all: "Alle", after: "Nach dem Training", before: "Vor dem Training", evening: "Abends", quick: "Schnell", strength: "Kraft" },
   routines: {
+    'runner-warmup': ["Lauf-Aufwärmen", "Waden, Knöchel und Hüften bereit für die Strecke: leicht, federnd und schnell. Ideal vor einem Lauf oder einem Spiel."],
+    'upper-warmup': ["Oberkörper aufwärmen", "Schultern, oberer Rücken und Wirbelsäule, bereit für Krafttraining, Klettern, Schwimmen oder Schlägersport."],
+    'tight-hips': ["Feste Hüften", "Hüften, die sich nach Laufen, Radfahren oder Sitzen blockiert anfühlen: Hüftbeuger, Gesäß, Leiste und äußere Hüfte."],
+    'lower-back-after': ["Unteren Rücken lösen", "Nach Krafttraining, Radfahren oder einem langen Tag vornübergebeugt: Nimm die Last vom unteren Rücken."],
+    'neck-shoulders': ["Nacken & Schultern", "Lass einen Tag voller Bildschirme und Stress los: Nacken, Schultern und Brust, langsam und leicht. Du kannst dich dafür aufs Bett setzen."],
+    'back-relief': ["Hilfe bei Rückenschmerzen", "Sanfte Bodenübungen für einen steifen oder schmerzenden unteren Rücken, die Physios zuerst empfehlen. Hör auf, wenn etwas stärker wehtut."],
+    'top5-strength': ["Top 5 Kraft", "Fünf einfache Übungen für die nützlichste Kraft: Beine, Drücken, Hüfte, Rücken und Rumpf. Ohne Geräte, etwa fünf Minuten. Beweg dich in einem Tempo, das du kontrollierst."],
+    'strong-back': ["Starker Rücken", "Für einen Rücken, der sich beschwert: die Kraftübungen, die Physios für einen stärkeren, ruhigeren unteren Rücken geben. Langsam und kontrolliert."],
+    'strong-legs': ["Starke Beine & Waden", "Waden, Knie und Oberschenkel fürs Gehen, Laufen und Treppensteigen, mit langsamem Fersensenken, einem Physio-Favoriten für die Achillessehne."],
     "top5-after": ["Top 5 nach dem Training", "Die fünf wirksamsten und einfachsten Dehnungen nach dem Sport, sortiert nach Empfehlungen von Physiotherapeuten und Trainern. Halte jede etwa 30 Sekunden, solange die Muskeln noch warm sind."],
     "post-run-reset": ["Reset nach dem Training", "Das volle Cool-down: die Top 5, dann tiefe Wade, herabschauender Hund und ein ruhiger Abschluss."],
     "long-run-recovery": ["Nach einem harten Tag", "Lange, langsame Dehnungen am Boden nach einem langen oder harten Training. Du brauchst nur etwas Boden und eine Wand."],

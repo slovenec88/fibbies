@@ -58,6 +58,8 @@ const EN = {
   thisWeek: ({ n }) => `${n} this week`,
   stretches: ({ n }) => `${n} ${en(n, 'stretch', 'stretches')}`,
   stretchesWord: ({ n }) => en(n, 'stretch', 'stretches'),
+  exercises: ({ n }) => `${n} ${en(n, 'exercise', 'exercises')}`,
+  exercisesWord: ({ n }) => en(n, 'exercise', 'exercises'),
   start: 'Start',
   level: ({ n }) => `Level ${n}`,
   lv: ({ n }) => `Lv ${n}`,
@@ -166,6 +168,11 @@ const EN = {
   'm.flex': 'Flex 60s',
   'm.perfect': 'Perfect session',
   'm.lucky': 'LUCKY STRETCH!',
+  // today's bonus tiles: one short word per kind of routine
+  'q.before': "Before",
+  'q.after': "After",
+  'q.evening': "Evening",
+  'q.strength': "Strength",
   // settings
   'voiceSection': 'Voice',
   voiceGuidance: 'Voice guidance',

@@ -12,6 +12,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} esta semana`,
   stretches: ({ n }) => `${n} ${pl(n, "estiramiento", "estiramientos")}`,
   stretchesWord: ({ n }) => pl(n, "estiramiento", "estiramientos"),
+  exercises: ({ n }) => `${n} ${pl(n, "ejercicio", "ejercicios")}`,
+  exercisesWord: ({ n }) => pl(n, "ejercicio", "ejercicios"),
   start: "Empezar",
   level: ({ n }) => `Nivel ${n}`,
   lv: ({ n }) => `Nv ${n}`,
@@ -124,6 +126,10 @@ export const UI = {
   "m.flex": "Flex 60 s",
   "m.perfect": "Sesión perfecta",
   "m.lucky": "¡ESTIRAMIENTO DE LA SUERTE!",
+  'q.before': "Antes",
+  'q.after': "Después",
+  'q.evening': "Noche",
+  'q.strength': "Fuerza",
   "voiceSection": "Voz",
   voiceGuidance: "Guía por voz",
   voiceGuidanceSub: "Nombres, consejos y cambios de lado en voz alta",
@@ -201,6 +207,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Sentadilla", "Muslos · Glúteos", [
+      "Pies a la anchura de los hombros. Lleva la cadera atrás y abajo, brazos al frente.",
+      "Las rodillas siguen a los pies, el pecho erguido.",
+      "Empuja con todo el pie para volver a subir."]],
+    pushup: ["Flexión", "Pecho · Brazos · Core", [
+      "Manos bajo los hombros, el cuerpo en línea recta.",
+      "Baja el pecho hacia el suelo y vuelve a empujar.",
+      "¿Demasiado difícil? Apoya las rodillas o hazlas contra una pared."]],
+    plank: ["Plancha de antebrazos", "Core · Hombros", [
+      "Antebrazos en el suelo, codos bajo los hombros, el cuerpo largo y recto.",
+      "Aprieta los glúteos y mete el ombligo.",
+      "Sigue respirando. Que la cadera no se hunda."]],
+    birdDog: ["Bird dog", "Zona lumbar · Core · Glúteos", [
+      "A cuatro patas, estira un brazo al frente y la pierna contraria atrás.",
+      "Mantén la espalda plana, como si llevaras un vaso encima.",
+      "Haz una pausa arriba y vuelve despacio."]],
+    superman: ["Superman", "Espalda · Glúteos", [
+      "Túmbate boca abajo con los brazos estirados al frente.",
+      "Eleva un poco los brazos, el pecho y las piernas del suelo.",
+      "Aguanta una respiración mirando al suelo y baja despacio."]],
+    deadBug: ["Dead bug", "Core · Zona lumbar", [
+      "Boca arriba, brazos hacia el techo, rodillas dobladas sobre la cadera.",
+      "Baja un brazo por detrás de la cabeza y la pierna contraria hacia el suelo.",
+      "Mantén la zona lumbar pegada al suelo. Solo hasta donde controles."]],
+    splitSquat: ["Zancada estática", "Muslos · Glúteos · Rodillas", [
+      "Un pie delante y otro detrás. Baja la rodilla de atrás hacia el suelo.",
+      "La rodilla delantera sobre el tobillo, el tronco erguido.",
+      "Empuja con el talón delantero para subir."]],
+    wallSit: ["Sentadilla en la pared", "Muslos · Rodillas", [
+      "Espalda contra la pared, deslízate hasta doblar las rodillas.",
+      "Rodillas sobre los tobillos, el peso en los talones.",
+      "¿Demasiado? Sube un poco. Sigue respirando."]],
+    slowCalf: ["Bajadas lentas de gemelo", "Gemelos · Aquiles", [
+      "Una mano en la pared. Sube de puntillas con los dos pies.",
+      "Levanta un pie y baja despacio con el otro. Cuenta hasta tres.",
+      "En un escalón es más intenso: deja caer el talón por debajo del borde."]],
+    goodMorning: ["Bisagra de cadera", "Isquiotibiales · Zona lumbar · Glúteos", [
+      "Manos en el pecho, rodillas sueltas.",
+      "Lleva la cadera atrás e inclínate con la espalda recta.",
+      "Aprieta los glúteos para volver a subir."]],
     stand: ["Ponte recto", "Prepárate", ["Ponte recto y respira hondo."]],
     quad: ["Cuádriceps de pie", "Cuádriceps · Flexores de cadera", [
       "Sujeta el tobillo y lleva el talón hacia el glúteo.",
@@ -349,8 +395,17 @@ export const CONTENT = {
       "Con la otra mano, lleva los dedos suavemente hacia ti.",
       "Codo estirado y hombro relajado. Ideal después de escribir mucho."]],
   },
-  categories: { all: "Todo", after: "Después de entrenar", before: "Antes de entrenar", evening: "Noche", quick: "Rápido" },
+  categories: { all: "Todo", after: "Después de entrenar", before: "Antes de entrenar", evening: "Noche", quick: "Rápido", strength: "Fuerza" },
   routines: {
+    'runner-warmup': ["Calentamiento para correr", "Gemelos, tobillos y caderas listos para salir: ligero, ágil y rápido. Ideal antes de correr o de un partido."],
+    'upper-warmup': ["Calentamiento de tren superior", "Hombros, espalda alta y columna, listos para pesas, escalada, natación o deportes de raqueta."],
+    'tight-hips': ["Caderas rígidas", "Caderas que se sienten bloqueadas tras correr, pedalear o estar sentado: flexores, glúteos, ingle y la parte externa de la cadera."],
+    'lower-back-after': ["Alivio lumbar", "Después de pesas, bici o un largo día encorvado: quita la carga de la zona lumbar."],
+    'neck-shoulders': ["Cuello y hombros", "Suelta un día de pantallas y estrés: cuello, hombros y pecho, despacio y fácil. Puedes hacerlo sentado en la cama."],
+    'back-relief': ["Alivio del dolor de espalda", "Movimientos suaves en el suelo para una zona lumbar rígida o dolorida, los primeros que recomiendan los fisios. Para si algo duele más."],
+    'top5-strength': ["Top 5 fuerza", "Cinco ejercicios sencillos para la fuerza más útil: piernas, empuje, cadera, espalda y core. Sin material, unos cinco minutos. Ve a un ritmo que controles."],
+    'strong-back': ["Espalda fuerte", "Para una espalda que se queja: los ejercicios de fuerza que dan los fisios para una zona lumbar más fuerte y tranquila. Despacio y con control."],
+    'strong-legs': ["Piernas y gemelos fuertes", "Gemelos, rodillas y muslos para caminar, correr y subir escaleras, con bajadas lentas de gemelo, las favoritas de los fisios para el Aquiles."],
     "top5-after": ["Top 5 después de entrenar", "Los cinco estiramientos más eficaces y sencillos tras el ejercicio, según consejos de fisioterapeutas y entrenadores. Mantén cada uno unos 30 segundos mientras los músculos siguen calientes."],
     "post-run-reset": ["Reinicio tras entrenar", "La vuelta a la calma completa: el Top 5, luego el gemelo profundo, el perro boca abajo y un final tranquilo."],
     "long-run-recovery": ["Tras un día duro", "Estiramientos largos y lentos en el suelo tras un entrenamiento largo o duro. Solo necesitas un poco de suelo y una pared."],

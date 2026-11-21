@@ -12,6 +12,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} esta semana`,
   stretches: ({ n }) => `${n} ${pl(n, "alongamento", "alongamentos")}`,
   stretchesWord: ({ n }) => pl(n, "alongamento", "alongamentos"),
+  exercises: ({ n }) => `${n} ${pl(n, "exercício", "exercícios")}`,
+  exercisesWord: ({ n }) => pl(n, "exercício", "exercícios"),
   start: "Começar",
   level: ({ n }) => `Nível ${n}`,
   lv: ({ n }) => `Nv ${n}`,
@@ -124,6 +126,10 @@ export const UI = {
   "m.flex": "Flex 60 s",
   "m.perfect": "Sessão perfeita",
   "m.lucky": "ALONGAMENTO DE SORTE!",
+  'q.before': "Antes",
+  'q.after': "Depois",
+  'q.evening': "Noite",
+  'q.strength': "Força",
   "voiceSection": "Voz",
   voiceGuidance: "Guia por voz",
   voiceGuidanceSub: "Nomes, dicas e trocas de lado em voz alta",
@@ -201,6 +207,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Agachamento", "Coxas · Glúteos", [
+      "Pés na largura dos ombros. Leve o quadril para trás e para baixo, braços à frente.",
+      "Os joelhos acompanham os pés, peito aberto.",
+      "Empurre com o pé inteiro para voltar a ficar em pé."]],
+    pushup: ["Flexão de braço", "Peito · Braços · Core", [
+      "Mãos sob os ombros, corpo em linha reta.",
+      "Desça o peito em direção ao chão e empurre de volta.",
+      "Difícil demais? Apoie os joelhos ou faça na parede."]],
+    plank: ["Prancha", "Core · Ombros", [
+      "Antebraços no chão, cotovelos sob os ombros, corpo longo e reto.",
+      "Contraia os glúteos e puxe o umbigo para dentro.",
+      "Continue respirando. Não deixe o quadril cair."]],
+    birdDog: ["Bird dog", "Lombar · Core · Glúteos", [
+      "De quatro apoios, estique um braço à frente e a perna oposta para trás.",
+      "Mantenha as costas retas, como se equilibrasse um copo nelas.",
+      "Pause no alto e volte devagar."]],
+    superman: ["Super-Homem", "Costas · Glúteos", [
+      "Deite de bruços, braços esticados à frente.",
+      "Tire um pouco os braços, o peito e as pernas do chão.",
+      "Segure por uma respiração, olhando para o chão, e desça devagar."]],
+    deadBug: ["Dead bug", "Core · Lombar", [
+      "De barriga para cima, braços para o teto, joelhos dobrados sobre o quadril.",
+      "Leve um braço para trás da cabeça e a perna oposta em direção ao chão.",
+      "Mantenha a lombar no chão. Só até onde você controla."]],
+    splitSquat: ["Afundo estático", "Coxas · Glúteos · Joelhos", [
+      "Um pé à frente, outro atrás. Desça o joelho de trás em direção ao chão.",
+      "Joelho da frente sobre o tornozelo, tronco ereto.",
+      "Empurre pelo calcanhar da frente para subir."]],
+    wallSit: ["Cadeirinha na parede", "Coxas · Joelhos", [
+      "Costas na parede, deslize para baixo até dobrar os joelhos.",
+      "Joelhos sobre os tornozelos, peso nos calcanhares.",
+      "Difícil demais? Suba um pouco. Continue respirando."]],
+    slowCalf: ["Descida lenta de panturrilha", "Panturrilhas · Tendão de Aquiles", [
+      "Uma mão na parede. Suba na ponta dos dois pés.",
+      "Tire um pé do chão e desça devagar no outro. Conte até três.",
+      "Num degrau fica mais forte: deixe o calcanhar descer abaixo da borda."]],
+    goodMorning: ["Dobradiça de quadril", "Posteriores da coxa · Lombar · Glúteos", [
+      "Mãos no peito, joelhos soltos.",
+      "Leve o quadril para trás e incline-se com as costas retas.",
+      "Contraia os glúteos para voltar a ficar em pé."]],
     stand: ["Fique em pé", "Prepare-se", ["Fique em pé, ereto, e respire fundo."]],
     quad: ["Quadríceps em pé", "Quadríceps · Flexores do quadril", [
       "Segure o tornozelo e puxe o calcanhar em direção ao glúteo.",
@@ -349,8 +395,17 @@ export const CONTENT = {
       "Com a outra mão, puxe os dedos de leve na sua direção.",
       "Cotovelo esticado e ombro solto. Ótimo depois de muito digitar."]],
   },
-  categories: { all: "Tudo", after: "Depois do treino", before: "Antes do treino", evening: "Noite", quick: "Rápido" },
+  categories: { all: "Tudo", after: "Depois do treino", before: "Antes do treino", evening: "Noite", quick: "Rápido", strength: "Força" },
   routines: {
+    'runner-warmup': ["Aquecimento para correr", "Panturrilhas, tornozelos e quadril prontos para a corrida: leve, ágil e rápido. Ideal antes de correr ou de um jogo."],
+    'upper-warmup': ["Aquecimento da parte de cima", "Ombros, parte de cima das costas e coluna, prontos para musculação, escalada, natação ou esportes de raquete."],
+    'tight-hips': ["Quadril travado", "Quadril travado depois de correr, pedalar ou ficar sentado: flexores, glúteos, virilha e a lateral do quadril."],
+    'lower-back-after': ["Alívio da lombar", "Depois de musculação, bike ou um longo dia curvado: tire a carga da lombar."],
+    'neck-shoulders': ["Pescoço e ombros", "Solte um dia de telas e estresse: pescoço, ombros e peito, devagar e com calma. Você pode sentar na cama."],
+    'back-relief': ["Alívio da dor nas costas", "Movimentos suaves no chão para a lombar rígida ou dolorida, os primeiros que os fisioterapeutas indicam. Pare se algo doer mais."],
+    'top5-strength': ["Top 5 força", "Cinco movimentos simples para a força mais útil: pernas, empurrar, quadril, costas e core. Sem equipamento, uns cinco minutos. Vá num ritmo que você controle."],
+    'strong-back': ["Costas fortes", "Para costas que reclamam: os exercícios de força que os fisioterapeutas passam para uma lombar mais forte e tranquila. Devagar e com controle."],
+    'strong-legs': ["Pernas e panturrilhas fortes", "Panturrilhas, joelhos e coxas para caminhar, correr e subir escadas, com descidas lentas de panturrilha, as favoritas dos fisioterapeutas para o tendão de Aquiles."],
     "top5-after": ["Top 5 depois do treino", "Os cinco alongamentos mais eficazes e simples depois do exercício, segundo fisioterapeutas e treinadores. Segure cada um por uns 30 segundos enquanto os músculos ainda estão quentes."],
     "post-run-reset": ["Reset pós-treino", "O desaquecimento completo: o Top 5, depois a panturrilha profunda, o cachorro olhando para baixo e um final tranquilo."],
     "long-run-recovery": ["Depois de um dia puxado", "Alongamentos longos e lentos no chão depois de um treino longo ou intenso. Você só precisa de um pouco de chão e uma parede."],

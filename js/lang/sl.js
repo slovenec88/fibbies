@@ -16,6 +16,8 @@ export const UI = {
   thisWeek: ({ n }) => `${n} ta teden`,
   stretches: ({ n }) => `${n} ${sl(n, 'vaja', 'vaji', 'vaje', 'vaj')}`,
   stretchesWord: ({ n }) => sl(n, 'vaja', 'vaji', 'vaje', 'vaj'),
+  exercises: ({ n }) => `${n} ${sl(n, 'vaja', 'vaji', 'vaje', 'vaj')}`,
+  exercisesWord: ({ n }) => sl(n, 'vaja', 'vaji', 'vaje', 'vaj'),
   start: 'Začni',
   level: ({ n }) => `Stopnja ${n}`,
   lv: ({ n }) => `St. ${n}`,
@@ -128,6 +130,10 @@ export const UI = {
   'm.flex': 'Gibko 60 s',
   'm.perfect': 'Popolna vadba',
   'm.lucky': 'SREČNI ZADETEK!',
+  'q.before': "Pred",
+  'q.after': "Po",
+  'q.evening': "Zvečer",
+  'q.strength': "Moč",
   'voiceSection': 'Glas',
   voiceGuidance: 'Glasovno vodenje',
   voiceGuidanceSub: 'Imena vaj, nasveti in menjava strani',
@@ -205,6 +211,46 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    airSquat: ["Počep", "Stegna · Zadnjica", [
+      "Stopala v širini ramen. Boke potisni nazaj in navzdol, roke naprej.",
+      "Kolena sledijo prstom, prsni koš ostane pokonci.",
+      "Potisni skozi celo stopalo in se spet vzravnaj."]],
+    pushup: ["Sklece", "Prsi · Roke · Trup", [
+      "Dlani pod rameni, telo v ravni liniji.",
+      "Spusti prsni koš proti tlom, nato se potisni nazaj gor.",
+      "Pretežko? Kolena spusti na tla ali se potiskaj ob steno."]],
+    plank: ["Opora na podlahteh", "Trup · Ramena", [
+      "Podlahti na tleh, komolci pod rameni, telo dolgo in ravno.",
+      "Stisni zadnjico in popek potegni noter.",
+      "Dihaj naprej. Ne dovoli, da se boki povesijo."]],
+    birdDog: ["Ptič-pes", "Spodnji del hrbta · Trup · Zadnjica", [
+      "Na vseh štirih iztegni eno roko naprej in nasprotno nogo nazaj.",
+      "Hrbet naj bo raven, kot da na njem nosiš kozarec.",
+      "Zgoraj se za hip ustavi, nato se počasi vrni."]],
+    superman: ["Superman", "Hrbet · Zadnjica", [
+      "Uleži se na trebuh, roke iztegni naprej.",
+      "Roke, prsni koš in noge malo dvigni od tal.",
+      "Zadrži za en vdih, pogled v tla, nato se počasi spusti."]],
+    deadBug: ["Mrtvi hrošč", "Trup · Spodnji del hrbta", [
+      "Na hrbtu, roke proti stropu, kolena pokrčena nad boki.",
+      "Eno roko spusti za glavo, nasprotno nogo pa proti tlom.",
+      "Spodnji del hrbta naj ostane na tleh. Le tako daleč, kot nadzoruješ."]],
+    splitSquat: ["Razkoračni počep", "Stegna · Zadnjica · Kolena", [
+      "Ena noga spredaj, druga zadaj. Zadnje koleno spusti proti tlom.",
+      "Sprednje koleno nad gležnjem, trup pokonci.",
+      "Potisni skozi sprednjo peto in se dvigni."]],
+    wallSit: ["Stol ob steni", "Stegna · Kolena", [
+      "S hrbtom ob steni zdrsni navzdol, da se kolena pokrčijo.",
+      "Kolena nad gležnji, teža na petah.",
+      "Pretežko? Zdrsni malo višje. Dihaj naprej."]],
+    slowCalf: ["Počasno spuščanje pet", "Meča · Ahilova tetiva", [
+      "Z roko se nasloni na steno. Dvigni se na prste obeh nog.",
+      "Eno nogo dvigni in se na drugi počasi spusti. Štej do tri.",
+      "Na stopnici je močneje: peto spusti pod rob."]],
+    goodMorning: ["Predklon iz kolkov", "Zadnje stegenske · Spodnji del hrbta · Zadnjica", [
+      "Dlani na prsih, kolena mehka.",
+      "Boke potisni nazaj in se z ravnim hrbtom nagni naprej.",
+      "Stisni zadnjico in se vzravnaj."]],
     stand: ['Stoj vzravnano', 'Pripravi se', ['Stoj vzravnano in globoko vdihni.']],
     quad: ['Kvadriceps stoje', 'Kvadricepsi · Upogibalke kolka', [
       'Primi gleženj in peto potegni proti zadnjici.',
@@ -353,8 +399,17 @@ export const CONTENT = {
       "Z drugo roko nežno potegni prste nazaj proti sebi.",
       "Komolec naj bo iztegnjen, rama sproščena. Odlično po veliko tipkanja."]],
   },
-  categories: { all: "Vse", after: "Po vadbi", before: "Pred vadbo", evening: "Zvečer", quick: "Hitro" },
+  categories: { all: "Vse", after: "Po vadbi", before: "Pred vadbo", evening: "Zvečer", quick: "Hitro", strength: "Moč" },
   routines: {
+    'runner-warmup': ["Ogrevanje za tek", "Meča, gležnji in boki pripravljeni na pot: lahkotno, prožno in hitro. Idealno pred tekom ali tekmo."],
+    'upper-warmup': ["Ogrevanje zgornjega dela", "Ramena, zgornji del hrbta in hrbtenica, pripravljeni na uteži, plezanje, plavanje ali športe z loparjem."],
+    'tight-hips': ["Zakrčeni boki", "Boki, ki se po teku, kolesarjenju ali sedenju zdijo zaklenjeni: upogibalke kolka, zadnjica, dimlje in zunanji kolk."],
+    'lower-back-after': ["Sprostitev ledvenega dela", "Po dvigovanju uteži, kolesarjenju ali dolgem dnevu v predklonu: razbremeni spodnji del hrbta."],
+    'neck-shoulders': ["Vrat in ramena", "Odvrzi dan zaslonov in stresa: vrat, ramena in prsi, počasi in lahkotno. Lahko sediš na postelji."],
+    'back-relief': ["Lajšanje bolečin v hrbtu", "Nežni gibi na tleh za tog ali boleč spodnji del hrbta, tisti, ki jih fizioterapevti predlagajo najprej. Ustavi se, če kaj bolj boli."],
+    'top5-strength': ["Top 5 moč", "Pet preprostih vaj za najbolj uporabno moč: noge, potiskanje, boki, hrbet in trup. Brez pripomočkov, približno pet minut. Giblji se v tempu, ki ga nadzoruješ."],
+    'strong-back': ["Močan hrbet", "Za hrbet, ki se pritožuje: vaje za moč, ki jih fizioterapevti dajo za močnejši in mirnejši spodnji del hrbta. Počasi in nadzorovano."],
+    'strong-legs': ["Močne noge in meča", "Meča, kolena in stegna za hojo, tek in stopnice, s počasnim spuščanjem pet, ki ga fizioterapevti radi priporočajo za Ahilovo tetivo."],
     'top5-after': ["Top 5 po vadbi", "Pet najučinkovitejših in najpreprostejših raztezanj po vadbi, razvrščenih po nasvetih fizioterapevtov in trenerjev. Vsako zadrži približno 30 sekund, dokler so mišice še tople."],
     'post-run-reset': ["Ponastavitev po vadbi", "Celotno ohlajanje: top 5, nato globoka mečna mišica, pes z glavo navzdol in miren zaključek."],
     'long-run-recovery': ["Po napornem dnevu", "Dolga, počasna raztezanja na tleh po dolgem ali napornem treningu. Potrebuješ le malo tal in steno."],

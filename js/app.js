@@ -65,6 +65,8 @@ darkScheme.addEventListener?.('change', () => requestAnimationFrame(updateThemeC
 // ---------- Helpers ----------
 const catOf = (id) => CATEGORIES.find((c) => c.id === id);
 const routineById = (id) => ROUTINES.find((r) => r.id === id);
+/** "5 stretches", or "5 exercises" for a strength routine. */
+const movesText = (r, n = r.items.length) => t(r.cat === 'strength' ? 'exercises' : 'stretches', { n });
 const minutes = (r) => Math.max(1, Math.round(routineSeconds(r, settings.scale) / 60));
 const fmtTime = (s) => {
   s = Math.max(0, Math.ceil(s));
@@ -174,7 +176,7 @@ function suggestion() {
   if (done.has('before') && !done.has('after')) return routineById('top5-after');
   if (done.has('after') && !done.has('evening') && h >= 18) return routineById('top5-evening');
   if (h < 11) return routineById('top5-before');
-  if (h < 16) return routineById('five-minute-fix');
+  if (h < 16) return routineById(done.has('strength') ? 'five-minute-fix' : 'top5-strength');
   if (h < 20) return routineById('top5-after');
   return routineById('top5-evening');
 }
@@ -250,7 +252,7 @@ function renderProgress() {
         <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small></div>
       </div>
     </div>
-    <div class="quests" style="--n:${QUESTS.length}" role="img" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}`)}">
+    <div class="quests" style="--n:${QUESTS.length}" role="img" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}${order.length ? `: ${order.map((c) => catOf(c).label).join(', ')}` : ''}`)}">
       ${QUESTS.map((q) => questTile(q, celebrating(done, q.cat) ? 0 : order.indexOf(q.cat) + 1)).join('')}
     </div>`;
   celebrateBonus(done);
@@ -260,7 +262,7 @@ function renderProgress() {
  *  lights up plainly, the 2nd already shines, the 3rd turns gold, the 4th gets the full show. */
 function questTile(q, lv) {
   const sparks = lv >= 3 ? '<i class="q-spark" aria-hidden="true"></i>'.repeat(lv === 4 ? 5 : 3) : '';
-  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${esc(catOf(q.cat).label)}</span>${sparks}</div>`;
+  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${esc(t(`q.${q.cat}`))}</span>${sparks}</div>`;
 }
 
 // The daily bonus grows with each kind of routine done today. When it has grown since the home
@@ -284,7 +286,8 @@ function celebrateBonus(done) {
   const day = dayKey();
   // Wait until the home screen is actually on screen, so the moment isn't spent unseen.
   bonusTimer = setTimeout(() => {
-    if (currentView !== 'home' || document.hidden) return;
+    if (currentView !== 'home') return; // the next home screen draws (and celebrates) again
+    if (document.hidden) { document.addEventListener('visibilitychange', () => celebrateBonus(done), { once: true }); return; }
     const seen = bonusSeen();
     const fresh = freshCats(done, seen);
     if (!fresh.length) return;
@@ -593,7 +596,7 @@ function renderList() {
       <div class="rc-thumb"></div>
       <div>
         <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta">${r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${t('stretches', { n: r.items.length })}</span></div>
+        <div class="rc-meta">${r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${movesText(r)}</span></div>
       </div>
       <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
@@ -639,7 +642,7 @@ function renderDetail(r) {
       <p>${esc(r.blurb)}</p>
       <div class="detail-stats">
         <span class="stat-pill"><span aria-hidden="true" class="ms">schedule</span>${fmtTime(total)}</span>
-        <span class="stat-pill"><span aria-hidden="true" class="ms">format_list_bulleted</span>${t('stretches', { n: r.items.length })}</span>
+        <span class="stat-pill"><span aria-hidden="true" class="ms">format_list_bulleted</span>${movesText(r)}</span>
         ${moves.some((m) => m.side) ? `<span class="stat-pill"><span aria-hidden="true" class="ms">swap_horiz</span>${t('bothSides')}</span>` : ''}
         ${settings.scale === 'flex' ? `<span class="stat-pill"><span aria-hidden="true" class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
       </div>
@@ -915,7 +918,7 @@ function renderDone() {
   }
   const st = streak();
   rewardPlayer = playReward(v, res.reward, {
-    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t('stretchesWord', { n: res.moves })], [String(st), t('statStreak', { n: st })]],
+    stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t(r.cat === 'strength' ? 'exercisesWord' : 'stretchesWord', { n: res.moves })], [String(st), t('statStreak', { n: st })]],
     onHome: () => replace('#/'),
     onAgain: again,
   });

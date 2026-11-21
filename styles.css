@@ -622,10 +622,11 @@ html:has(dialog[open]) { overflow: hidden; }
   font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; background: var(--tertiary-container); color: var(--on-tertiary-container); }
 .pc-streak .ms { font-size: 18px; }
 /* Today's bonus: one tile per kind of routine, lighting up through the day (no words, no numbers) */
-.quests { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 6px; margin-top: 14px; }
+.quests { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
 .quest {
   display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 16px;
   background: var(--surface-container); color: var(--on-surface-variant); font-size: 11.5px; font-weight: 600; text-align: center; line-height: 1.2;
+  min-width: 0; overflow-wrap: anywhere;
 }
 .quest .ms { font-size: 22px; }
 .quest.done { background: var(--primary); color: var(--on-primary); position: relative; overflow: hidden; isolation: isolate; }
@@ -689,17 +690,17 @@ html:has(dialog[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .quest.done::after, .quest.lv3::before, .quest.lv4::before, .q-spark { animation: none; } .q-spark { opacity: .7; transform: none; } }
 
 /* Quick starts: one tap starts the Top 5 routine of each kind */
-.quick-starts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px; }
+.quick-starts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 4px; }
 .qs { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; min-height: 104px; padding: 12px 12px 10px 14px;
   border-radius: 24px; text-align: left; background: var(--primary-container); color: var(--on-primary-container); }
 .qs.now { box-shadow: 0 0 0 2px var(--primary) inset; }
-.qs-text { position: relative; z-index: 1; max-width: 62%; }
-.qs-text b { display: block; font-size: 16px; font-weight: 650; line-height: 1.15; }
+.qs-text { position: relative; z-index: 1; }
+.qs-text b { display: block; font-size: 16px; font-weight: 650; line-height: 1.15; overflow-wrap: anywhere; }
 .qs-text small { display: block; margin-top: 2px; font-size: 13px; opacity: .8; }
 .qs-play { position: relative; z-index: 1; margin-top: auto; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
   background: var(--primary); color: var(--on-primary); }
 .qs-play .ms { font-size: 22px; }
-.qs-fig { position: absolute; right: -4px; bottom: -6px; width: 56%; max-width: 110px; opacity: .95; }
+.qs-fig { position: absolute; right: -4px; bottom: -6px; width: 48%; max-width: 100px; opacity: .95; }
 .qs-fig .fig { display: block; width: 100%; height: auto; }
 .collection { margin: 26px 0 0; }
 .col-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 8px; }
