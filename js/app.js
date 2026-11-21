@@ -245,6 +245,7 @@ function renderProgress() {
   const done = todaysCats(log, dayKey());
   const x = dailyBonus(done);
   const shown = bonusShownAt(done); // the value last seen: it grows to x on screen
+  const order = [...done].filter((c) => QUESTS.some((q) => q.cat === c)); // in the order they were done today
   // The top of the home screen: buddy, level and XP, with Settings in the corner (no separate app bar).
   $('#progress-card').innerHTML = `
     <div class="pc-top">
@@ -261,10 +262,17 @@ function renderProgress() {
       <div class="bonus-head"><span>${t('todayBonus')}</span><b class="bonus-x" id="bonus-x">×${fmtX(shown)}</b></div>
       <div class="bonus-bar" aria-hidden="true"><i style="transform:scaleX(${(shown - 1) / (DAILY_STEP * QUESTS.length)})"></i></div>
       <div class="quests" aria-label="${esc(t('questsAria'))}">
-        ${QUESTS.map((q) => `<div class="quest${done.has(q.cat) ? ' done' : ''}" data-cat="${q.cat}"><span aria-hidden="true" class="ms ${done.has(q.cat) ? 'filled' : ''}">${done.has(q.cat) ? 'check_circle' : q.icon}</span><span>${q.label}</span>${done.has(q.cat) ? '' : `<span class="q-plus">+${Math.round(DAILY_STEP * 100)}%</span>`}</div>`).join('')}
+        ${QUESTS.map((q) => questTile(q, order.indexOf(q.cat) + 1)).join('')}
       </div>
     </div>`;
   celebrateBonus(done);
+}
+
+/** A quest tile. `lv` = its place in today's order (0 = not done): the 1st done lights up plainly,
+ *  the 2nd glows with a shine, the 3rd gets the full warm treatment, so the day builds up. */
+function questTile(q, lv) {
+  const fx = lv === 3 ? '<i class="q-spark" aria-hidden="true"></i><i class="q-spark" aria-hidden="true"></i><i class="q-spark" aria-hidden="true"></i>' : '';
+  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${q.label}</span>${fx}</div>`;
 }
 
 // The daily bonus grows with each kind of routine done today. When it has grown since the home
