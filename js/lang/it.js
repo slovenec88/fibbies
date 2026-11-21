@@ -54,6 +54,7 @@ export const UI = {
   ],
   skip: "Salta",
   tapCalls: ["Tocca il forziere!", "Ancora!", "Un'ultima volta!"],
+  tapOrb: "Tocca la sfera!",
   levelsRebalanced: "Livelli ribilanciati: ora si sale più lentamente e ogni livello vale di più. Le tue fibre e i tuoi amici sono al sicuro.",
   back: "Indietro",
   settings: "Impostazioni",

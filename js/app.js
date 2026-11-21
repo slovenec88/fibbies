@@ -982,10 +982,10 @@ function renderDone() {
     v.innerHTML = `
       <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned${reduceMotion() ? '' : ' waiting'}">
         <div class="rw-orb-box">
-          <button class="rw-orb" aria-label="${esc(t('wellDone'))}">${ORB_SVG}</button>
+          <button class="rw-orb" aria-label="${esc(t('tapOrb'))}">${ORB_SVG}</button>
           <span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span>
         </div>
-        <span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(3)}</span>
+        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapOrb')}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(3)}</span></div>
         <h1>${t('wellDone')}</h1>
         <p class="rw-earned-n">${esc(t('fibersStretched', { x: `+${fmtBig(rw.total)}` }))}</p>
         <p>${esc(left ? t('noChestNext', { kinds: left }) : t('noChestToday'))}</p>
@@ -1023,6 +1023,7 @@ function crackOrb(v, total) {
   const orb = v.querySelector('.rw-orb');
   if (reduceMotion()) { box.classList.add('open'); return; }
   box.classList.add('waiting');
+  wrap.classList.add('ready'); // the same tap line as a chest: "Tap the orb!", then a dot per tap
   const fxs = createFx(wrap, { colors: ['#7ee0b5', '#ffd166'], reduce: false });
   const timers = [];
   rewardPlayer = { stop() { timers.forEach(clearTimeout); fxs.stop(); } };
@@ -1039,6 +1040,7 @@ function crackOrb(v, total) {
       fxs.burst(x, y, 6 + hits * 5, ['spark', 'star', 'band'], 0.55);
       fx.rattle(); fx.pop();
       haptics.buzz(25 + hits * 20);
+      v.querySelector('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
       return;
     }
     orb.removeEventListener('click', onTap);

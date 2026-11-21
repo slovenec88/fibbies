@@ -89,6 +89,7 @@ const EN = {
   ],
   skip: 'Skip',
   tapCalls: ['Tap the chest!', 'Again!', 'One more!'],
+  tapOrb: 'Tap the orb!',
   levelsRebalanced: 'Levels rebalanced: leveling up is slower now and worth more. Your fibers and friends are safe.',
   // detail
   back: 'Back',

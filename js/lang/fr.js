@@ -55,6 +55,7 @@ export const UI = {
   ],
   skip: "Passer",
   tapCalls: ["Touche le coffre !", "Encore !", "Une dernière fois !"],
+  tapOrb: "Touche l'orbe !",
   levelsRebalanced: "Niveaux rééquilibrés : on monte plus lentement, mais chaque niveau vaut plus. Tes fibres et tes amis sont conservés.",
   back: "Retour",
   settings: "Paramètres",
