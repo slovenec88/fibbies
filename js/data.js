@@ -591,7 +591,7 @@ export const CATEGORIES = [
   { id: 'before', label: 'Before workout', icon: 'bolt', hue: 45 },
   { id: 'evening', label: 'Evening', icon: 'bedtime', hue: 290 },
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
-  { id: 'strength', label: 'Strength', icon: 'exercise', hue: 5 },
+  { id: 'strength', label: 'Strength', icon: 'exercise', hue: 95 },
 ];
 
 // items: [stretchId, seconds per side]
@@ -677,7 +677,7 @@ export const ROUTINES = [
     items: [['lunge', 30], ['calf', 30], ['quad', 30], ['downdog', 40], ['worlds', 30]],
   },
   {
-    id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', hue: 100, icon: 'healing',
+    id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', hue: 215, icon: 'healing',
     blurb: 'Calves and Achilles feeling cranky? A focused lower-leg session.',
     items: [['calfRaises', 30], ['calf', 30], ['downdog', 40], ['squat', 30], ['fold', 30], ['inchworm', 40], ['lyingHam', 30]],
   },
@@ -697,17 +697,17 @@ export const ROUTINES = [
     items: [['neckTilt', 20], ['shoulderCross', 20], ['wristStretch', 20], ['chestOpener', 25], ['hipFlexorStand', 25], ['hamstringStand', 25], ['backBend', 20], ['standingTwist', 30]],
   },
   {
-    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', hue: 5, icon: 'workspace_premium', top: true,
+    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', hue: 95, icon: 'workspace_premium', top: true,
     blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. No equipment, about five minutes. Move at a pace you can control.',
     items: [['airSquat', 40], ['pushup', 30], ['bridge', 40], ['birdDog', 30], ['plank', 30]],
   },
   {
-    id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', hue: 20, icon: 'accessibility_new',
+    id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', hue: 85, icon: 'accessibility_new',
     blurb: 'For a back that complains: the strength moves physios give for a stronger, calmer lower back. Slow and controlled.',
     items: [['birdDog', 30], ['deadBug', 30], ['bridge', 40], ['superman', 30], ['goodMorning', 40], ['plank', 30]],
   },
   {
-    id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', hue: 345, icon: 'directions_walk',
+    id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', hue: 105, icon: 'directions_walk',
     blurb: 'Calves, knees and thighs for walking, running and stairs, with slow calf lowers, a physio favourite for the Achilles.',
     items: [['slowCalf', 40], ['airSquat', 40], ['splitSquat', 30], ['wallSit', 40], ['calfRaises', 40]],
   },

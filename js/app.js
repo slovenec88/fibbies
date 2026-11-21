@@ -170,17 +170,6 @@ function show(name) {
 // ---------- Home ----------
 let activeCat = readJSON('limber.cat', 'all');
 
-function suggestion() {
-  const h = new Date().getHours();
-  const done = todaysCats(log, dayKey());
-  if (done.has('before') && !done.has('after')) return routineById('top5-after');
-  if (done.has('after') && !done.has('evening') && h >= 18) return routineById('top5-evening');
-  if (h < 11) return routineById('top5-before');
-  if (h < 16) return routineById(done.has('strength') ? 'five-minute-fix' : 'top5-strength');
-  if (h < 20) return routineById('top5-after');
-  return routineById('top5-evening');
-}
-
 function renderHome() {
   renderProgress();
   renderQuickStarts();
@@ -211,16 +200,14 @@ function daysThisWeek() {
 }
 
 // One tap to start: the Top 5 routine of each kind (the same kinds as today's bonus tiles).
-// The one that suits the time of day gets a soft outline.
 function renderQuickStarts() {
-  const now = suggestion();
   const box = $('#quick-starts');
   box.innerHTML = '';
   for (const q of QUESTS) {
     const r = ROUTINES.find((x) => x.cat === q.cat && x.top);
     if (!r) continue;
     const b = document.createElement('button');
-    b.className = `qs ripple${r.cat === now.cat ? ' now' : ''}`;
+    b.className = 'qs ripple';
     b.dataset.hue = '';
     b.style.setProperty('--h', r.hue);
     b.dataset.play = r.id;
