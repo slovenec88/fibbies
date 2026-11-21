@@ -249,7 +249,7 @@ function renderProgress() {
  *  lights up plainly, the 2nd already shines, the 3rd turns gold, the 4th gets the full show. */
 function questTile(q, lv) {
   const sparks = lv >= 3 ? '<i class="q-spark" aria-hidden="true"></i>'.repeat(lv === 4 ? 5 : 3) : '';
-  return `<button class="quest ripple${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}" aria-label="${esc(catOf(q.cat).label)}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span aria-hidden="true">${esc(t(`q.${q.cat}`))}</span>${sparks}</button>`;
+  return `<button class="quest ripple${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}" aria-label="${esc(lv ? `${catOf(q.cat).label}, ${t('doneToday')}` : catOf(q.cat).label)}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span aria-hidden="true">${esc(t(`q.${q.cat}`))}</span>${sparks}</button>`;
 }
 
 // The daily bonus grows with each kind of routine done today. When it has grown since the home
@@ -274,7 +274,7 @@ function celebrateBonus(done) {
   // Wait until the home screen is actually on screen, so the moment isn't spent unseen.
   bonusTimer = setTimeout(() => {
     if (currentView !== 'home') return; // the next home screen draws (and celebrates) again
-    if (document.hidden) { document.addEventListener('visibilitychange', () => celebrateBonus(done), { once: true }); return; }
+    if (document.hidden) { document.addEventListener('visibilitychange', () => celebrateBonus(todaysCats(log, dayKey())), { once: true }); return; }
     const seen = bonusSeen();
     const fresh = freshCats(done, seen);
     if (!fresh.length) return;
@@ -614,7 +614,7 @@ $('#progress-card').addEventListener('click', (e) => {
   const smooth = reduceMotion() ? 'auto' : 'smooth';
   chips.scrollIntoView({ behavior: smooth, block: 'start' });
   const chip = chips.querySelector('[aria-selected="true"]');
-  if (chip) chips.scrollTo({ left: chip.offsetLeft - 16, behavior: smooth });
+  if (chip) chips.scrollLeft = chip.offsetLeft - 16;
 });
 
 document.addEventListener('click', (e) => {

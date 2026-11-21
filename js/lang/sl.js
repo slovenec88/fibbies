@@ -134,6 +134,7 @@ export const UI = {
   'q.after': "Po",
   'q.evening': "Zvečer",
   'q.strength': "Moč",
+  doneToday: "opravljeno",
   'voiceSection': 'Glas',
   voiceGuidance: 'Glasovno vodenje',
   voiceGuidanceSub: 'Imena vaj, nasveti in menjava strani',

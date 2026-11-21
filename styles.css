@@ -640,7 +640,8 @@ html:has(dialog[open]) { overflow: hidden; }
 /* 4th: deeper, hotter gold with a pink edge and a glow that pulses out around it */
 .quest.lv4 { background: linear-gradient(140deg, #fff1b8 0%, #ffc531 40%, #ff8a3d 75%, #ff5fa2 100%); color: #3a1800;
   overflow: visible; box-shadow: 0 0 0 1.5px rgba(255,220,120,.95) inset; }
-.quest.lv4 > .ms, .quest.lv4 > span { position: relative; z-index: 1; }
+.quest.lv4 > span:not(.ripple-wave) { position: relative; z-index: 1; }
+.quest.lv4 .ripple-wave { display: none; } /* its aura spills out of the tile, so a ripple would too */
 .quest.lv2::after, .quest.lv3::after { /* the shine */
   content: ''; position: absolute; inset: -20% auto -20% 0; width: 45%; z-index: -1; pointer-events: none;
   background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);

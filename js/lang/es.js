@@ -130,6 +130,7 @@ export const UI = {
   'q.after': "Después",
   'q.evening': "Noche",
   'q.strength': "Fuerza",
+  doneToday: "hecho",
   "voiceSection": "Voz",
   voiceGuidance: "Guía por voz",
   voiceGuidanceSub: "Nombres, consejos y cambios de lado en voz alta",

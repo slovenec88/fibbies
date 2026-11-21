@@ -173,6 +173,7 @@ const EN = {
   'q.after': "After",
   'q.evening': "Evening",
   'q.strength': "Strength",
+  doneToday: "done",
   // settings
   'voiceSection': 'Voice',
   voiceGuidance: 'Voice guidance',
