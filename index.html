@@ -23,7 +23,11 @@
     <section id="view-home" class="view" data-view="home" aria-label="Home" data-i18n-aria="home">
       <h1 class="visually-hidden">Fibbies</h1>
       <div class="install-app" id="install-app" hidden>
-        <button class="btn filled ripple" id="install-fibbies" type="button"><span aria-hidden="true" class="ms">install_mobile</span><span data-i18n="installFibbies">Install Fibbies</span></button>
+        <button class="btn ripple" id="install-fibbies" type="button">
+          <img class="install-icon" src="icons/icon.svg" width="36" height="36" alt="">
+          <span data-i18n="installFibbies">Install Fibbies</span>
+          <span aria-hidden="true" class="ms install-arrow">download</span>
+        </button>
       </div>
       <div class="progress-card" id="progress-card"></div>
       <div class="week-card" id="week-card"></div>
@@ -98,11 +102,11 @@
 
     <div class="m3-group" id="install-settings" hidden>
       <button class="m3-item ripple" id="set-install" type="button" hidden>
-        <span class="m3-lead"><span aria-hidden="true" class="ms">install_mobile</span></span>
+        <span class="m3-lead"><img src="icons/icon.svg" width="28" height="28" alt=""></span>
         <span class="li-text"><b data-i18n="installFibbies">Install Fibbies</b></span>
       </button>
       <div class="m3-item" id="install-help" hidden>
-        <span class="m3-lead"><span aria-hidden="true" class="ms">install_mobile</span></span>
+        <span class="m3-lead"><img src="icons/icon.svg" width="28" height="28" alt=""></span>
         <span class="li-text">
           <b data-i18n="installFibbies">Install Fibbies</b>
           <small id="install-help-apple" data-i18n="installHelp" hidden>Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.</small>
