@@ -6,7 +6,7 @@ import { MAX_STAGE } from './fibbies.js';
 export const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 /** Evolution stars. With `label`, screen readers hear "stage n of 4"; without, they skip it. */
 export const stars = (n, label = true) => `<span class="stars" ${label ? `role="img" aria-label="${esc(t('stageN', { n }))}"` : 'aria-hidden="true"'}>${'<span aria-hidden="true" class="ms filled">star</span>'.repeat(n)}<i>${'<span aria-hidden="true" class="ms filled">star</span>'.repeat(MAX_STAGE - n)}</i></span>`;
-// Everything is plain shapes: no images. The 12 originals use the 'bean' body and classic face.
+// Everything is plain shapes: no images. The originals use the 'bean' body and classic face.
 const INK = '#2b2233';
 let uidN = 0;
 
@@ -99,9 +99,35 @@ function accessory(acc, top) {
         <circle cx="60" cy="${top - 1}" r="3" fill="#ff4f8b"/><circle cx="45" cy="${top + 3}" r="2.2" fill="#4cc9f0"/><circle cx="75" cy="${top + 3}" r="2.2" fill="#4cc9f0"/>`;
     case 'tall':
       return `<rect x="27" y="${top + 10}" width="66" height="7" rx="3.5" fill="#ffd166"/>`;
+    case 'santa': // red hat flopping to the side, white fur trim and pompom
+      return `<path d="M30 ${top + 12} C30 ${top - 26} 84 ${top - 36} 104 ${top + 6} L96 ${top + 9} C90 ${top - 8} 84 ${top - 6} 88 ${top + 12} Z" fill="#e63946"/>
+        <path d="M42 ${top - 6} Q60 ${top - 24} 84 ${top - 18}" stroke="#ff6b78" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+        <rect x="25" y="${top + 5}" width="70" height="13" rx="6.5" fill="#fff"/><circle cx="102" cy="${top + 10}" r="8" fill="#fff"/>`;
+    case 'elfhat': // tall red elf hat with a green band and a little gold bell
+      return `<path d="M33 ${top + 10} Q52 ${top - 10} 64 ${top - 38} Q74 ${top - 8} 88 ${top + 10} Z" fill="#e63946"/>
+        <path d="M64 ${top - 38} q10 -2 14 6" stroke="#e63946" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="79" cy="${top - 30}" r="5" fill="#ffd166" stroke="#e0a100" stroke-width="1.5"/>
+        <path d="M30 ${top + 9} l6 -5 l6 5 l6 -5 l6 5 l6 -5 l6 5 l6 -5 l6 5 l6 -5 l6 5 l6 -5 l6 5 v6 h-66 z" fill="#2a9d55"/>`;
     default:
       return '';
   }
+}
+
+/** Christmas details drawn over the face: Santa's beard, a rosy nose, a snowman's carrot and buttons. */
+function festive(acc, fy) {
+  const my = fy + 12;
+  if (acc === 'santa') {
+    const fluff = [[34, 4, 8], [44, 9, 9], [55, 12, 9.5], [65, 12, 9.5], [76, 9, 9], [86, 4, 8], [49, 18, 8], [60, 20, 8.5], [71, 18, 8]];
+    return fluff.map(([x, dy, r]) => `<circle cx="${x}" cy="${my + dy}" r="${r}" fill="#fff"/>`).join('')
+      + `<ellipse cx="53" cy="${my - 1.5}" rx="8" ry="4.5" fill="#fff" transform="rotate(-12 53 ${my - 1.5})"/><ellipse cx="67" cy="${my - 1.5}" rx="8" ry="4.5" fill="#fff" transform="rotate(12 67 ${my - 1.5})"/>`
+      + `<path d="M57 ${my + 3} q3 3 6 0" stroke="${INK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  }
+  if (acc === 'rosynose') return `<circle cx="60" cy="${fy + 7}" r="5" fill="#ff5d73"/><circle cx="58.3" cy="${fy + 5.4}" r="1.6" fill="#fff" opacity=".8"/>`;
+  if (acc === 'snowman') {
+    return `<path d="M59 ${fy + 3.5} L76 ${fy + 7.5} L59 ${fy + 10} Z" fill="#ff8c1a" stroke="#e06a00" stroke-width="1" stroke-linejoin="round"/>`
+      + [94, 102].map((y) => `<circle cx="60" cy="${y}" r="2.6" fill="${INK}"/>`).join('');
+  }
+  return '';
 }
 function lowerAccessory(acc) {
   if (acc === 'bolt') return `<path d="M63 82 L54 96 L61 96 L57 108 L69 92 L62 92 L66 82 Z" fill="#ffd60a" stroke="#f4a100" stroke-width="1.5" stroke-linejoin="round"/>`;
@@ -126,6 +152,10 @@ function headBehind(g, W, yT, body, dark) {
     }
     case 'horns':
       return [-1, 1].map((s) => `<path d="M${60 + s * (ex - 6)} ${yT + 8} q${s * 2} -16 ${s * 12} -18 q${s * -6} 8 ${s * -2} 20Z" fill="#fff3d6" stroke="#d9b98a" stroke-width="1.5" stroke-linejoin="round"/>`).join('');
+    case 'antlers': // reindeer: a branching beam on each side
+      return [-1, 1].map((s) => `<path d="M${60 + s * 14} ${yT + 6} Q${60 + s * 18} ${yT - 12} ${60 + s * 30} ${yT - 24}
+        M${60 + s * 18} ${yT - 8} L${60 + s * 8} ${yT - 20} M${60 + s * 23} ${yT - 16} L${60 + s * 20} ${yT - 30} M${60 + s * 26} ${yT - 21} L${60 + s * 38} ${yT - 22}"
+        stroke="#8d5a3b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`).join('');
     default:
       return '';
   }
@@ -198,8 +228,8 @@ export function critterSVG(f, { locked = false, className = '' } = {}) {
   const { d, rect, yT } = bodyPath(s);
   const W = s.W;
   const chroma = f.stage >= 4 ? 0.16 : 0.13;
-  const body = `oklch(0.84 ${chroma} ${g.hue})`;
-  const dark = `oklch(0.66 0.15 ${g.hue})`;
+  const body = g.body || `oklch(0.84 ${chroma} ${g.hue})`; // a few originals have their own colours (a snowman is white)
+  const dark = g.dark || `oklch(0.66 0.15 ${g.hue})`;
   const pupil = f.glow >= 2 && !f.classic ? `oklch(0.42 0.16 ${g.hue2})` : INK;
   const fy = yT + s.H * (g.shape === 'drop' || g.shape === 'pear' ? 0.5 : 0.42);
   const id = `fb${uidN++}`;
@@ -220,10 +250,13 @@ export function critterSVG(f, { locked = false, className = '' } = {}) {
   }).join('');
 
   const scaleX = W / 68;
-  const topAcc = ['headband', 'ears', 'bow', 'flowers', 'leaf', 'nightcap', 'crown', 'tall'].includes(g.acc)
+  const topAcc = ['headband', 'ears', 'bow', 'flowers', 'leaf', 'nightcap', 'crown', 'tall', 'santa', 'elfhat'].includes(g.acc)
     ? `<g transform="translate(60 0) scale(${scaleX} 1) translate(-60 0)">${accessory(g.acc, yT)}</g>` : '';
   const scarf = g.acc === 'scarf'
-    ? `<rect x="${60 - W / 2}" y="${fy + 20}" width="${W}" height="8" fill="oklch(0.65 0.18 ${g.hue2})"/><rect x="${60 + W * 0.18}" y="${fy + 24}" width="9" height="16" rx="3" fill="oklch(0.6 0.18 ${g.hue2})"/>` : '';
+    ? `<rect x="${60 - W / 2}" y="${fy + 20}" width="${W}" height="8" fill="oklch(0.65 0.18 ${g.hue2})"/><rect x="${60 + W * 0.18}" y="${fy + 24}" width="9" height="16" rx="3" fill="oklch(0.6 0.18 ${g.hue2})"/>`
+    : g.acc === 'snowman' // red-and-white striped scarf
+      ? `<rect x="${60 - W / 2}" y="${fy + 17}" width="${W}" height="9" fill="#e63946"/>${Array.from({ length: Math.ceil(W / 8) }, (_, i) => `<rect x="${60 - W / 2 + 3 + i * 8}" y="${fy + 17}" width="3" height="9" fill="#fff"/>`).join('')}<rect x="${60 + W * 0.16}" y="${fy + 22}" width="10" height="17" rx="3" fill="#e63946"/><rect x="${60 + W * 0.16}" y="${fy + 29}" width="10" height="3" fill="#fff"/>`
+      : '';
 
   const wingKind = g.wing || (g.acc === 'wings' ? 'wings' : null);
   const aura = g.aura || f.glow >= 3
@@ -249,6 +282,7 @@ export function critterSVG(f, { locked = false, className = '' } = {}) {
     <ellipse cx="60" cy="${yT + s.H * 0.62}" rx="${W * 0.32}" ry="${s.H * 0.24}" fill="#fff" opacity=".28"/>
     <path d="M${60 - W * 0.32} ${yT + 12} q6 -5 13 -3 M${60 - W * 0.35} ${yT + 22} q4 -3 8 -2" stroke="#fff" stroke-opacity=".55" stroke-width="3" fill="none" stroke-linecap="round"/>
     ${face(g, fy, W, pupil)}
+    ${festive(g.acc, fy)}
     ${headFront(g, yT)}
     ${topAcc}
     ${lowerAccessory(g.acc)}

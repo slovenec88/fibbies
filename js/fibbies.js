@@ -19,7 +19,7 @@ export function rng(seed) {
 const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
 const hashStr = (s) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };
 
-// ---------- The 12 original Fibbies (hand-designed genomes) ----------
+// ---------- The 16 original Fibbies (hand-designed genomes) ----------
 const CLASSIC = { shape: 'bean', eyes: 'round', mouth: 'w', cheeks: true, pattern: 'none', head: 'none', arms: 'up' };
 export const FIBBIES = [
   { id: 'quaddy', name: 'Quaddy', rarity: 0, hue: 150, acc: 'headband', blurb: 'Never skips quad day.' },
@@ -34,6 +34,11 @@ export const FIBBIES = [
   { id: 'bendy', name: 'Bendy', rarity: 2, hue: 95, acc: 'tall', blurb: 'Stretched so much it got taller.', shape: 'tall' },
   { id: 'medalia', name: 'Medalia', rarity: 2, hue: 340, acc: 'medal', blurb: 'Won a medal once. Mentions it often.' },
   { id: 'goldie', name: 'Golden Fibbie', rarity: 3, hue: 85, acc: 'crown', blurb: 'The legend. Stretches in pure gold.' },
+  // Christmas
+  { id: 'jingly', name: 'Jingly', rarity: 0, hue: 150, acc: 'elfhat', head: 'pointy', blurb: 'Jingles a little with every stretch.' },
+  { id: 'flurry', name: 'Flurry', rarity: 1, hue: 230, acc: 'snowman', body: '#f4f8ff', dark: '#b8c6dc', blurb: 'Stays cool through every cooldown.' },
+  { id: 'prancy', name: 'Prancy', rarity: 2, hue: 55, acc: 'rosynose', head: 'antlers', body: 'oklch(0.76 0.08 60)', dark: 'oklch(0.58 0.09 55)', blurb: 'Prances through every warm-up.' },
+  { id: 'santy', name: 'Santy', rarity: 3, hue: 20, acc: 'santa', blurb: 'Checks the stretch list twice.' },
 ];
 const classicById = (id) => FIBBIES.find((f) => f.id === id);
 
@@ -86,7 +91,10 @@ export function speciesOf(sp) {
     const r = rng(hashStr(sp));
     return {
       sp, classic: true, rarity: c.rarity,
-      genome: { ...CLASSIC, hue: c.hue, hue2: (c.hue + 180) % 360, acc: c.acc, eyes: c.eyes || 'round', shape: c.shape || 'bean', wings: pick(r, WINGS), name: c.name },
+      genome: {
+        ...CLASSIC, hue: c.hue, hue2: (c.hue + 180) % 360, acc: c.acc, eyes: c.eyes || 'round', shape: c.shape || 'bean', wings: pick(r, WINGS), name: c.name,
+        ...(c.head && { head: c.head }), ...(c.body && { body: c.body, dark: c.dark }),
+      },
     };
   }
   const seed = parseInt(sp.replace(/^g_?/, ''), 36) >>> 0;
@@ -107,7 +115,7 @@ export function fibbie(sp, stage = 1) {
   if (stage >= 2) {
     g.hue = (g.hue + 14 * (stage - 1)) % 360;
     if (g.pattern === 'none') g.pattern = 'spots';
-    if (g.head === 'none' && !['headband', 'flowers', 'nightcap', 'crown', 'tall', 'leaf', 'bow', 'ears'].includes(g.acc)) g.head = 'tuft';
+    if (g.head === 'none' && !['headband', 'flowers', 'nightcap', 'crown', 'tall', 'leaf', 'bow', 'ears', 'santa', 'elfhat', 'snowman'].includes(g.acc)) g.head = 'tuft';
   }
   if (stage >= 3) g.wing = g.acc === 'wings' ? 'fairy' : g.wings;
   if (stage >= 4) g.aura = true;
@@ -219,7 +227,7 @@ export function dropFibbie(tier, p, rand = Math.random) {
   let x = rand();
   let want = 0;
   while (want < 3 && x >= odds[want]) { x -= odds[want]; want++; }
-  // The 12 originals are still out there to find.
+  // The originals are still out there to find.
   const classics = FIBBIES.filter((f) => f.rarity === want && !p.dex[keyOf(f.id, 1)]);
   if (classics.length && rand() < 0.35) return pick(rand, classics).id;
   for (let i = 0; i < 2000; i++) {

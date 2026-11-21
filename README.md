@@ -39,7 +39,7 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 
 ## Meet the Fibbies
 
-- **Every chest holds a Fibbie,** a little critter drawn by code. There are 12 originals to find and an endless number of wild ones, so a chest can hold one nobody has seen.
+- **Every chest holds a Fibbie,** a little critter drawn by code. There are 16 originals to find, four of them in Christmas spirit (Santy, Prancy the reindeer, Flurry the snowman and Jingly the elf), and an endless number of wild ones, so a chest can hold one nobody has seen.
 - **Merge two of the same Fibbie** to evolve it through four stages, with a big show at each evolution.
 - **Fill the album.** The originals you haven't found yet show up as shadows.
 - **Some Fibbies are shy.** Now and then one runs off before you can catch it.
