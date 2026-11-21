@@ -480,59 +480,6 @@ export const CATEGORIES = [
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
 ];
 
-// Research-based rankings: effectiveness for active people weighed against simplicity
-// (no equipment, easy to learn, safe to do alone). Sources are listed in RANKINGS.md.
-export const RANKINGS = {
-  after: [
-    ['quad', 'Quads work hard in almost every sport. Standing, no gear, and every physio list includes it.'],
-    ['calf', 'Calves and Achilles absorb each landing. A wall is all you need.'],
-    ['lunge', 'Undoes tight hip flexors from training and sitting. PTs call this one out every time.'],
-    ['fold', 'Hamstrings and lower back in one simple standing move.'],
-    ['pigeon', 'The physio favourite for glutes and outer hips, key for stability.'],
-    ['soleus', 'Bent-knee version reaches the deep calf that a straight-leg stretch misses.'],
-    ['downdog', 'Calves, hamstrings and shoulders together. Great if you can get on the floor.'],
-    ['butterfly', 'Opens the groin and inner thighs, with easy control over the intensity.'],
-    ['itband', 'Outer hip and IT band relief, standing, anywhere.'],
-    ['child', 'A calm finish for the back and hips that brings your breathing down.'],
-  ],
-  before: [
-    ['swingFront', 'The most-recommended warm-up drill. Opens the hips through the walking and running motion.'],
-    ['lungeReach', 'Fires the glutes and stretches the hip flexors while teaching knee tracking.'],
-    ['swingSide', 'Wakes up the adductors and hip stabilisers that keep your knees and hips in line.'],
-    ['highKnees', 'Raises your heart rate and grooves a strong knee drive.'],
-    ['buttKicks', 'Dynamic quad stretch that warms the hamstrings too.'],
-    ['worlds', 'Hits hips, hamstrings and the upper back in one flowing move.'],
-    ['hipCircles', 'Loosens the hip joint gently. Zero learning curve.'],
-    ['calfRaises', 'Primes the calves and Achilles for impact.'],
-    ['inchworm', 'Full-body warm-up for hamstrings, core and shoulders.'],
-    ['bridge', 'Switches the glutes on so they share the load.'],
-  ],
-  evening: [
-    ['child', 'The classic wind-down for the back, glutes and hips. Breathe slow and let go.'],
-    ['lyingHam', 'Long hamstring stretch you can do lying down. A bedtime staple.'],
-    ['twist', 'Releases the spine and glutes and helps the whole body relax.'],
-    ['kneeToChest', 'Simple, gentle release for the lower back and glutes.'],
-    ['catcow', 'Moves the spine with your breath to settle the nervous system.'],
-    ['figureFour', 'A gentler pigeon on your back. Ideal for sore glutes at night.'],
-    ['legsUpWall', 'Rests tired legs and helps you calm down before sleep.'],
-    ['butterfly', 'Easy inner-hip opener you can do sitting on the bed.'],
-    ['happyBaby', 'Opens the hips and groin while easing the lower back.'],
-    ['pigeon', 'A deeper glute release when you have a little more time.'],
-  ],
-  quick: [
-    ['lunge', 'Biggest payoff in the least time, especially if you sit a lot.'],
-    ['calf', 'The fastest relief for tight calves and Achilles.'],
-    ['quad', 'Standing, anywhere, in 30 seconds a side.'],
-    ['downdog', 'Calves, hamstrings and back all at once.'],
-    ['worlds', 'Hips, hamstrings and spine in one move. Maximum coverage.'],
-    ['fold', 'Quick hamstring and back release with no setup.'],
-    ['soleus', 'Gets the deep calf that most stretches miss.'],
-    ['itband', 'Outer hip relief, standing.'],
-    ['squat', 'Opens the hips and ankles together.'],
-    ['sideBend', 'Lengthens the side body after hunching over a desk.'],
-  ],
-};
-
 // items: [stretchId, seconds per side]
 export const ROUTINES = [
   {

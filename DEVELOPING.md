@@ -39,7 +39,7 @@ This runs `scripts/selftest.mjs`. The test needs no dependencies. It covers the 
 | Area | Files |
 |---|---|
 | App shell, screens, settings | `index.html`, `styles.css`, `js/app.js` |
-| Stretches, routines, rankings | `js/data.js` (see [RANKINGS.md](RANKINGS.md)) |
+| Stretches, routines | `js/data.js` (research behind the Top 5 routines: [RANKINGS.md](RANKINGS.md)) |
 | Animated figures (two-bone IK) | `js/figure.js` |
 | Follow-along session timer | `js/session.js` |
 | Chests, multipliers, levels, quests | `js/rewards.js`, `js/reward-screen.js` |

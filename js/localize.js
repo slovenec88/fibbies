@@ -1,8 +1,8 @@
-// Swaps the content (stretches, routines, rankings, Fibbies, chests, quests) into the
+// Swaps the content (stretches, routines, categories, Fibbies, chests) into the
 // current language in place, so the rest of the app keeps reading s.name, r.title, etc.
 // English originals are snapshotted once so switching back is lossless.
-import { STRETCHES, ROUTINES, RANKINGS, CATEGORIES } from './data.js';
-import { TIERS, QUESTS } from './rewards.js';
+import { STRETCHES, ROUTINES, CATEGORIES } from './data.js';
+import { TIERS } from './rewards.js';
 import { FIBBIES } from './fibbies.js';
 import { getLang } from './i18n.js';
 import { CONTENT as DE } from './lang/de.js';
@@ -16,11 +16,9 @@ const snap = (o, keys) => Object.fromEntries(keys.map((k) => [k, Array.isArray(o
 const EN = {
   stretches: Object.fromEntries(Object.entries(STRETCHES).map(([id, s]) => [id, snap(s, ['name', 'target', 'cues'])])),
   routines: Object.fromEntries(ROUTINES.map((r) => [r.id, snap(r, ['title', 'blurb'])])),
-  rankings: Object.fromEntries(Object.entries(RANKINGS).map(([c, rows]) => [c, rows.map(([, why]) => why)])),
   categories: Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label])),
   fibbies: Object.fromEntries(FIBBIES.map((f) => [f.id, snap(f, ['name', 'blurb'])])),
   tiers: TIERS.map((x) => snap(x, ['label'])),
-  quests: Object.fromEntries(QUESTS.map((q) => [q.cat, q.label])),
 };
 
 const CONTENT = { sl: SL, de: DE, es: ES, fr: FR, it: IT, pt: PT };
@@ -39,9 +37,6 @@ export function localizeContent(lang = getLang()) {
     r.title = x ? x[0] : EN.routines[r.id].title;
     r.blurb = x ? x[1] : EN.routines[r.id].blurb;
   }
-  for (const [c, rows] of Object.entries(RANKINGS)) {
-    rows.forEach((row, i) => { row[1] = (L && L.rankings[c]?.[i]) || EN.rankings[c][i]; });
-  }
   for (const c of CATEGORIES) c.label = (L && L.categories[c.id]) || EN.categories[c.id];
   for (const f of FIBBIES) {
     const x = L && L.fibbies[f.id];
@@ -51,5 +46,4 @@ export function localizeContent(lang = getLang()) {
   TIERS.forEach((tier, i) => {
     tier.label = (L && L.tiers[i]) || EN.tiers[i].label;
   });
-  for (const q of QUESTS) q.label = (L && L.quests[q.cat]) || EN.quests[q.cat];
 }
