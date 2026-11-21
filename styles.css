@@ -159,57 +159,6 @@ h1, h2, h3, p { margin: 0; }
 }
 .fab-ext .ms { font-size: 28px; }
 
-/* ========= Week streak card ========= */
-.week-card {
-  background: var(--surface-container-low); border-radius: 28px; padding: 14px 14px 14px 14px;
-  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
-}
-.streak { display: flex; align-items: center; gap: 12px; min-width: 0; white-space: nowrap; }
-.streak-icon {
-  width: 48px; height: 48px; display: grid; place-items: center; flex: none;
-  background: var(--tertiary-container); color: var(--on-tertiary-container);
-  border-radius: 16px;
-}
-.streak b { display: block; font-size: 20px; font-weight: 650; line-height: 1.1; }
-.streak small { color: var(--on-surface-variant); font-size: 13px; display: block; white-space: normal; line-height: 1.25; }
-.streak > div:last-child { min-width: 0; }
-.week-dots { margin-left: auto; display: flex; gap: 4px; }
-.wd { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--on-surface-variant); font-weight: 600; }
-.wd i {
-  width: 22px; height: 22px; border-radius: 50%; display: block; background: var(--surface-container-highest);
-  display: grid; place-items: center;
-}
-.wd i .ms { font-size: 15px; }
-.wd.done i { background: var(--primary); color: var(--on-primary); }
-.wd.today span { color: var(--primary); }
-.wd.today i { outline: 2px solid var(--primary); outline-offset: 1px; }
-
-/* ========= Hero ========= */
-.section-label { font-size: 14px; font-weight: 600; color: var(--on-surface-variant); margin: 0 4px 10px; letter-spacing: .02em; }
-.hero {
-  display: block; width: 100%; text-align: left;
-  background: var(--primary-container); color: var(--on-primary-container);
-  border-radius: 32px; padding: 20px; position: relative; overflow: hidden;
-  min-height: 236px;
-}
-.hero::after {
-  content: ''; position: absolute; width: 260px; height: 260px; right: -60px; top: -40px;
-  background: var(--primary); opacity: .1;
-  clip-path: polygon(50% 0%, 61% 11%, 75% 7%, 79% 21%, 93% 25%, 89% 39%, 100% 50%, 89% 61%, 93% 75%, 79% 79%, 75% 93%, 61% 89%, 50% 100%, 39% 89%, 25% 93%, 21% 79%, 7% 75%, 11% 61%, 0% 50%, 11% 39%, 7% 25%, 21% 21%, 25% 7%, 39% 11%);
-  border-radius: 40%;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.hero-fig { position: absolute; right: -6px; bottom: -4px; width: 58%; max-width: 250px; z-index: 1; }
-.hero-body { position: relative; z-index: 2; max-width: 56%; display: flex; flex-direction: column; min-height: 196px; }
-.hero-title { font-size: 28px; line-height: 1.1; font-weight: 600; font-variation-settings: 'wdth' 105, 'opsz' 40; letter-spacing: -.01em; }
-.hero-meta { margin-top: 8px; font-size: 15px; opacity: .85; }
-.hero-play {
-  margin-top: auto; align-self: flex-start;
-  height: 56px; padding: 0 22px 0 16px; border-radius: 18px; gap: 8px; display: inline-flex; align-items: center;
-  background: var(--primary); color: var(--on-primary); font-weight: 650; font-size: 16px;
-  box-shadow: var(--shadow-1);
-}
-
 /* ========= Chips ========= */
 .chips {
   display: flex; gap: 8px; overflow-x: auto; margin: 28px -16px 14px; padding: 2px 16px;
@@ -252,36 +201,6 @@ h1, h2, h3, p { margin: 0; }
   background: var(--tertiary-container); color: var(--on-tertiary-container); font-size: 12px; font-weight: 700;
 }
 .top-badge .ms { font-size: 15px; }
-.ranking { margin-top: 28px; }
-.rank-hint {
-  display: flex; gap: 12px; align-items: flex-start; padding: 16px; border-radius: 24px;
-  background: var(--surface-container); color: var(--on-surface-variant); font-size: 14px;
-}
-.rank-hint b { color: var(--on-surface); }
-.rank-head { padding: 0 4px 12px; }
-.rank-head h2 { font-size: 22px; font-weight: 600; font-variation-settings: 'wdth' 105, 'opsz' 32; letter-spacing: -.01em; }
-.rank-head p { color: var(--on-surface-variant); font-size: 14px; margin-top: 4px; }
-.rank-head b { color: var(--primary); }
-.rank-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.rank-row {
-  display: grid; grid-template-columns: 30px 56px 1fr; gap: 12px; align-items: center;
-  padding: 8px 12px 8px 8px; border-radius: 20px; background: var(--surface-container-low);
-}
-.rank-row.is-top { background: var(--primary-container); color: var(--on-primary-container); }
-.rank-n {
-  width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center;
-  font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums;
-  background: var(--surface-container-highest); color: var(--on-surface-variant);
-}
-.rank-row.is-top .rank-n { background: var(--primary); color: var(--on-primary); }
-.rank-thumb { width: 56px; height: 56px; border-radius: 16px; background: var(--surface-container-high); overflow: hidden; }
-.rank-row.is-top .rank-thumb { background: color-mix(in oklch, var(--surface) 55%, transparent); }
-.rank-thumb .fig { width: 100%; height: 100%; }
-.rank-text { min-width: 0; }
-.rank-text b { display: block; font-weight: 600; font-size: 15px; line-height: 1.25; }
-.rank-text small { display: block; font-size: 13px; line-height: 1.35; margin-top: 2px; opacity: .8; }
-.rank-sep { display: flex; justify-content: center; padding: 8px 0 10px; }
-.rank-sep .btn { height: 48px; }
 .footnote { text-align: center; color: var(--on-surface-variant); font-size: 13px; margin-top: 28px; }
 
 /* ========= Figure ========= */
@@ -698,55 +617,35 @@ html:has(dialog[open]) { overflow: hidden; }
 .pc-line small { color: var(--on-surface-variant); font-size: 12px; font-weight: 600; }
 .pc-bar { height: 10px; border-radius: 5px; background: var(--surface-container-highest); overflow: hidden; margin-top: 6px; }
 .pc-bar i { display: block; height: 100%; border-radius: 5px; background: var(--primary); }
-/* Today's bonus: grows +25% with each kind of routine done today */
-.bonus { margin-top: 14px; }
-.bonus-head { position: relative; display: flex; align-items: baseline; justify-content: space-between; margin: 0 4px 6px; }
-.bonus-head span { font-size: 13px; font-weight: 700; letter-spacing: .02em; color: var(--on-surface-variant); }
-.bonus-x { position: relative; font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--on-surface-variant); transform-origin: 70% 60%; }
-.bonus.on .bonus-x { color: var(--tertiary); }
-/* a soft glow that breathes behind a growing bonus (opacity only: runs on the graphics chip) */
-.bonus.on .bonus-x::before {
-  content: ''; position: absolute; inset: -10px -14px; z-index: -1; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(closest-side, color-mix(in oklch, var(--tertiary) 35%, transparent), transparent);
-  animation: bonus-glow 3.2s ease-in-out infinite;
-}
-@keyframes bonus-glow { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
-.bonus-bar { height: 6px; border-radius: 3px; background: var(--surface-container-highest); overflow: hidden; margin: 0 4px 10px; }
-.bonus-bar i { position: relative; display: block; height: 100%; border-radius: 3px; transform-origin: left; overflow: hidden;
-  background: linear-gradient(90deg, var(--tertiary), var(--primary)); transition: transform .9s cubic-bezier(.2,0,0,1); }
-.bonus-bar i::after { /* a slow shine sweeping along the filled part */
-  content: ''; position: absolute; inset: 0; width: 40%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
-  animation: bonus-shine 4.5s ease-in-out infinite;
-}
-@keyframes bonus-shine { 0% { transform: translateX(-120%); } 45%, 100% { transform: translateX(320%); } }
-.bonus-spark {
-  position: absolute; right: 18px; bottom: 6px; width: 6px; height: 6px; border-radius: 50%; pointer-events: none;
-  background: var(--tertiary); opacity: 0; animation: bonus-spark .9s ease-out both;
-}
-@keyframes bonus-spark {
-  0% { opacity: 1; transform: rotate(var(--a)) translateX(0) scale(1); }
-  100% { opacity: 0; transform: rotate(var(--a)) translateX(34px) scale(.3); }
-}
-.quests { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pc-head b { margin-right: auto; }
+.pc-streak { display: inline-flex; align-items: center; gap: 2px; height: 26px; padding: 0 9px 0 6px; margin-right: 4px; border-radius: 13px;
+  font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.pc-streak .ms { font-size: 18px; }
+/* Today's bonus: one tile per kind of routine, lighting up through the day (no words, no numbers) */
+.quests { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 6px; margin-top: 14px; }
 .quest {
   display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 16px;
   background: var(--surface-container); color: var(--on-surface-variant); font-size: 11.5px; font-weight: 600; text-align: center; line-height: 1.2;
 }
 .quest .ms { font-size: 22px; }
 .quest.done { background: var(--primary); color: var(--on-primary); position: relative; overflow: hidden; isolation: isolate; }
-/* The day builds up: the 2nd tile done glows with a slow shine, the 3rd gets a warm gold sheen,
-   a breathing halo and a few twinkles. Only transform and opacity move (graphics chip, no repaints). */
-.quest.lv2, .quest.lv3 { box-shadow: 0 0 0 1px color-mix(in oklch, var(--tertiary) 45%, transparent) inset; }
-.quest.lv2 { background: linear-gradient(140deg, var(--primary) 15%, var(--tertiary)); color: var(--on-primary); }
-/* gold, the same in light and dark: it should read as a prize on any background */
-.quest.lv3 { background: linear-gradient(140deg, #ffe7a0 0%, #ffc940 50%, #ffa14a 100%); color: #3a2400; box-shadow: 0 0 0 1px rgba(255,190,70,.7) inset, 0 2px 10px rgba(255,170,40,.35); }
+/* The day builds up. Only transform and opacity move (graphics chip, no repaints).
+   2nd: a cool gradient, a soft glow and a shine that already sweeps by every few seconds. */
+.quest.lv2 { background: linear-gradient(140deg, var(--primary) 10%, var(--tertiary)); color: var(--on-primary);
+  box-shadow: 0 0 0 1px color-mix(in oklch, var(--tertiary) 55%, transparent) inset, 0 2px 10px color-mix(in oklch, var(--tertiary) 35%, transparent); }
+/* 3rd and 4th: gold, the same in light and dark, so it reads as a prize on any background */
+.quest.lv3, .quest.lv4 { background: linear-gradient(140deg, #ffe7a0 0%, #ffc940 50%, #ffa14a 100%); color: #3a2400;
+  box-shadow: 0 0 0 1px rgba(255,190,70,.7) inset, 0 2px 12px rgba(255,170,40,.4); }
+/* 4th: deeper, hotter gold with a pink edge and a glow that pulses out around it */
+.quest.lv4 { background: linear-gradient(140deg, #fff1b8 0%, #ffc531 40%, #ff8a3d 75%, #ff5fa2 100%); color: #3a1800;
+  overflow: visible; box-shadow: 0 0 0 1.5px rgba(255,220,120,.95) inset; }
+.quest.lv4 > .ms, .quest.lv4 > span { position: relative; z-index: 1; }
 .quest.lv2::after, .quest.lv3::after { /* the shine */
   content: ''; position: absolute; inset: -20% auto -20% 0; width: 45%; z-index: -1; pointer-events: none;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
-  transform: translateX(-130%); animation: q-shine 5s ease-in-out 1s infinite;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+  transform: translateX(-130%); animation: q-shine 3.8s ease-in-out .6s infinite;
 }
-.quest.lv3::after { animation-duration: 3.4s; background: linear-gradient(100deg, transparent, rgba(255,250,220,.7), transparent); }
+.quest.lv3::after { animation-duration: 2.8s; background: linear-gradient(100deg, transparent, rgba(255,250,220,.75), transparent); }
 @keyframes q-shine { 0% { transform: translateX(-130%); } 40%, 100% { transform: translateX(330%); } }
 .quest.lv3::before { /* breathing halo */
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
@@ -754,15 +653,54 @@ html:has(dialog[open]) { overflow: hidden; }
   animation: q-halo 2.6s ease-in-out infinite;
 }
 @keyframes q-halo { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
+.quest.lv4::before { /* the warm aura spilling out around the tile */
+  content: ''; position: absolute; inset: -6px; z-index: -1; pointer-events: none; border-radius: 22px;
+  background: radial-gradient(closest-side, rgba(255,200,80,.75), rgba(255,95,162,.35) 70%, transparent);
+  filter: blur(6px); animation: q-aura 1.8s ease-in-out infinite;
+}
+@keyframes q-aura { 0%, 100% { opacity: .35; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+.quest.lv4::after { /* its own shine, clipped to the tile */
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(100deg, transparent 30%, rgba(255,255,240,.8) 50%, transparent 70%) no-repeat;
+  background-size: 250% 100%; animation: q-shine4 2.2s ease-in-out infinite;
+}
+@keyframes q-shine4 { 0% { background-position: 150% 0; } 55%, 100% { background-position: -60% 0; } }
 .q-spark {
-  position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff8d6; pointer-events: none;
+  position: absolute; width: 6px; height: 6px; border-radius: 50%; background: #fff8d6; pointer-events: none; z-index: 2;
   box-shadow: 0 0 6px 1px rgba(255,236,160,.9); opacity: 0; animation: q-twinkle 2.8s ease-in-out infinite;
 }
 .q-spark:nth-of-type(1) { left: 16%; top: 22%; }
 .q-spark:nth-of-type(2) { right: 14%; top: 34%; animation-delay: .9s; }
 .q-spark:nth-of-type(3) { left: 58%; bottom: 14%; animation-delay: 1.8s; }
+.q-spark:nth-of-type(4) { left: 8%; bottom: 30%; animation-delay: .45s; }
+.q-spark:nth-of-type(5) { right: 30%; top: 8%; animation-delay: 1.35s; }
+.quest.lv4 .q-spark { animation-duration: 2s; }
 @keyframes q-twinkle { 0%, 100% { opacity: 0; transform: scale(.3); } 45% { opacity: 1; transform: scale(1); } 60% { opacity: 0; transform: scale(.5); } }
-@media (prefers-reduced-motion: reduce) { .quest.done::after, .quest.lv3::before, .q-spark { animation: none; } .q-spark { opacity: .7; transform: none; } }
+/* sparks thrown out when a tile lights up */
+.bonus-spark {
+  position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; pointer-events: none; z-index: 3;
+  background: var(--tertiary); opacity: 0; animation: bonus-spark .9s ease-out both;
+}
+.bonus-spark.gold { background: #ffd34d; box-shadow: 0 0 6px rgba(255,200,60,.9); }
+@keyframes bonus-spark {
+  0% { opacity: 1; transform: rotate(var(--a)) translateX(0) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--d, 34px)) scale(.3); }
+}
+@media (prefers-reduced-motion: reduce) { .quest.done::after, .quest.lv3::before, .quest.lv4::before, .q-spark { animation: none; } .q-spark { opacity: .7; transform: none; } }
+
+/* Quick starts: one tap starts the Top 5 routine of each kind */
+.quick-starts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px; }
+.qs { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; min-height: 104px; padding: 12px 12px 10px 14px;
+  border-radius: 24px; text-align: left; background: var(--primary-container); color: var(--on-primary-container); }
+.qs.now { box-shadow: 0 0 0 2px var(--primary) inset; }
+.qs-text { position: relative; z-index: 1; max-width: 62%; }
+.qs-text b { display: block; font-size: 16px; font-weight: 650; line-height: 1.15; }
+.qs-text small { display: block; margin-top: 2px; font-size: 13px; opacity: .8; }
+.qs-play { position: relative; z-index: 1; margin-top: auto; width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--primary); color: var(--on-primary); }
+.qs-play .ms { font-size: 22px; }
+.qs-fig { position: absolute; right: -4px; bottom: -6px; width: 56%; max-width: 110px; opacity: .95; }
+.qs-fig .fig { display: block; width: 100%; height: auto; }
 .collection { margin: 26px 0 0; }
 .col-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 8px; }
 .col-head h2 { font-size: 18px; font-weight: 600; }
@@ -975,7 +913,7 @@ html.native input, html.native textarea { -webkit-user-select: text; user-select
 .al-empty .critter { width: 48px; height: 48px; flex: none; }
 
 /* ---------- Flexibility check ---------- */
-.flex-card { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 18px; padding: 14px 16px; border-radius: 24px; text-align: left;
+.flex-card { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 14px; padding: 14px 16px; border-radius: 24px; text-align: left;
   background: var(--surface-container); color: var(--on-surface); position: relative; overflow: hidden; }
 .flex-card.due { background: var(--secondary-container); color: var(--on-secondary-container); }
 .fx-icon { width: 40px; height: 40px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--primary); color: var(--on-primary); }
@@ -1171,7 +1109,7 @@ a.m3-item { text-decoration: none; }
 .settings-sheet .sheet-done { margin-top: 28px; }
 
 /* ---------- Display face for headings (body stays Roboto Flex, Material's typeface) ---------- */
-.hero-title, .detail-hero h1, .rank-head h2, .col-head h2, .sheet-title, .dialog h2, .fs-name,
+.detail-hero h1, .col-head h2, .qs-text b, .sheet-title, .dialog h2, .fs-name,
 .rw-nochest h1, .rw-banner, .mx-kicker, .mx-name, .al-head, .move-name, .rw-card-text b, .rw-level.levelup::after {
   font-family: var(--font-display); font-variation-settings: normal;
 }

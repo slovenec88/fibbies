@@ -1,9 +1,9 @@
-import { STRETCHES, CATEGORIES, ROUTINES, RANKINGS, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
+import { STRETCHES, CATEGORIES, ROUTINES, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
 import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
-import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS, dailyBonus, DAILY_STEP } from './rewards.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS, dailyBonus } from './rewards.js';
 import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG, esc, stars } from './critter.js';
@@ -180,53 +180,8 @@ function suggestion() {
 }
 
 function renderHome() {
-  const st = streak();
-
-  // Week strip
-  const days = new Set(log.filter(counts).map((x) => x.day));
-  const today = new Date();
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
-  const letters = t('weekLetters');
-  let dots = '';
-  let weekCount = 0;
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    const k = dayKey(d);
-    const done = days.has(k);
-    if (done) weekCount++;
-    dots += `<div class="wd${done ? ' done' : ''}${k === dayKey(today) ? ' today' : ''}"><span>${letters[i]}</span><i>${done ? '<span aria-hidden="true" class="ms">check</span>' : ''}</i></div>`;
-  }
-  $('#week-card').innerHTML = `
-    <div class="streak">
-      <div class="streak-icon"><span aria-hidden="true" class="ms filled">local_fire_department</span></div>
-      <div><b>${t('days', { n: st })}</b><small>${t('thisWeek', { n: weekCount })}</small></div>
-    </div>
-    <div class="week-dots" aria-label="${t('thisWeekAria')}">${dots}</div>`;
-
   renderProgress();
-
-  // Hero
-  const r = suggestion();
-  const hero = $('#hero');
-  hero.innerHTML = `
-    <button class="hero ripple" data-hue style="--h:${r.hue}" data-open="${r.id}">
-      <div class="hero-body">
-        <span class="hero-title">${esc(r.title)}</span>
-        <span class="hero-meta">${minutes(r)} min · ${t('stretches', { n: r.items.length })}</span>
-        <span class="hero-play"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('start')}</span>
-      </div>
-      <div class="hero-fig"></div>
-    </button>`;
-  const hf = new Figure(heroStretch(r));
-  hero.querySelector('.hero-fig').appendChild(hf.svg);
-  animate(hf);
-  hero.querySelector('.hero-play').addEventListener('click', (e) => {
-    e.stopPropagation();
-    startRoutine(r.id);
-  });
-
+  renderQuickStarts();
   renderCollection();
   renderFlexCard();
 
@@ -239,39 +194,73 @@ function renderHome() {
   renderList();
 }
 
+/** Days with a session this week (Monday first). */
+function daysThisWeek() {
+  const days = new Set(log.filter(counts).map((x) => x.day));
+  const monday = new Date();
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  let n = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    if (days.has(dayKey(d))) n++;
+  }
+  return n;
+}
+
+// One tap to start: the Top 5 routine of each kind (the same kinds as today's bonus tiles).
+// The one that suits the time of day gets a soft outline.
+function renderQuickStarts() {
+  const now = suggestion();
+  const box = $('#quick-starts');
+  box.innerHTML = '';
+  for (const q of QUESTS) {
+    const r = ROUTINES.find((x) => x.cat === q.cat && x.top);
+    if (!r) continue;
+    const b = document.createElement('button');
+    b.className = `qs ripple${r.cat === now.cat ? ' now' : ''}`;
+    b.dataset.hue = '';
+    b.style.setProperty('--h', r.hue);
+    b.dataset.play = r.id;
+    b.setAttribute('aria-label', `${t('start')}: ${r.title}, ${minutes(r)} min`);
+    b.innerHTML = `
+      <span class="qs-text"><b>${esc(catOf(r.cat).label)}</b><small>${minutes(r)} min</small></span>
+      <span class="qs-play" aria-hidden="true"><span class="ms filled">play_arrow</span></span>
+      <span class="qs-fig" aria-hidden="true"></span>`;
+    b.querySelector('.qs-fig').appendChild(staticFig(heroStretch(r), 0.55));
+    box.appendChild(b);
+  }
+}
+
 function renderProgress() {
   const p = loadProfile();
   const lp = levelProgress(p.xp);
   const done = todaysCats(log, dayKey());
-  const x = dailyBonus(done);
-  const shown = bonusShownAt(done); // the value last seen: it grows to x on screen
   const order = [...done].filter((c) => QUESTS.some((q) => q.cat === c)); // in the order they were done today
+  const st = streak();
+  const streakPill = st ? `<span class="pc-streak" role="img" aria-label="${esc(`${t('days', { n: st })}, ${t('thisWeek', { n: daysThisWeek() })}`)}"><span aria-hidden="true" class="ms filled">local_fire_department</span>${st}</span>` : '';
   $('#progress-card').innerHTML = `
     <div class="pc-top">
       <img class="pc-icon" src="icons/icon.svg" width="52" height="52" alt="">
       <div class="pc-main">
-        <div class="pc-head"><b>${t('level', { n: lp.level })}</b>
+        <div class="pc-head"><b>${t('level', { n: lp.level })}</b>${streakPill}
           <button class="icon-btn ripple" id="btn-settings" aria-label="${esc(t('settings'))}"><span aria-hidden="true" class="ms">tune</span></button></div>
         <div class="pc-line"><small>${t('fibersStretched', { x: fmtBig(p.fibers) })}</small></div>
         <div class="pc-bar"><i style="width:${(lp.frac * 100).toFixed(1)}%"></i></div>
         <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small></div>
       </div>
     </div>
-    <div class="bonus${shown > 1 ? ' on' : ''}">
-      <div class="bonus-head"><span>${t('todayBonus')}</span><b class="bonus-x" id="bonus-x">×${fmtX(shown)}</b></div>
-      <div class="bonus-bar" aria-hidden="true"><i style="transform:scaleX(${(shown - 1) / (DAILY_STEP * QUESTS.length)})"></i></div>
-      <div class="quests" aria-label="${esc(t('questsAria'))}">
-        ${QUESTS.map((q) => questTile(q, order.indexOf(q.cat) + 1)).join('')}
-      </div>
+    <div class="quests" style="--n:${QUESTS.length}" role="img" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}`)}">
+      ${QUESTS.map((q) => questTile(q, celebrating(done, q.cat) ? 0 : order.indexOf(q.cat) + 1)).join('')}
     </div>`;
   celebrateBonus(done);
 }
 
-/** A quest tile. `lv` = its place in today's order (0 = not done): the 1st done lights up plainly,
- *  the 2nd glows with a shine, the 3rd gets the full warm treatment, so the day builds up. */
+/** A bonus tile. `lv` = its place in today's order (0 = not done yet). The day builds up: the 1st
+ *  lights up plainly, the 2nd already shines, the 3rd turns gold, the 4th gets the full show. */
 function questTile(q, lv) {
-  const fx = lv === 3 ? '<i class="q-spark" aria-hidden="true"></i><i class="q-spark" aria-hidden="true"></i><i class="q-spark" aria-hidden="true"></i>' : '';
-  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${q.label}</span>${fx}</div>`;
+  const sparks = lv >= 3 ? '<i class="q-spark" aria-hidden="true"></i>'.repeat(lv === 4 ? 5 : 3) : '';
+  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${esc(catOf(q.cat).label)}</span>${sparks}</div>`;
 }
 
 // The daily bonus grows with each kind of routine done today. When it has grown since the home
@@ -287,8 +276,8 @@ function bonusSeen() {
   return new Set(v && v.day === dayKey() && Array.isArray(v.cats) ? v.cats : []);
 }
 const freshCats = (done, seen) => [...done].filter((c) => !seen.has(c) && QUESTS.some((q) => q.cat === c));
-/** The bonus the card starts at: the last value seen when there's a rise to show, else the real one. */
-const bonusShownAt = (done) => (!reduceMotion() && freshCats(done, bonusSeen()).length ? dailyBonus(bonusSeen()) : dailyBonus(done));
+/** True while a tile done since the home screen was last seen waits to light up in front of you. */
+const celebrating = (done, cat) => !reduceMotion() && freshCats(done, bonusSeen()).includes(cat);
 let bonusTimer = 0;
 function celebrateBonus(done) {
   clearTimeout(bonusTimer); // the card was redrawn: only the latest one celebrates
@@ -300,33 +289,36 @@ function celebrateBonus(done) {
     const fresh = freshCats(done, seen);
     if (!fresh.length) return;
     writeJSON(BONUS_SEEN, { day, cats: [...done] });
-    const el = $('#bonus-x');
-    if (!el || reduceMotion()) return;
-    const from = dailyBonus(seen), to = dailyBonus(done), t0 = performance.now();
-    const bar = $('.bonus-bar i');
-    if (bar) bar.style.transform = `scaleX(${(to - 1) / (DAILY_STEP * QUESTS.length)})`; // grows (CSS transition)
-    el.closest('.bonus')?.classList.add('on');
-    const step = (now) => {
-      const k = Math.min(1, (now - t0) / 900);
-      el.textContent = `×${fmtX(Math.round((from + (to - from) * (1 - (1 - k) ** 3)) * 100) / 100)}`;
-      if (k < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-    el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25)', offset: 0.35 }, { transform: 'scale(1)' }], { duration: 700, easing: 'ease-out' });
-    for (const c of fresh) $(`.quest[data-cat="${c}"]`)?.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)', offset: 0.4 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
-    const head = el.parentElement;
-    for (let i = 0; i < 7; i++) {
-      const s = document.createElement('i');
-      s.className = 'bonus-spark';
-      s.style.setProperty('--a', `${-160 + i * 23}deg`);
-      s.style.animationDelay = `${i * 40}ms`;
-      head.appendChild(s);
-      setTimeout(() => s.remove(), 1400);
+    if (reduceMotion()) return;
+    const order = [...done].filter((c) => QUESTS.some((q) => q.cat === c));
+    const box = $('.quests');
+    if (!box) return;
+    for (const c of fresh) {
+      const old = box.querySelector(`.quest[data-cat="${c}"]`);
+      if (!old) continue;
+      const lv = order.indexOf(c) + 1;
+      const tmp = document.createElement('div');
+      tmp.innerHTML = questTile(QUESTS.find((q) => q.cat === c), lv);
+      const tile = tmp.firstElementChild;
+      old.replaceWith(tile);
+      // It pops in a little bigger the higher it is, and throws out a ring of sparks.
+      tile.animate([{ transform: 'scale(.82)', filter: 'brightness(1.8)' }, { transform: `scale(${1.04 + lv * 0.03})`, filter: 'brightness(1.25)', offset: 0.45 }, { transform: 'scale(1)', filter: 'none' }], { duration: 650 + lv * 80, easing: 'ease-out' });
+      const cx = tile.offsetLeft + tile.offsetWidth / 2, cy = tile.offsetTop + tile.offsetHeight / 2;
+      const n = 4 + lv * 3;
+      for (let i = 0; i < n; i++) {
+        const sp = document.createElement('i');
+        sp.className = `bonus-spark${lv >= 3 ? ' gold' : ''}`;
+        sp.style.left = `${cx}px`; sp.style.top = `${cy}px`;
+        sp.style.setProperty('--a', `${(360 / n) * i + Math.random() * 20}deg`);
+        sp.style.setProperty('--d', `${30 + lv * 9 + Math.random() * 10}px`);
+        sp.style.animationDelay = `${120 + i * 18}ms`;
+        box.appendChild(sp);
+        setTimeout(() => sp.remove(), 1600);
+      }
     }
     haptics.buzz(20);
   }, 450);
 }
-
 
 function renderCollection() {
   const p = loadProfile();
@@ -607,41 +599,6 @@ function renderList() {
     b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
     list.appendChild(b);
   }
-  renderRanking();
-}
-
-function renderRanking() {
-  const box = $('#ranking');
-  const cat = catOf(activeCat);
-  if (activeCat === 'all') {
-    box.innerHTML = `<div class="rank-hint"><span aria-hidden="true" class="ms">leaderboard</span><span>${t('rankHint')}</span></div>`;
-    return;
-  }
-  const rows = RANKINGS[activeCat];
-  const top = ROUTINES.find((r) => r.cat === activeCat && r.top);
-  box.innerHTML = `
-    <div class="rank-head" data-hue style="--h:${cat.hue}">
-      <div><h2>${esc(t('rankTitle', { cat: cat.label }))}</h2><p>${t('rankSub', { title: esc(top.title) })}</p></div>
-    </div>
-    <ol class="rank-list" data-hue style="--h:${cat.hue}"></ol>`;
-  const ol = box.querySelector('.rank-list');
-  rows.forEach(([id, why], i) => {
-    const s = STRETCHES[id];
-    const li = document.createElement('li');
-    li.className = `rank-row${i < 5 ? ' is-top' : ''}`;
-    li.innerHTML = `
-      <span class="rank-n">${i + 1}</span>
-      <div class="rank-thumb"></div>
-      <div class="rank-text"><b>${esc(s.name)}</b><small>${esc(why)}</small></div>`;
-    li.querySelector('.rank-thumb').appendChild(staticFig(s, 0.5));
-    ol.appendChild(li);
-    if (i === 4) {
-      const sep = document.createElement('li');
-      sep.className = 'rank-sep';
-      sep.innerHTML = `<button class="btn tonal ripple" data-play="${top.id}"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('playTop5', { m: minutes(top) })}</button>`;
-      ol.appendChild(sep);
-    }
-  });
 }
 
 $('#chips').addEventListener('click', (e) => {
