@@ -2,10 +2,10 @@
 //
 //   node scripts/record-voice.mjs --audition      one sample per candidate voice -> dist/voice-audition.html
 //   node scripts/record-voice.mjs [en de ...]     record all lines (all languages, or the ones listed)
-//   node scripts/record-voice.mjs --compress      re-compress recordings saved before compression existed
+//   node scripts/record-voice.mjs --compress      re-compress recordings saved at a higher bitrate
 //
-// Each recording is re-compressed with ffmpeg to 24 kbit/s Opus: Azure's own Opus is about 65 kbit/s,
-// almost three times the size, and plain speech sounds the same at 24. Needs ffmpeg on PATH.
+// Each recording is re-compressed with ffmpeg to 16 kbit/s Opus: Azure's own Opus is about 65 kbit/s,
+// four times the size, and plain speech still sounds clear at 16. Needs ffmpeg on PATH.
 //
 // The key is read from ~/.azure-speech.env (AZURE_SPEECH_KEY=..., AZURE_SPEECH_REGION=...), a file
 // outside the repo, and is never printed. Recordings go to voice/<lang>/<hash>.ogg with an
@@ -65,7 +65,7 @@ async function synth(auth, text, speechLang, v) {
 }
 
 // ---- compression ----
-const BITRATE = '24k';
+const BITRATE = '16k'; // speech stays clear; about a third smaller than 24k
 function compress(ogg) {
   const out = spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-i', 'pipe:0', '-c:a', 'libopus', '-b:a', BITRATE, '-vbr', 'on', '-application', 'voip', '-map_metadata', '-1', '-f', 'ogg', 'pipe:1'], { input: ogg, maxBuffer: 64 << 20 });
   if (out.status !== 0 || !out.stdout?.length) throw new Error(`ffmpeg failed: ${out.stderr?.toString().slice(0, 200) || out.error?.message}`);
@@ -83,7 +83,7 @@ async function recompressAll() {
     for (const f of readdirSync(dir)) {
       if (!f.endsWith('.ogg')) continue;
       const path = new URL(f, dir);
-      if (bitrateOf(path) <= 40000) continue; // already compressed
+      if (bitrateOf(path) <= 20000) continue; // already compressed
       writeFileSync(path, compress(readFileSync(path)));
       n++;
     }

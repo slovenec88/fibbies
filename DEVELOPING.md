@@ -97,7 +97,7 @@ The voice guide plays recordings made with Azure neural text-to-speech, one gent
 - `voice/<lang>/index.json` maps each exact text to its recording (`<hash>.ogg`, Ogg Opus).
 - `js/voice-clips.js` plays them. Once the voice is used, the service worker keeps a language's recordings in a cache that outlives app updates.
 
-Recording needs [ffmpeg](https://ffmpeg.org/) on `PATH`: each line is re-compressed to 24 kbit/s Opus, about a third of Azure's own size. That keeps all 7 languages at about 18 MB.
+Recording needs [ffmpeg](https://ffmpeg.org/) on `PATH`: each line is re-compressed to 16 kbit/s Opus, about a quarter of Azure's own size. That keeps all 7 languages at about 15 MB, about 2 MB each.
 
 To record, put a Speech resource key in `~/.azure-speech.env`. The file lives outside the repo, and the script never prints the key:
 

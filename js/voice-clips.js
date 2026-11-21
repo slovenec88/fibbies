@@ -39,7 +39,7 @@ export function clipFor(text) {
   return file ? `voice/${lang}/${file}` : null;
 }
 
-// Once the voice is used, download the language's recordings in the background (about 1.5 MB),
+// Once the voice is used, download the language's recordings in the background (about 2 MB),
 // so it keeps working offline. Only with a service worker: it keeps them in a cache that outlives
 // app updates (the Android app has the files built in, so it needs nothing). Files the index no
 // longer lists are dropped from that cache.
