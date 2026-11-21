@@ -976,8 +976,9 @@ function renderDone() {
     const rw = res.reward;
     const left = rw.kindsLeft.map((c) => catOf(c).label).join(', ');
     v.innerHTML = `
-      <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned">
-        <span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span>
+      <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned${reduceMotion() ? '' : ' waiting'}">
+        <button class="rw-done-btn" aria-label="${esc(t('wellDone'))}"><span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span></button>
+        <span aria-hidden="true" class="ms filled rw-done-tap">touch_app</span>
         <h1>${t('wellDone')}</h1>
         <p class="rw-earned-n">${esc(t('fibersStretched', { x: `+${fmtBig(rw.total)}` }))}</p>
         <p>${esc(left ? t('noChestNext', { kinds: left }) : t('noChestToday'))}</p>
@@ -988,7 +989,12 @@ function renderDone() {
       </div></div>`;
     $('#rw-again').onclick = again;
     $('#rw-home').onclick = () => replace('#/');
-    celebrateEarned(v, rw.total);
+    // It waits for a tap, like a chest, so the moment isn't spent while the screen slides in.
+    const box = v.querySelector('.rw-earned');
+    if (box.classList.contains('waiting')) {
+      box.addEventListener('click', () => { box.classList.remove('waiting'); celebrateEarned(v, rw.total); }, { once: true });
+      v.querySelector('.rw-done-btn').focus({ preventScroll: true });
+    }
     return;
   }
   const st = streak();
@@ -1010,7 +1016,7 @@ function celebrateEarned(v, total) {
   const timers = [];
   rewardPlayer = { stop() { timers.forEach(clearTimeout); fxs.stop(); } };
   icon.animate([
-    { transform: 'scale(0) rotate(-40deg)', opacity: 0 },
+    { transform: 'scale(.6) rotate(-40deg)', opacity: 0.4 },
     { transform: 'scale(1.25) rotate(8deg)', opacity: 1, offset: 0.55 },
     { transform: 'scale(1) rotate(0)', opacity: 1 },
   ], { duration: 700, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'backwards' });
@@ -1018,11 +1024,12 @@ function celebrateEarned(v, total) {
     const r = icon.getBoundingClientRect();
     const x = r.left + r.width / 2, y = r.top + r.height / 2;
     fxs.ring(x, y, { color: '#ffffff', speed: 650, width: 7, life: 0.45 });
+    fxs.ring(x, y, { color: '#7ee0b5', speed: 420, width: 5, life: 0.6 });
     fxs.burst(x, y, 26, ['band', 'spark', 'star'], 0.8);
     fxs.twinkles(6, 0.7);
     fx.pop();
     haptics.buzz(30);
-  }, 320));
+  }, 200));
   // The fibers count up from zero.
   let t0 = null;
   const step = (now) => {

@@ -758,7 +758,14 @@ html:has(dialog[open]) { overflow: hidden; }
 .rw-nochest .rw-chest { filter: grayscale(.6) brightness(.8); }
 .rw-earned .rw-done-icon { position: relative; z-index: 3; font-size: 96px; color: var(--primary); animation: done-glow 2.4s ease-in-out .8s infinite; }
 @keyframes done-glow { 0%, 100% { filter: drop-shadow(0 0 6px rgba(126, 224, 181, .35)); } 50% { filter: drop-shadow(0 0 22px rgba(126, 224, 181, .9)); } }
-.rw-earned h1, .rw-earned p, .rw-earned .rw-actions { position: relative; z-index: 3; }
+.rw-earned h1, .rw-earned p, .rw-earned .rw-actions { position: relative; z-index: 3; transition: opacity .4s .25s, transform .5s .25s cubic-bezier(.2,1.4,.4,1); }
+.rw-done-btn { position: relative; z-index: 3; display: grid; place-items: center; padding: 8px; border-radius: 50%; color: inherit; }
+.rw-done-tap { display: none; font-size: 34px; color: #fff; opacity: .85; margin-top: -6px; }
+/* Waiting for the tap: a dim check breathing, a small hand under it, the rest hidden */
+.rw-earned.waiting .rw-done-icon { opacity: .45; transform: scale(.8); animation: done-wait 1.3s ease-in-out infinite; }
+@keyframes done-wait { 0%, 100% { transform: scale(.8); } 50% { transform: scale(.9); } }
+.rw-earned.waiting .rw-done-tap { display: block; animation: pulse 1s ease-in-out infinite; }
+.rw-earned.waiting h1, .rw-earned.waiting p, .rw-earned.waiting .rw-actions { opacity: 0; transform: translateY(14px); pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .rw-earned .rw-done-icon { animation: none; } }
 .rw-earned .rw-earned-n { font-size: 22px; font-weight: 800; color: #ffd166; }
 .rw-nochest .rw-chest::after { content: none; }
