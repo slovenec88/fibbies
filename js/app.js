@@ -170,12 +170,12 @@ let activeCat = readJSON('limber.cat', 'all');
 function suggestion() {
   const h = new Date().getHours();
   const done = todaysCats(log, dayKey());
-  if (done.has('before') && !done.has('after')) return { r: routineById('top5-after'), why: t('sug.cooldown') };
-  if (done.has('after') && !done.has('evening') && h >= 18) return { r: routineById('top5-evening'), why: t('sug.evening') };
-  if (h < 11) return { r: routineById('top5-before'), why: t('sug.morning') };
-  if (h < 16) return { r: routineById('five-minute-fix'), why: t('sug.midday') };
-  if (h < 20) return { r: routineById('top5-after'), why: t('sug.after') };
-  return { r: routineById('top5-evening'), why: t('sug.night') };
+  if (done.has('before') && !done.has('after')) return routineById('top5-after');
+  if (done.has('after') && !done.has('evening') && h >= 18) return routineById('top5-evening');
+  if (h < 11) return routineById('top5-before');
+  if (h < 16) return routineById('five-minute-fix');
+  if (h < 20) return routineById('top5-after');
+  return routineById('top5-evening');
 }
 
 function renderHome() {
@@ -207,12 +207,11 @@ function renderHome() {
   renderProgress();
 
   // Hero
-  const { r, why } = suggestion();
+  const r = suggestion();
   const hero = $('#hero');
   hero.innerHTML = `
     <button class="hero ripple" data-hue style="--h:${r.hue}" data-open="${r.id}">
       <div class="hero-body">
-        <span class="hero-kicker"><span aria-hidden="true" class="ms filled">${r.icon}</span>${esc(why)}</span>
         <span class="hero-title">${esc(r.title)}</span>
         <span class="hero-meta">${minutes(r)} min · ${t('stretches', { n: r.items.length })}</span>
         <span class="hero-play"><span aria-hidden="true" class="ms filled">play_arrow</span>${t('start')}</span>
@@ -1036,24 +1035,6 @@ $('#set-scale').onclick = (e) => {
 };
 
 // ---------- First launch: a quiet offer to change the language ----------
-// The app guesses the language from the phone. The first time it opens, a small line at the top
-// offers to change it; it never comes back after that first visit.
-const LANG_HINT_KEY = 'fibbies.lang-hint-seen'; // per device, like the language itself
-function showLangHint() {
-  let seen = true;
-  try { seen = !!localStorage.getItem(LANG_HINT_KEY); localStorage.setItem(LANG_HINT_KEY, '1'); } catch { /* ignore */ }
-  if (seen || log.length) return; // only for someone opening the app for the very first time
-  $('#lang-hint-name').textContent = LANGS.find((l) => l.id === getLang())?.label || '';
-  $('#lang-hint').hidden = false;
-}
-const hideLangHint = () => { $('#lang-hint').hidden = true; };
-$('#lang-hint-close').onclick = hideLangHint;
-$('#lang-hint-pick').onclick = () => {
-  hideLangHint();
-  openSettings();
-  $('#sec-lang').scrollIntoView({ block: 'start' });
-};
-
 // ---------- Router ----------
 // pushState-based navigation; state.d is our depth so in-app "back" can pop real history.
 const depth = () => (window.history.state && window.history.state.d) || 0;
@@ -1207,26 +1188,32 @@ function dragToClose(dlg, canClose = () => true) {
     const r = dlg.getBoundingClientRect();
     if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
   });
-  let y0 = 0, t0 = 0, dy = 0, active = false, dragging = false;
+  let x0 = 0, y0 = 0, t0 = 0, dy = 0, active = false, dragging = false, pointer = null;
   const reset = () => { dlg.style.transition = ''; dlg.style.translate = ''; };
+  const onHandle = (e) => !!e.target.closest('.sheet-handle, .sheet-title');
+  const start = ({ clientX, clientY }) => {
+    x0 = clientX; y0 = clientY; t0 = performance.now(); dy = 0; active = true; dragging = false;
+  };
   dlg.addEventListener('touchstart', (e) => {
-    active = dragging = false;
-    if (e.touches.length !== 1 || !canClose()) return;
-    const onHandle = !!e.target.closest('.sheet-handle, .sheet-title');
-    if (!onHandle && dlg.scrollTop > 0) return;
-    y0 = e.touches[0].clientY; t0 = performance.now(); dy = 0; active = true;
+    if (pointer !== null || onHandle(e) || e.touches.length !== 1 || !canClose() || dlg.scrollTop > 0) return;
+    start(e.touches[0]);
   }, { passive: true });
-  dlg.addEventListener('touchmove', (e) => {
+  const move = ({ clientX, clientY }, e) => {
     if (!active) return;
-    dy = e.touches[0].clientY - y0;
+    dy = clientY - y0;
     if (!dragging) {
-      if (dy < -8) { active = false; return; } // scrolling up: leave it to the sheet
+      if (dy < 0 || Math.abs(clientX - x0) > Math.max(dy, 8)) { active = false; return; }
+      // Claim a downward pull at scrollTop 0 before the browser starts a native scroll.
+      if (dy > 0 && e.cancelable) e.preventDefault();
       if (dy < 8) return; // a tap that wobbles a little is still a tap
       dragging = true;
     }
-    e.preventDefault(); // the sheet follows the finger instead of scrolling
+    if (e.cancelable) e.preventDefault();
     dlg.style.transition = 'none';
     dlg.style.translate = `0 ${Math.max(0, dy - 8)}px`;
+  };
+  dlg.addEventListener('touchmove', (e) => {
+    if (pointer === null && e.touches.length === 1) move(e.touches[0], e);
   }, { passive: false });
   const end = () => {
     if (!active) return;
@@ -1243,8 +1230,27 @@ function dragToClose(dlg, canClose = () => true) {
       setTimeout(reset, 230);
     }
   };
-  dlg.addEventListener('touchend', end);
-  dlg.addEventListener('touchcancel', end);
+  const cancel = () => { active = dragging = false; reset(); };
+  dlg.addEventListener('touchend', () => { if (pointer === null) end(); });
+  dlg.addEventListener('touchcancel', () => { if (pointer === null) cancel(); });
+  // The handle owns its pointer so a mouse or finger can keep dragging outside the sheet.
+  dlg.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || !e.isPrimary || !onHandle(e) || !canClose()) return;
+    pointer = e.pointerId;
+    dlg.setPointerCapture(pointer);
+    start(e);
+  });
+  dlg.addEventListener('pointermove', (e) => { if (pointer === e.pointerId) move(e, e); });
+  dlg.addEventListener('pointerup', (e) => {
+    if (pointer !== e.pointerId) return;
+    pointer = null;
+    end();
+  });
+  dlg.addEventListener('lostpointercapture', (e) => {
+    if (pointer !== e.pointerId) return;
+    pointer = null;
+    cancel();
+  });
 }
 for (const s of [sheet, flexSheet, albumSheet]) dragToClose(s);
 dragToClose(fibSheet, () => !merging);
@@ -1355,7 +1361,6 @@ try {
 } catch { /* ignore */ }
 setSoundIcon();
 route();
-if (currentView === 'home') showLangHint();
 window.__booted = true;
 native.hideSplash();
 try {

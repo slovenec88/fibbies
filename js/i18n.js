@@ -55,12 +55,6 @@ const EN = {
   // home
   suggestedNow: 'Suggested now',
   footnote: 'Stretch gently. Mild tension is good, pain is not.',
-  'sug.cooldown': "Done training? Grow today's bonus.",
-  'sug.evening': 'Finish the day strong',
-  'sug.morning': 'Working out? Warm up first',
-  'sug.midday': 'A quick midday reset',
-  'sug.after': 'Just finished a workout?',
-  'sug.night': 'Wind down for the night',
   weekLetters: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
   days: ({ n }) => `${n} ${en(n, 'day', 'days')}`,
   thisWeek: ({ n }) => `${n} this week`,
@@ -184,7 +178,6 @@ const EN = {
   'm.lucky': 'LUCKY STRETCH!',
   // settings
   'voiceSection': 'Voice',
-  'langHint': 'Not your language?',
   voiceGuidance: 'Voice guidance',
   voiceGuidanceSub: 'Spoken names, tips and side switches',
   holdLength: 'Hold length',

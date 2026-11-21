@@ -8,7 +8,6 @@ export function setupInstallPrompt() {
   if (isNative || navigator.standalone || standalone.matches || readJSON(DISMISSED, false)) return;
 
   const card = document.getElementById('install-app');
-  const languageHint = document.getElementById('lang-hint');
   const button = document.getElementById('install-fibbies');
   const help = document.getElementById('install-help');
   const appleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
@@ -23,7 +22,6 @@ export function setupInstallPrompt() {
 
   const refresh = () => {
     card.hidden = installed || standalone.matches || dismissed || !(offer || hasInstructions);
-    languageHint.classList.toggle('install-priority', !card.hidden);
     if (hasInstructions && !offer) {
       button.setAttribute('aria-controls', help.id);
       button.setAttribute('aria-expanded', String(!help.hidden));
