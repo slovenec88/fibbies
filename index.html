@@ -23,12 +23,7 @@
     <section id="view-home" class="view" data-view="home" aria-label="Home" data-i18n-aria="home">
       <h1 class="visually-hidden">Fibbies</h1>
       <div class="install-app" id="install-app" hidden>
-        <button class="btn filled ripple" id="install-fibbies" type="button" data-i18n="installFibbies">Install Fibbies</button>
-        <button class="icon-btn ripple" id="install-dismiss" type="button" aria-label="Dismiss install suggestion" data-i18n-aria="installDismiss"><span aria-hidden="true" class="ms">close</span></button>
-        <p id="install-help" hidden>
-          <span id="install-help-apple" data-i18n="installHelp" hidden>Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.</span>
-          <span id="install-help-android" data-i18n="installHelpAndroid" hidden>Open your browser menu and choose Install app or Add to Home screen.</span>
-        </p>
+        <button class="btn filled ripple" id="install-fibbies" type="button"><span aria-hidden="true" class="ms">install_mobile</span><span data-i18n="installFibbies">Install Fibbies</span></button>
       </div>
       <div class="progress-card" id="progress-card"></div>
       <div class="week-card" id="week-card"></div>
@@ -100,6 +95,21 @@
   <dialog class="sheet settings-sheet" id="sheet-settings" aria-label="Settings" data-i18n-aria="settings">
     <div class="sheet-handle" aria-hidden="true"></div>
     <h2 class="sheet-title" data-i18n="settings">Settings</h2>
+
+    <div class="m3-group" id="install-settings" hidden>
+      <button class="m3-item ripple" id="set-install" type="button" hidden>
+        <span class="m3-lead"><span aria-hidden="true" class="ms">install_mobile</span></span>
+        <span class="li-text"><b data-i18n="installFibbies">Install Fibbies</b></span>
+      </button>
+      <div class="m3-item" id="install-help" hidden>
+        <span class="m3-lead"><span aria-hidden="true" class="ms">install_mobile</span></span>
+        <span class="li-text">
+          <b data-i18n="installFibbies">Install Fibbies</b>
+          <small id="install-help-apple" data-i18n="installHelp" hidden>Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.</small>
+          <small id="install-help-android" data-i18n="installHelpAndroid" hidden>Open your browser menu and choose Install app or Add to Home screen.</small>
+        </span>
+      </div>
+    </div>
 
     <h3 class="m3-section" data-i18n="voiceSection">Voice</h3>
     <div class="m3-group">

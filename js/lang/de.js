@@ -3,7 +3,6 @@ const pl = (n, one, many) => (n === 1 ? one : many);
 
 export const UI = {
   installFibbies: "Fibbies installieren",
-  installDismiss: "Installationshinweis schließen",
   installHelp: "Öffne Teilen, wähle Zum Home-Bildschirm und tippe auf Hinzufügen. Aktiviere Als Web-App öffnen, falls die Option angezeigt wird.",
   installHelpAndroid: "Öffne das Browsermenü und wähle App installieren oder Zum Startbildschirm hinzufügen.",
   title: "Fibbies · Dehnen & Beute",

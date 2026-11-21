@@ -4,7 +4,6 @@ const pl = (n, one, many) => (Math.abs(n) < 2 ? one : many);
 
 export const UI = {
   installFibbies: "Installer Fibbies",
-  installDismiss: "Fermer la suggestion d’installation",
   installHelp: "Ouvre le menu Partager, choisis Sur l’écran d’accueil, puis touche Ajouter. Active Ouvrir comme app web si cette option apparaît.",
   installHelpAndroid: "Ouvre le menu du navigateur et choisis Installer l’application ou Ajouter à l’écran d’accueil.",
   title: "Fibbies · Étire-toi et gagne",

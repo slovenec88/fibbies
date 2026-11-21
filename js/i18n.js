@@ -48,7 +48,6 @@ const en = (n, one, many) => (n === 1 ? one : many);
 
 const EN = {
   installFibbies: "Install Fibbies",
-  installDismiss: "Dismiss install suggestion",
   installHelp: "Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.",
   installHelpAndroid: "Open your browser menu and choose Install app or Add to Home screen.",
   title: 'Fibbies · Stretch & Loot',

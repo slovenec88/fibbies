@@ -118,13 +118,9 @@ h1, h2, h3, p { margin: 0; }
 
 /* ========= Top of the home screen ========= */
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.install-app {
-  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px;
-  margin: 4px 0 12px; padding: 8px 12px; border-radius: 24px;
-  background: var(--surface-container); color: var(--on-surface-variant);
-}
-.install-app > .btn { justify-self: start; padding-inline: 16px; }
-.install-app p { grid-column: 1 / -1; margin: 0 4px 4px; font-size: 14px; }
+.install-app { margin: 4px 0 12px; }
+.install-app .btn { width: 100%; gap: 8px; }
+#install-settings { margin-top: 14px; }
 /* ========= Buttons ========= */
 .icon-btn {
   width: 48px; height: 48px; border-radius: 50%; display: inline-grid; place-items: center;

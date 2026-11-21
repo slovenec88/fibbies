@@ -7,7 +7,6 @@ const sl = (n, one, two, few, many) => {
 
 export const UI = {
   installFibbies: "Namesti Fibbies",
-  installDismiss: "Zapri predlog za namestitev",
   installHelp: "Odpri Deli, izberi Dodaj na začetni zaslon in tapni Dodaj. Če je na voljo, vklopi Odpri kot spletno aplikacijo.",
   installHelpAndroid: "Odpri meni brskalnika in izberi Namesti aplikacijo ali Dodaj na začetni zaslon.",
   title: 'Fibbies · Raztezanje in plen',
