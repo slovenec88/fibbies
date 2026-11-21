@@ -470,8 +470,8 @@ export const STRETCHES = {
       'Keep the elbow straight and the shoulder relaxed. Great after a lot of typing.',
     ],
   },
-  // ---- Strength: simple, safe moves with the biggest payoff. `strength` keeps their set length
-  // fixed (Flex 60s only lengthens stretches). ----
+  // ---- Strength: simple, safe moves with the biggest payoff. `strength` makes Max lengthen them
+  // like sets (×1.5) rather than like stretches (60 s holds). ----
   airSquat: {
     name: 'Bodyweight Squat', target: 'Thighs · Glutes', view: 'side', period: 3, dynamic: true, strength: true,
     a: { h: [100, 104], t: -90, n: -90, hN: [152, 60], hF: [148, 62], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
@@ -832,12 +832,13 @@ export const SWITCH_SECS = 4;
 export const REST_SECS = 6;
 
 /**
- * Hold length for one stretch. `scale` is a multiplier (0.8, 1, 1.25) or 'flex':
- * Flexibility mode brings every static hold up to 60 s per side (ACSM's ~60 s per
- * muscle group) and leaves moving warm-up drills and strength sets at their normal length.
+ * Hold length for one stretch. `scale` is a multiplier (0.8, 1, 1.25) or 'flex' (shown as "Max"):
+ * the longest sessions. Every static hold comes up to 60 s per side (ACSM's ~60 s per muscle group),
+ * strength sets get 50% longer, and moving warm-up drills keep their normal length.
+ * `inStrength`: the move is part of a strength routine (a bridge there is a set, not a drill).
  */
-export function holdSecs(stretch, secs, scale = 1) {
-  if (scale === 'flex') return stretch.dynamic || stretch.strength ? secs : Math.max(60, secs);
+export function holdSecs(stretch, secs, scale = 1, inStrength = false) {
+  if (scale === 'flex') return stretch.strength || inStrength ? Math.round((secs * 1.5) / 5) * 5 : stretch.dynamic ? secs : Math.max(60, secs);
   return Math.max(10, Math.round(secs * (Number(scale) || 1)));
 }
 
@@ -845,7 +846,7 @@ export function buildTimeline(routine, scale = 1) {
   const moves = [];
   routine.items.forEach(([id, secs]) => {
     const s = STRETCHES[id];
-    const dur = holdSecs(s, secs, scale);
+    const dur = holdSecs(s, secs, scale, routine.cat === 'strength');
     if (s.sided) {
       moves.push({ id, stretch: s, side: 'L', secs: dur });
       moves.push({ id, stretch: s, side: 'R', secs: dur });

@@ -57,7 +57,7 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 - **Material You design** that follows your phone's light or dark mode.
 - **Works offline.** Install it to your home screen as a web app, or use the Android app.
 - **7 languages,** spoken cues included: English, German, Spanish, French, Italian, Portuguese and Slovenian.
-- **Safety first:** a short note on how to stretch safely, and hold lengths you can change. *Flex 60s* mode stretches every still hold to 60 seconds a side when you're working on flexibility.
+- **Safety first:** a short note on how to stretch safely, and a session length you can change for stretches and exercises alike. *Max* makes the longest sessions: every still stretch held 60 seconds a side for flexibility, and strength exercises 50% longer.
 
 ---
 

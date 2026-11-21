@@ -88,7 +88,7 @@ const round2 = (x) => Math.round(x * 100) / 100;
  * @param o.holdSecs    planned seconds of stretching (sum of holds)
  * @param o.ratio       0..1 how much of the session was actually done
  * @param o.skips       number of skipped stretches
- * @param o.scale       hold-length setting
+ * @param o.scale       session-length setting
  * @param o.priorToday  Set of categories already done today (before this session)
  * @param o.firstToday  true if this is the first session today
  * @param o.streak      streak in days, including today

@@ -716,7 +716,7 @@ function renderDetail(r) {
   const ml = v.querySelector('.move-list');
   for (const [id, secs] of r.items) {
     const s = STRETCHES[id];
-    const d = holdSecs(s, secs, settings.scale);
+    const d = holdSecs(s, secs, settings.scale, r.cat === 'strength');
     const row = document.createElement('div');
     row.className = 'move-row';
     row.innerHTML = `
