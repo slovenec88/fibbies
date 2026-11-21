@@ -129,9 +129,16 @@ export const UI = {
   "m.lucky": "ÉTIREMENT CHANCEUX !",
   'q.before': "Avant",
   'q.after': "Après",
-  'q.evening': "Soir",
+  'q.evening': "Détente",
   'q.strength': "Force",
   doneToday: "fait",
+  stretchingTitle: "Étirements",
+  'focus.all': "Tout",
+  'focus.full': "Corps entier",
+  'focus.back': "Dos",
+  'focus.legs': "Jambes",
+  'focus.upper': "Bras et épaules",
+  'focus.core': "Gainage",
   "voiceSection": "Voix",
   voiceGuidance: "Guidage vocal",
   voiceGuidanceSub: "Noms, conseils et changements de côté à voix haute",
@@ -209,6 +216,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Pompe contre le mur", "Pectoraux · Épaules · Bras", [
+      "Mains au mur à hauteur de poitrine, recule les pieds.",
+      "Plie les coudes pour amener la poitrine au mur, puis repousse.",
+      "Garde le corps droit comme une planche. Plus les pieds sont loin, plus c'est dur."]],
+    shoulderTaps: ["Touches d'épaule en planche", "Épaules · Gainage", [
+      "Planche haute, mains sous les épaules, pieds un peu écartés.",
+      "Lève une main pour toucher l'épaule opposée, puis change.",
+      "Garde les hanches immobiles, comme avec un verre d'eau sur le dos."]],
+    yRaise: ["Élévation en Y à plat ventre", "Haut du dos · Épaules", [
+      "À plat ventre, bras devant en Y, pouces vers le haut.",
+      "Serre les omoplates et décolle les bras du sol.",
+      "Nuque longue, regard vers le sol. Redescends lentement."]],
+    wallAngel: ["Anges au mur", "Haut du dos · Posture", [
+      "Dos, tête et bras contre le mur, coudes pliés en W.",
+      "Fais glisser les bras vers le haut en Y, toujours contre le mur.",
+      "Redescends et serre les omoplates."]],
+    singleLegBridge: ["Pont sur une jambe", "Fessiers · Ischio-jambiers", [
+      "Sur le dos, un pied à plat, l'autre jambe tendue en l'air.",
+      "Pousse dans le talon et monte les hanches, puis redescends lentement.",
+      "Garde les hanches à niveau. Deux pieds au sol, c'est plus facile."]],
+    sideLunge: ["Fente latérale", "Adducteurs · Fessiers · Jambes", [
+      "Pieds écartés, orteils devant. Pousse les hanches en arrière et sur le côté.",
+      "Plie ce genou, l'autre jambe reste tendue.",
+      "Repousse vers le centre. Poitrine haute tout du long."]],
+    reverseCrunch: ["Crunch inversé", "Bas des abdos · Gainage", [
+      "Sur le dos, bras le long du corps, genoux pliés au-dessus des hanches.",
+      "Enroule les hanches en ramenant les genoux vers la poitrine.",
+      "Redescends lentement, sans élan. Petit et contrôlé, c'est parfait."]],
     airSquat: ["Squat", "Cuisses · Fessiers", [
       "Pieds à largeur d'épaules. Descends les hanches en arrière, bras devant.",
       "Les genoux suivent les orteils, la poitrine reste haute.",
@@ -397,8 +432,13 @@ export const CONTENT = {
       "Avec l’autre main, ramène doucement les doigts vers toi.",
       "Coude tendu, épaule relâchée. Idéal après beaucoup de frappe au clavier."]],
   },
-  categories: { all: "Tout", after: "Après la séance", before: "Avant la séance", evening: "Soir", quick: "Rapide", strength: "Renforcement" },
+  categories: { all: "Tout", after: "Après la séance", before: "Avant la séance", evening: "Détente", quick: "Rapide", strength: "Renforcement" },
   routines: {
+    'full-body': ["Corps complet", "Un peu plus long et un peu plus dur : jambes, fessiers, poussée, épaules, gainage et dos d'un coup. Environ huit minutes."],
+    'upper-back': ["Haut du dos et posture", "Contre les épaules enroulées et le dos de bureau : renforce les muscles qui te tiennent droit."],
+    'glutes-hips': ["Fessiers et hanches", "Des fessiers et des hanches solides protègent les genoux et le dos. Ponts, fentes et chaise au mur, sans matériel."],
+    'arms-shoulders': ["Bras et épaules", "De la force de poussée et des épaules en forme, en commençant facile au mur jusqu'au sol."],
+    'core-basics': ["Gainage de base", "Un tronc solide sans abdos classiques : les mouvements lents et sûrs que les kinés enseignent en premier."],
     'runner-warmup': ["Échauffement course", "Mollets, chevilles et hanches prêts pour la route : léger, dynamique et rapide. Idéal avant une course ou un match."],
     'upper-warmup': ["Échauffement du haut du corps", "Épaules, haut du dos et colonne, prêts pour la muscu, l'escalade, la natation ou les sports de raquette."],
     'tight-hips': ["Hanches raides", "Des hanches bloquées après la course, le vélo ou la position assise : fléchisseurs, fessiers, aine et hanche externe."],

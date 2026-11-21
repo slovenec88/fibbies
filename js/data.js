@@ -583,135 +583,249 @@ export const STRETCHES = {
       'Squeeze your glutes to stand back up.',
     ],
   },
+  wallPushup: {
+    name: 'Wall Push-Up', target: 'Chest · Shoulders · Arms', view: 'side', period: 3, dynamic: true, strength: true,
+    props: [{ wall: 170 }],
+    a: { h: [111, 108], t: -72, n: -70, hN: [168, 84], hF: [168, 90], fN: [88, 180], fF: [84, 180] },
+    b: { h: [126, 114], t: -58, n: -54, hN: [168, 84], hF: [168, 90], fN: [88, 180], fF: [84, 180], ft: [40, 40] },
+    cues: [
+      'Hands on a wall at chest height, step your feet back.',
+      'Bend your elbows to bring your chest to the wall, then push away.',
+      'Keep your body straight like a plank. The further your feet, the harder.',
+    ],
+  },
+
+  shoulderTaps: {
+    name: 'Plank Shoulder Taps', target: 'Shoulders · Core', view: 'side', period: 2, dynamic: true, strength: true,
+    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    b: { h: [93, 147], t: -24, n: -20, hN: [136, 132], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    cues: [
+      'High plank, hands under your shoulders, feet a little apart.',
+      'Lift one hand to tap the opposite shoulder, then switch.',
+      'Keep your hips still, as if there were a glass of water on your back.',
+    ],
+  },
+
+  yRaise: {
+    name: 'Prone Y Raise', target: 'Upper back · Shoulders', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [80, 174], t: 0, n: 0, hN: [185, 175], hF: [181, 176], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
+    b: { h: [80, 174], t: -4, n: -8, hN: [182, 152], hF: [178, 155], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
+    cues: [
+      'Lie face down, arms reaching forward in a Y, thumbs up.',
+      'Squeeze your shoulder blades and lift your arms off the floor.',
+      'Keep your neck long and look at the floor. Lower slowly.',
+    ],
+  },
+
+  wallAngel: {
+    name: 'Wall Angels', target: 'Upper back · Posture', view: 'front', period: 4, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [138, 40], hF: [62, 40], fN: [110, 180], fF: [90, 180] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [142, 4], hF: [58, 4], fN: [110, 180], fF: [90, 180] },
+    cues: [
+      'Back, head and arms against a wall, elbows bent like a W.',
+      'Slide your arms up into a Y, keeping them touching the wall.',
+      'Slide back down and squeeze your shoulder blades together.',
+    ],
+  },
+
+  singleLegBridge: {
+    name: 'Single-Leg Bridge', target: 'Glutes · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
+    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [178, 140] },
+    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [182, 106] },
+    cues: [
+      'On your back, one foot flat, the other leg straight up off the floor.',
+      'Push through your heel and lift your hips, then lower slowly.',
+      'Keep your hips level. Two feet down makes it easier.',
+    ],
+  },
+
+  sideLunge: {
+    name: 'Side Lunge', target: 'Inner thighs · Glutes · Legs', view: 'front', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [108, 96], hF: [100, 98], fN: [126, 180], fF: [74, 180] },
+    b: { h: [114, 124], t: -84, n: -86, hN: [120, 116], hF: [112, 118], fN: [136, 180], fF: [56, 180] },
+    cues: [
+      'Feet wide, toes forward. Sit your hips back and to one side.',
+      'Bend that knee, keep the other leg straight.',
+      'Push back to the middle. Chest up the whole time.',
+    ],
+  },
+
+  reverseCrunch: {
+    name: 'Reverse Crunch', target: 'Lower abs · Core', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [120, 172], t: 180, n: 180, hN: [120, 176], hF: [118, 177], fN: [158, 134], fF: [156, 136] },
+    b: { h: [118, 164], t: 184, n: 184, hN: [120, 176], hF: [118, 177], fN: [126, 104], fF: [124, 106] },
+    cues: [
+      'On your back, arms by your sides, knees bent over your hips.',
+      'Curl your hips off the floor, bringing your knees toward your chest.',
+      'Lower slowly without swinging. Small and controlled is perfect.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
   { id: 'all', label: 'All', icon: 'apps' },
   { id: 'after', label: 'After workout', icon: 'fitness_center', hue: 165 },
   { id: 'before', label: 'Before workout', icon: 'bolt', hue: 45 },
-  { id: 'evening', label: 'Evening', icon: 'bedtime', hue: 290 },
+  { id: 'evening', label: 'Relax', icon: 'self_improvement', hue: 290 },
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
   { id: 'strength', label: 'Strength', icon: 'exercise', hue: 95 },
+];
+
+// The Strength section has its own filters: the whole body, or one area. Labels: t(`focus.${id}`).
+export const FOCUS = [
+  { id: 'all', icon: 'apps' },
+  { id: 'full', icon: 'accessibility_new' },
+  { id: 'back', icon: 'airline_seat_recline_extra' },
+  { id: 'legs', icon: 'directions_run' },
+  { id: 'upper', icon: 'fitness_center' },
+  { id: 'core', icon: 'adjust' },
 ];
 
 // items: [stretchId, seconds per side]
 export const ROUTINES = [
   {
-    id: 'top5-after', hero: 'quad', title: 'Top 5 After Workout', cat: 'after', hue: 165, icon: 'workspace_premium', top: true,
+    id: 'top5-after', hero: 'quad', title: 'Top 5 After Workout', cat: 'after', icon: 'workspace_premium', top: true,
     blurb: 'The five most effective, simplest stretches after exercise, as ranked from physical therapist and coaching advice. Hold each about 30 seconds while your muscles are still warm.',
     items: [['quad', 30], ['calf', 30], ['lunge', 30], ['fold', 40], ['pigeon', 35]],
   },
   {
-    id: 'post-run-reset', hero: 'lunge', title: 'Post-Workout Reset', cat: 'after', hue: 165, icon: 'fitness_center',
+    id: 'post-run-reset', hero: 'lunge', title: 'Post-Workout Reset', cat: 'after', icon: 'fitness_center',
     blurb: 'The full cooldown: the Top 5, then the deep calf, down dog and a calm finish.',
     items: [['quad', 30], ['calf', 30], ['lunge', 35], ['fold', 40], ['pigeon', 40], ['soleus', 30], ['downdog', 30], ['child', 40]],
   },
   {
-    id: 'long-run-recovery', hero: 'lyingHam', title: 'Big Day Recovery', cat: 'after', hue: 140, icon: 'landscape',
+    id: 'long-run-recovery', hero: 'lyingHam', title: 'Big Day Recovery', cat: 'after', icon: 'landscape',
     blurb: 'Long, slow floor stretches after a long or hard day of training. All you need is a bit of floor and a wall.',
     items: [['legsUpWall', 60], ['lyingHam', 40], ['bridge', 30], ['happyBaby', 40], ['pigeon', 45], ['itband', 25], ['cobra', 30], ['child', 45], ['twist', 35]],
   },
   {
-    id: 'tight-hips', hero: 'pigeon', title: 'Tight Hips', cat: 'after', hue: 130, icon: 'airline_seat_legroom_extra',
+    id: 'tight-hips', hero: 'pigeon', title: 'Tight Hips', cat: 'after', icon: 'airline_seat_legroom_extra',
     blurb: 'Hips that feel locked after running, cycling or sitting: hip flexors, glutes, groin and the outer hip.',
     items: [['lunge', 35], ['pigeon', 40], ['butterfly', 40], ['itband', 25], ['squat', 30]],
   },
   {
-    id: 'lower-back-after', hero: 'child', title: 'Lower Back Release', cat: 'after', hue: 180, icon: 'self_improvement',
+    id: 'lower-back-after', hero: 'child', title: 'Lower Back Release', cat: 'after', icon: 'self_improvement',
     blurb: 'After lifting, cycling or a long day bent over: take the load off your lower back.',
     items: [['catcow', 40], ['child', 45], ['cobra', 25], ['kneeToChest', 30], ['figureFour', 30], ['twist', 35]],
   },
   {
-    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Workout', cat: 'before', hue: 45, icon: 'workspace_premium', top: true,
+    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Workout', cat: 'before', icon: 'workspace_premium', top: true,
     blurb: 'Moving stretches only. Research shows long static holds right before exercise can slightly reduce power and speed, while dynamic moves warm you up without that cost.',
     items: [['swingFront', 30], ['lungeReach', 60], ['swingSide', 30], ['highKnees', 45], ['buttKicks', 45]],
   },
   {
-    id: 'dynamic-warmup', hero: 'highKnees', title: 'Dynamic Warm-Up', cat: 'before', hue: 30, icon: 'bolt',
+    id: 'dynamic-warmup', hero: 'highKnees', title: 'Dynamic Warm-Up', cat: 'before', icon: 'bolt',
     blurb: 'The Top 5 warm-up, plus hips, calves and a full-body inchworm. Do this right before you head out the door.',
     items: [['swingFront', 20], ['lungeReach', 40], ['swingSide', 20], ['highKnees', 30], ['buttKicks', 30], ['worlds', 30], ['hipCircles', 30], ['calfRaises', 30], ['inchworm', 40]],
   },
   {
-    id: 'race-day-primer', hero: 'worlds', title: 'Game Day Primer', cat: 'before', hue: 15, icon: 'flag',
+    id: 'race-day-primer', hero: 'worlds', title: 'Game Day Primer', cat: 'before', icon: 'flag',
     blurb: 'A sharp five minutes before a race, match or big session. Gets you loose without tiring you out.',
     items: [['highKnees', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['worlds', 30], ['calfRaises', 30], ['armCircles', 20]],
   },
   {
-    id: 'runner-warmup', hero: 'swingFront', title: "Runner's Warm-Up", cat: 'before', hue: 40, icon: 'directions_run',
+    id: 'runner-warmup', hero: 'swingFront', title: "Runner's Warm-Up", cat: 'before', icon: 'directions_run',
     blurb: 'Calves, ankles and hips ready for the road: light, bouncy and quick. Ideal before a run or a game.',
     items: [['calfRaises', 30], ['hipCircles', 30], ['swingFront', 20], ['swingSide', 20], ['buttKicks', 30], ['highKnees', 30], ['lungeReach', 40]],
   },
   {
-    id: 'upper-warmup', hero: 'armCircles', title: 'Upper Body Warm-Up', cat: 'before', hue: 55, icon: 'front_hand',
+    id: 'upper-warmup', hero: 'armCircles', title: 'Upper Body Warm-Up', cat: 'before', icon: 'front_hand',
     blurb: 'Shoulders, upper back and spine, ready for lifting, climbing, swimming or racket sports.',
     items: [['armCircles', 30], ['catcow', 40], ['worlds', 25], ['inchworm', 40], ['standingTwist', 30]],
   },
   {
-    id: 'top5-evening', hero: 'child', title: 'Top 5 Evening', cat: 'evening', hue: 290, icon: 'workspace_premium', top: true,
+    id: 'top5-evening', hero: 'child', title: 'Top 5 Evening', cat: 'evening', icon: 'workspace_premium', top: true,
     blurb: 'The five gentlest, most effective wind-down stretches. All on the floor, all easy. Do them half an hour before bed.',
     items: [['child', 50], ['lyingHam', 40], ['twist', 40], ['kneeToChest', 35], ['catcow', 45]],
   },
   {
-    id: 'evening-unwind', hero: 'pigeon', title: 'Evening Unwind', cat: 'evening', hue: 270, icon: 'bedtime',
+    id: 'evening-unwind', hero: 'pigeon', title: 'Evening Unwind', cat: 'evening', icon: 'bedtime',
     blurb: 'Ten slow minutes on the floor: the Top 5 evening stretches, then glutes, hips and tired legs.',
     items: [['child', 45], ['lyingHam', 35], ['twist', 35], ['kneeToChest', 30], ['catcow', 40], ['figureFour', 35], ['butterfly', 40], ['legsUpWall', 50]],
   },
   {
-    id: 'bedtime-hips', hero: 'butterfly', title: 'Bedtime Hips', cat: 'evening', hue: 320, icon: 'nights_stay',
+    id: 'bedtime-hips', hero: 'butterfly', title: 'Bedtime Hips', cat: 'evening', icon: 'nights_stay',
     blurb: 'Gentle hip openers to undo hours of sitting and training. Great right before bed.',
     items: [['squat', 40], ['butterfly', 45], ['figureFour', 40], ['happyBaby', 45], ['twist', 40], ['child', 45], ['legsUpWall', 60]],
   },
   {
-    id: 'neck-shoulders', hero: 'neckTilt', title: 'Neck & Shoulders', cat: 'evening', hue: 260, icon: 'spa',
+    id: 'neck-shoulders', hero: 'neckTilt', title: 'Neck & Shoulders', cat: 'evening', icon: 'spa',
     blurb: 'Let go of a day of screens and stress: neck, shoulders and chest, slow and easy. You can sit on the bed.',
     items: [['neckTilt', 25], ['shoulderCross', 25], ['tricep', 20], ['chestOpener', 30], ['catcow', 40], ['child', 45]],
   },
   {
-    id: 'back-relief', hero: 'kneeToChest', title: 'Back Pain Relief', cat: 'evening', hue: 300, icon: 'healing',
+    id: 'back-relief', hero: 'kneeToChest', title: 'Back Pain Relief', cat: 'evening', icon: 'healing',
     blurb: 'Gentle floor moves for a stiff or sore lower back, the ones physios suggest first. Stop if anything hurts more.',
     items: [['kneeToChest', 35], ['catcow', 45], ['child', 50], ['twist', 40], ['bridge', 30], ['legsUpWall', 50]],
   },
   {
-    id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', hue: 235, icon: 'workspace_premium', top: true,
+    id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', icon: 'workspace_premium', top: true,
     blurb: 'Short on time? The five stretches with the biggest payoff, in about five minutes.',
     items: [['lunge', 30], ['calf', 30], ['quad', 30], ['downdog', 40], ['worlds', 30]],
   },
   {
-    id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', hue: 215, icon: 'healing',
+    id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', icon: 'healing',
     blurb: 'Calves and Achilles feeling cranky? A focused lower-leg session.',
     items: [['calfRaises', 30], ['calf', 30], ['downdog', 40], ['squat', 30], ['fold', 30], ['inchworm', 40], ['lyingHam', 30]],
   },
   {
-    id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', hue: 70, icon: 'chair',
+    id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', icon: 'chair',
     blurb: 'Sat all day? Open your hips and wake up your spine before your evening workout.',
     items: [['cobra', 30], ['catcow', 40], ['lunge', 30], ['sideBend', 30], ['squat', 40], ['fold', 30], ['bridge', 30]],
   },
   {
-    id: 'two-minute', hero: 'standingTwist', title: '2-Minute Reset', cat: 'quick', hue: 250, icon: 'timer',
+    id: 'two-minute', hero: 'standingTwist', title: '2-Minute Reset', cat: 'quick', icon: 'timer',
     blurb: 'Really short on time? Five standing moves in two minutes. No floor, no wall, nothing to change into.',
     items: [['standingTwist', 15], ['sideBend', 15], ['chestOpener', 15], ['quad', 12], ['fold', 15]],
   },
   {
-    id: 'work-break', hero: 'chestOpener', title: 'Work Break', cat: 'quick', hue: 200, icon: 'work',
+    id: 'work-break', hero: 'chestOpener', title: 'Work Break', cat: 'quick', icon: 'work',
     blurb: 'Stand up from your desk for a few minutes. Neck, shoulders, wrists, chest, hips, legs and back, all standing, nothing needed.',
     items: [['neckTilt', 20], ['shoulderCross', 20], ['wristStretch', 20], ['chestOpener', 25], ['hipFlexorStand', 25], ['hamstringStand', 25], ['backBend', 20], ['standingTwist', 30]],
   },
   {
-    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', hue: 95, icon: 'workspace_premium', top: true,
+    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', focus: 'full', icon: 'workspace_premium', top: true,
     blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. No equipment, about five minutes. Move at a pace you can control.',
     items: [['airSquat', 40], ['pushup', 30], ['bridge', 40], ['birdDog', 30], ['plank', 30]],
   },
   {
-    id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', hue: 85, icon: 'accessibility_new',
+    id: 'full-body', hero: 'splitSquat', title: 'Full Body Builder', cat: 'strength', focus: 'full', icon: 'accessibility_new',
+    blurb: 'A little longer and a little harder: legs, glutes, push, shoulders, core and back in one go. About eight minutes.',
+    items: [['airSquat', 40], ['pushup', 30], ['splitSquat', 30], ['singleLegBridge', 30], ['shoulderTaps', 30], ['deadBug', 30], ['superman', 30]],
+  },
+  {
+    id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', focus: 'back', icon: 'accessibility_new',
     blurb: 'For a back that complains: the strength moves physios give for a stronger, calmer lower back. Slow and controlled.',
     items: [['birdDog', 30], ['deadBug', 30], ['bridge', 40], ['superman', 30], ['goodMorning', 40], ['plank', 30]],
   },
   {
-    id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', hue: 105, icon: 'directions_walk',
+    id: 'upper-back', hero: 'wallAngel', title: 'Upper Back & Posture', cat: 'strength', focus: 'back', icon: 'airline_seat_recline_extra',
+    blurb: 'For rounded shoulders and a desk-shaped back: strengthen the muscles that hold you upright.',
+    items: [['wallAngel', 40], ['yRaise', 30], ['superman', 30], ['birdDog', 30], ['plank', 30]],
+  },
+  {
+    id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', focus: 'legs', icon: 'directions_walk',
     blurb: 'Calves, knees and thighs for walking, running and stairs, with slow calf lowers, a physio favourite for the Achilles.',
     items: [['slowCalf', 40], ['airSquat', 40], ['splitSquat', 30], ['wallSit', 40], ['calfRaises', 40]],
   },
+  {
+    id: 'glutes-hips', hero: 'sideLunge', title: 'Glutes & Hips', cat: 'strength', focus: 'legs', icon: 'directions_run',
+    blurb: 'Strong glutes and hips protect your knees and back. Bridges, lunges and a wall sit, no equipment.',
+    items: [['singleLegBridge', 30], ['sideLunge', 30], ['bridge', 40], ['splitSquat', 30], ['wallSit', 40]],
+  },
+  {
+    id: 'arms-shoulders', hero: 'wallPushup', title: 'Arms & Shoulders', cat: 'strength', focus: 'upper', icon: 'fitness_center',
+    blurb: 'Pushing strength and healthy shoulders, starting easy at the wall and building to the floor.',
+    items: [['wallPushup', 40], ['pushup', 30], ['shoulderTaps', 30], ['yRaise', 30], ['wallAngel', 40], ['plank', 30]],
+  },
+  {
+    id: 'core-basics', hero: 'deadBug', title: 'Core Basics', cat: 'strength', focus: 'core', icon: 'adjust',
+    blurb: 'A steady core without sit-ups: the slow, safe moves physios teach first.',
+    items: [['deadBug', 30], ['reverseCrunch', 40], ['plank', 30], ['birdDog', 30], ['shoulderTaps', 30]],
+  },
 ];
+// Every routine takes its section's colour, so a section reads as one.
+for (const r of ROUTINES) r.hue = CATEGORIES.find((c) => c.id === r.cat).hue;
 
 export const PREP_SECS = 8;
 export const SWITCH_SECS = 4;

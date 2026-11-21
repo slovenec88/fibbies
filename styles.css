@@ -1,3 +1,5 @@
+/* An app, not a page: no pinch or double-tap zoom (scrolling still works) */
+html { touch-action: pan-x pan-y; }
 /* ========= Material You tokens (tonal palette from a seed hue via OKLCH) ========= */
 :root { --h: 165; --font-display: 'Bricolage Grotesque', 'Roboto Flex', system-ui, sans-serif; }
 
@@ -176,6 +178,8 @@ h1, h2, h3, p { margin: 0; }
 
 /* ========= Routine cards ========= */
 .routine-list { display: grid; gap: 10px; }
+.sec-title { font-size: 22px; font-weight: 600; margin: 30px 4px 0; scroll-margin-top: 12px; font-family: var(--font-display); }
+.sec-title + .chips { margin-top: 10px; }
 .routine-card {
   display: grid; grid-template-columns: 76px 1fr auto; align-items: center; gap: 14px;
   width: 100%; text-align: left; padding: 10px 14px 10px 10px; border-radius: 24px;

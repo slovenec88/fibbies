@@ -1,4 +1,4 @@
-import { STRETCHES, CATEGORIES, ROUTINES, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
+import { STRETCHES, CATEGORIES, FOCUS, ROUTINES, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
 import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
@@ -72,7 +72,13 @@ const fmtTime = (s) => {
   s = Math.max(0, Math.ceil(s));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
-const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+// A day runs until 2 AM: a late-night session still counts for that day's bonus and streak,
+// and everything starts fresh after that.
+const DAY_ENDS_AT = 2; // hours after midnight
+const dayKey = (at = new Date()) => {
+  const d = new Date(at.getTime() - DAY_ENDS_AT * 3600e3);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 const firstStretch = (r) => STRETCHES[r.items[0][0]];
 const heroStretch = (r) => STRETCHES[r.hero || r.items[0][0]];
 
@@ -168,7 +174,15 @@ function show(name) {
 }
 
 // ---------- Home ----------
-let activeCat = readJSON('limber.cat', 'all');
+let activeCat = readJSON('limber.cat', 'all'); // stretching filter
+if (!CATEGORIES.some((c) => c.id === activeCat && c.id !== 'strength')) activeCat = 'all';
+let activeFocus = readJSON('limber.focus', 'all'); // strength filter
+if (!FOCUS.some((f) => f.id === activeFocus)) activeFocus = 'all';
+const STRETCH_CATS = () => CATEGORIES.filter((c) => c.id !== 'strength');
+const chipHTML = (key, id, on, icon, label) => `
+    <button class="chip ripple" role="tab" aria-selected="${on}" data-${key}="${id}">
+      <span aria-hidden="true" class="ms">${on ? 'check' : icon}</span>${esc(label)}
+    </button>`;
 
 function renderHome() {
   renderProgress();
@@ -176,11 +190,12 @@ function renderHome() {
   renderCollection();
   renderFlexCard();
 
-  // Chips
-  $('#chips').innerHTML = CATEGORIES.map((c) => `
-    <button class="chip ripple" role="tab" aria-selected="${c.id === activeCat}" data-cat="${c.id}">
-      <span aria-hidden="true" class="ms">${c.id === activeCat ? 'check' : c.icon}</span>${c.label}
-    </button>`).join('');
+  // Two sections, each with its own filters: stretching by when, strength by body area.
+  $('#chips').innerHTML = STRETCH_CATS().map((c) => chipHTML('cat', c.id, c.id === activeCat, c.icon, c.label)).join('');
+  const sc = catOf('strength');
+  $('#strength-title').textContent = sc.label;
+  $('#chips-strength').setAttribute('aria-label', sc.label);
+  $('#chips-strength').innerHTML = FOCUS.map((f) => chipHTML('focus', f.id, f.id === activeFocus, f.icon, t(`focus.${f.id}`))).join('');
 
   renderList();
 }
@@ -188,7 +203,8 @@ function renderHome() {
 /** Days with a session this week (Monday first). */
 function daysThisWeek() {
   const days = new Set(log.filter(counts).map((x) => x.day));
-  const monday = new Date();
+  const monday = new Date(Date.now() - DAY_ENDS_AT * 3600e3); // today, by the 2 AM rule
+  monday.setHours(12, 0, 0, 0); // noon + the shift in dayKey() stays on the same date
   monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
   let n = 0;
   for (let i = 0; i < 7; i++) {
@@ -569,52 +585,68 @@ $('#flex-body').addEventListener('click', (e) => {
   }
 });
 
+function routineCard(r) {
+  const b = document.createElement('button');
+  b.className = 'routine-card ripple';
+  b.dataset.hue = '';
+  b.style.setProperty('--h', r.hue);
+  b.dataset.open = r.id;
+  const tag = r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>'
+    : `<span class="rc-cat">${esc(r.focus ? t(`focus.${r.focus}`) : catOf(r.cat).label)}</span>`;
+  b.innerHTML = `
+    <div class="rc-thumb"></div>
+    <div>
+      <div class="rc-title">${esc(r.title)}</div>
+      <div class="rc-meta">${tag} <span class="rc-n">${movesText(r)}</span></div>
+    </div>
+    <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
+  b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
+  return b;
+}
 function renderList() {
-  const list = $('#routine-list');
-  const items = ROUTINES.filter((r) => activeCat === 'all' || r.cat === activeCat);
-  list.innerHTML = '';
-  for (const r of items) {
-    const b = document.createElement('button');
-    b.className = 'routine-card ripple';
-    b.dataset.hue = '';
-    b.style.setProperty('--h', r.hue);
-    b.dataset.open = r.id;
-    b.innerHTML = `
-      <div class="rc-thumb"></div>
-      <div>
-        <div class="rc-title">${esc(r.title)}</div>
-        <div class="rc-meta">${r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>' : `<span class="rc-cat">${catOf(r.cat).label}</span>`} <span class="rc-n">${movesText(r)}</span></div>
-      </div>
-      <div class="rc-dur">${minutes(r)}<small>min</small></div>`;
-    b.querySelector('.rc-thumb').appendChild(staticFig(heroStretch(r), 0.6));
-    list.appendChild(b);
-  }
+  $('#routine-list').replaceChildren(...ROUTINES.filter((r) => r.cat !== 'strength' && (activeCat === 'all' || r.cat === activeCat)).map(routineCard));
+  $('#routine-list-strength').replaceChildren(...ROUTINES.filter((r) => r.cat === 'strength' && (activeFocus === 'all' || r.focus === activeFocus)).map(routineCard));
 }
 
+function markChips(box, key, value, iconOf) {
+  box.querySelectorAll('.chip').forEach((ch) => {
+    const on = ch.dataset[key] === value;
+    ch.setAttribute('aria-selected', on);
+    ch.querySelector('.ms').textContent = on ? 'check' : iconOf(ch.dataset[key]);
+  });
+}
 function setCat(cat) {
   activeCat = cat;
   writeJSON('limber.cat', activeCat);
-  document.querySelectorAll('#chips .chip').forEach((ch) => {
-    const on = ch.dataset.cat === activeCat;
-    ch.setAttribute('aria-selected', on);
-    ch.querySelector('.ms').textContent = on ? 'check' : catOf(ch.dataset.cat).icon;
-  });
+  markChips($('#chips'), 'cat', activeCat, (id) => catOf(id).icon);
+  renderList();
+}
+function setFocus(focus) {
+  activeFocus = focus;
+  writeJSON('limber.focus', activeFocus);
+  markChips($('#chips-strength'), 'focus', activeFocus, (id) => FOCUS.find((f) => f.id === id).icon);
   renderList();
 }
 $('#chips').addEventListener('click', (e) => {
   const c = e.target.closest('[data-cat]');
   if (c) setCat(c.dataset.cat);
 });
+$('#chips-strength').addEventListener('click', (e) => {
+  const c = e.target.closest('[data-focus]');
+  if (c) setFocus(c.dataset.focus);
+});
 // A bonus tile takes you down to that kind of routine, already filtered.
 $('#progress-card').addEventListener('click', (e) => {
   const q = e.target.closest('.quest[data-cat]');
   if (!q) return;
-  setCat(q.dataset.cat);
-  const chips = $('#chips');
+  const strength = q.dataset.cat === 'strength';
+  if (strength) setFocus('all'); else setCat(q.dataset.cat);
+  const chips = strength ? $('#strength-title') : $('#stretching-title');
   const smooth = reduceMotion() ? 'auto' : 'smooth';
   chips.scrollIntoView({ behavior: smooth, block: 'start' });
-  const chip = chips.querySelector('[aria-selected="true"]');
-  if (chip) chips.scrollLeft = chip.offsetLeft - 16;
+  const row = strength ? $('#chips-strength') : $('#chips');
+  const chip = row.querySelector('[aria-selected="true"]');
+  if (chip) row.scrollLeft = chip.offsetLeft - 16;
 });
 
 document.addEventListener('click', (e) => {
@@ -1221,6 +1253,8 @@ function backupNote(text) {
 }
 
 // ---------- Boot ----------
+// iOS Safari ignores user-scalable=no in the viewport tag: stop its pinch gesture here.
+document.addEventListener('gesturestart', (e) => e.preventDefault());
 if (isNative) document.documentElement.classList.add('native');
 else requestPersistence(); // ask the browser not to clear the site's data when space runs low
 if (!history.state) history.replaceState({ d: 0 }, '', location.href);

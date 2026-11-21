@@ -128,9 +128,16 @@ export const UI = {
   "m.lucky": "¡ESTIRAMIENTO DE LA SUERTE!",
   'q.before': "Antes",
   'q.after': "Después",
-  'q.evening': "Noche",
+  'q.evening': "Relax",
   'q.strength': "Fuerza",
   doneToday: "hecho",
+  stretchingTitle: "Estiramientos",
+  'focus.all': "Todo",
+  'focus.full': "Cuerpo entero",
+  'focus.back': "Espalda",
+  'focus.legs': "Piernas",
+  'focus.upper': "Brazos y hombros",
+  'focus.core': "Core",
   "voiceSection": "Voz",
   voiceGuidance: "Guía por voz",
   voiceGuidanceSub: "Nombres, consejos y cambios de lado en voz alta",
@@ -208,6 +215,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Flexión en la pared", "Pecho · Hombros · Brazos", [
+      "Manos en la pared a la altura del pecho, pies hacia atrás.",
+      "Dobla los codos para acercar el pecho a la pared y empuja.",
+      "Cuerpo recto como una tabla. Cuanto más lejos los pies, más difícil."]],
+    shoulderTaps: ["Toques de hombro en plancha", "Hombros · Core", [
+      "Plancha alta, manos bajo los hombros, pies algo separados.",
+      "Levanta una mano y toca el hombro contrario, luego cambia.",
+      "Cadera quieta, como si llevaras un vaso de agua en la espalda."]],
+    yRaise: ["Elevación en Y boca abajo", "Espalda alta · Hombros", [
+      "Boca abajo, brazos al frente en Y, pulgares hacia arriba.",
+      "Junta las escápulas y despega los brazos del suelo.",
+      "Cuello largo, mirada al suelo. Baja despacio."]],
+    wallAngel: ["Ángeles en la pared", "Espalda alta · Postura", [
+      "Espalda, cabeza y brazos contra la pared, codos doblados en W.",
+      "Desliza los brazos hacia arriba en Y sin despegarlos de la pared.",
+      "Baja de nuevo y junta las escápulas."]],
+    singleLegBridge: ["Puente a una pierna", "Glúteos · Isquiotibiales", [
+      "Boca arriba, un pie apoyado y la otra pierna estirada en el aire.",
+      "Empuja con el talón y sube la cadera, luego baja despacio.",
+      "Cadera nivelada. Con los dos pies en el suelo es más fácil."]],
+    sideLunge: ["Zancada lateral", "Aductores · Glúteos · Piernas", [
+      "Pies separados, puntas al frente. Lleva la cadera atrás y a un lado.",
+      "Dobla esa rodilla y mantén la otra pierna estirada.",
+      "Empuja de vuelta al centro. Pecho erguido todo el tiempo."]],
+    reverseCrunch: ["Crunch invertido", "Abdomen bajo · Core", [
+      "Boca arriba, brazos a los lados, rodillas dobladas sobre la cadera.",
+      "Despega la cadera del suelo llevando las rodillas al pecho.",
+      "Baja despacio sin balancearte. Pequeño y controlado es perfecto."]],
     airSquat: ["Sentadilla", "Muslos · Glúteos", [
       "Pies a la anchura de los hombros. Lleva la cadera atrás y abajo, brazos al frente.",
       "Las rodillas siguen a los pies, el pecho erguido.",
@@ -396,8 +431,13 @@ export const CONTENT = {
       "Con la otra mano, lleva los dedos suavemente hacia ti.",
       "Codo estirado y hombro relajado. Ideal después de escribir mucho."]],
   },
-  categories: { all: "Todo", after: "Después de entrenar", before: "Antes de entrenar", evening: "Noche", quick: "Rápido", strength: "Fuerza" },
+  categories: { all: "Todo", after: "Después de entrenar", before: "Antes de entrenar", evening: "Relajación", quick: "Rápido", strength: "Fuerza" },
   routines: {
+    'full-body': ["Cuerpo completo", "Un poco más largo y un poco más duro: piernas, glúteos, empuje, hombros, core y espalda de una vez. Unos ocho minutos."],
+    'upper-back': ["Espalda alta y postura", "Para hombros caídos y espalda de oficina: fortalece los músculos que te mantienen erguido."],
+    'glutes-hips': ["Glúteos y caderas", "Glúteos y caderas fuertes protegen rodillas y espalda. Puentes, zancadas y sentadilla en la pared, sin material."],
+    'arms-shoulders': ["Brazos y hombros", "Fuerza de empuje y hombros sanos, empezando fácil en la pared hasta llegar al suelo."],
+    'core-basics': ["Core básico", "Un core firme sin abdominales clásicos: los ejercicios lentos y seguros que enseñan primero los fisios."],
     'runner-warmup': ["Calentamiento para correr", "Gemelos, tobillos y caderas listos para salir: ligero, ágil y rápido. Ideal antes de correr o de un partido."],
     'upper-warmup': ["Calentamiento de tren superior", "Hombros, espalda alta y columna, listos para pesas, escalada, natación o deportes de raqueta."],
     'tight-hips': ["Caderas rígidas", "Caderas que se sienten bloqueadas tras correr, pedalear o estar sentado: flexores, glúteos, ingle y la parte externa de la cadera."],

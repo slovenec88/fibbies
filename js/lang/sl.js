@@ -132,9 +132,16 @@ export const UI = {
   'm.lucky': 'SREČNI ZADETEK!',
   'q.before': "Pred",
   'q.after': "Po",
-  'q.evening': "Zvečer",
+  'q.evening': "Sprostitev",
   'q.strength': "Moč",
   doneToday: "opravljeno",
+  stretchingTitle: "Raztezanje",
+  'focus.all': "Vse",
+  'focus.full': "Celo telo",
+  'focus.back': "Hrbet",
+  'focus.legs': "Noge",
+  'focus.upper': "Roke in ramena",
+  'focus.core': "Trup",
   'voiceSection': 'Glas',
   voiceGuidance: 'Glasovno vodenje',
   voiceGuidanceSub: 'Imena vaj, nasveti in menjava strani',
@@ -212,6 +219,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Sklece ob steni", "Prsi · Ramena · Roke", [
+      "Dlani na steni v višini prsi, stopala stopi nazaj.",
+      "Pokrči komolce, prsi približaj steni, nato se odrini.",
+      "Telo naj bo ravno kot deska. Dlje ko so stopala, težje je."]],
+    shoulderTaps: ["Dotiki ramen v opori", "Ramena · Trup", [
+      "Visoka opora, dlani pod rameni, stopala malo narazen.",
+      "Z eno roko se dotakni nasprotne rame, nato zamenjaj.",
+      "Boki mirujejo, kot da imaš na hrbtu kozarec vode."]],
+    yRaise: ["Dvig v Y na trebuhu", "Zgornji del hrbta · Ramena", [
+      "Na trebuhu, roke naprej v obliki črke Y, palca navzgor.",
+      "Stisni lopatki in dvigni roke od tal.",
+      "Vrat naj bo dolg, pogled v tla. Počasi se spusti."]],
+    wallAngel: ["Angeli ob steni", "Zgornji del hrbta · Drža", [
+      "Hrbet, glava in roke ob steni, komolci pokrčeni kot črka W.",
+      "Roke potisni navzgor v črko Y, ves čas ob steni.",
+      "Spusti jih nazaj in stisni lopatki."]],
+    singleLegBridge: ["Most na eni nogi", "Zadnjica · Zadnje stegenske", [
+      "Na hrbtu, eno stopalo na tleh, druga noga iztegnjena v zraku.",
+      "Potisni skozi peto in dvigni boke, nato se počasi spusti.",
+      "Boki naj bodo poravnani. Z obema stopaloma na tleh je lažje."]],
+    sideLunge: ["Stranski izpadni korak", "Notranja stegna · Zadnjica · Noge", [
+      "Stopala široko, prsti naprej. Boke potisni nazaj in vstran.",
+      "To koleno pokrči, druga noga ostane iztegnjena.",
+      "Odrini se nazaj na sredino. Prsni koš ves čas pokonci."]],
+    reverseCrunch: ["Obrnjeni trebušnjak", "Spodnji trebuh · Trup", [
+      "Na hrbtu, roke ob telesu, kolena pokrčena nad boki.",
+      "Boke odvij od tal in kolena pritegni k prsim.",
+      "Počasi se spusti, brez zamaha. Majhno in nadzorovano je odlično."]],
     airSquat: ["Počep", "Stegna · Zadnjica", [
       "Stopala v širini ramen. Boke potisni nazaj in navzdol, roke naprej.",
       "Kolena sledijo prstom, prsni koš ostane pokonci.",
@@ -400,8 +435,13 @@ export const CONTENT = {
       "Z drugo roko nežno potegni prste nazaj proti sebi.",
       "Komolec naj bo iztegnjen, rama sproščena. Odlično po veliko tipkanja."]],
   },
-  categories: { all: "Vse", after: "Po vadbi", before: "Pred vadbo", evening: "Zvečer", quick: "Hitro", strength: "Moč" },
+  categories: { all: "Vse", after: "Po vadbi", before: "Pred vadbo", evening: "Sprostitev", quick: "Hitro", strength: "Moč" },
   routines: {
+    'full-body': ["Celo telo", "Malo daljše in malo težje: noge, zadnjica, potiskanje, ramena, trup in hrbet naenkrat. Približno osem minut."],
+    'upper-back': ["Zgornji hrbet in drža", "Proti upognjenim ramenom in pisarniškemu hrbtu: okrepi mišice, ki te držijo pokonci."],
+    'glutes-hips': ["Zadnjica in boki", "Močna zadnjica in boki varujejo kolena in hrbet. Mostovi, izpadni koraki in stol ob steni, brez pripomočkov."],
+    'arms-shoulders': ["Roke in ramena", "Moč za potiskanje in zdrava ramena, od lahkega začetka ob steni do tal."],
+    'core-basics': ["Osnove trupa", "Stabilen trup brez trebušnjakov: počasne, varne vaje, ki jih fizioterapevti učijo najprej."],
     'runner-warmup': ["Ogrevanje za tek", "Meča, gležnji in boki pripravljeni na pot: lahkotno, prožno in hitro. Idealno pred tekom ali tekmo."],
     'upper-warmup': ["Ogrevanje zgornjega dela", "Ramena, zgornji del hrbta in hrbtenica, pripravljeni na uteži, plezanje, plavanje ali športe z loparjem."],
     'tight-hips': ["Zakrčeni boki", "Boki, ki se po teku, kolesarjenju ali sedenju zdijo zaklenjeni: upogibalke kolka, zadnjica, dimlje in zunanji kolk."],

@@ -128,9 +128,16 @@ export const UI = {
   "m.lucky": "ALONGAMENTO DE SORTE!",
   'q.before': "Antes",
   'q.after': "Depois",
-  'q.evening': "Noite",
+  'q.evening': "Relaxar",
   'q.strength': "Força",
   doneToday: "feito",
+  stretchingTitle: "Alongamento",
+  'focus.all': "Tudo",
+  'focus.full': "Corpo inteiro",
+  'focus.back': "Costas",
+  'focus.legs': "Pernas",
+  'focus.upper': "Braços e ombros",
+  'focus.core': "Core",
   "voiceSection": "Voz",
   voiceGuidance: "Guia por voz",
   voiceGuidanceSub: "Nomes, dicas e trocas de lado em voz alta",
@@ -208,6 +215,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Flexão na parede", "Peito · Ombros · Braços", [
+      "Mãos na parede na altura do peito, pés para trás.",
+      "Dobre os cotovelos para levar o peito à parede e empurre de volta.",
+      "Corpo reto como uma prancha. Quanto mais longe os pés, mais difícil."]],
+    shoulderTaps: ["Toque no ombro na prancha", "Ombros · Core", [
+      "Prancha alta, mãos sob os ombros, pés um pouco afastados.",
+      "Tire uma mão do chão e toque o ombro oposto, depois troque.",
+      "Quadril parado, como se houvesse um copo d'água nas costas."]],
+    yRaise: ["Elevação em Y de bruços", "Parte de cima das costas · Ombros", [
+      "De bruços, braços à frente em Y, polegares para cima.",
+      "Aperte as escápulas e tire os braços do chão.",
+      "Pescoço longo, olhando para o chão. Desça devagar."]],
+    wallAngel: ["Anjos na parede", "Parte de cima das costas · Postura", [
+      "Costas, cabeça e braços na parede, cotovelos dobrados em W.",
+      "Deslize os braços para cima em Y, sem tirá-los da parede.",
+      "Desça de novo e aperte as escápulas."]],
+    singleLegBridge: ["Ponte com uma perna", "Glúteos · Posteriores da coxa", [
+      "De barriga para cima, um pé apoiado, a outra perna esticada no ar.",
+      "Empurre pelo calcanhar e suba o quadril, depois desça devagar.",
+      "Quadril nivelado. Com os dois pés no chão fica mais fácil."]],
+    sideLunge: ["Afundo lateral", "Parte interna da coxa · Glúteos · Pernas", [
+      "Pés afastados, pontas para a frente. Leve o quadril para trás e para o lado.",
+      "Dobre esse joelho, a outra perna fica esticada.",
+      "Empurre de volta ao centro. Peito aberto o tempo todo."]],
+    reverseCrunch: ["Abdominal invertido", "Abdômen inferior · Core", [
+      "De barriga para cima, braços ao lado do corpo, joelhos dobrados sobre o quadril.",
+      "Tire o quadril do chão levando os joelhos ao peito.",
+      "Desça devagar, sem balanço. Pequeno e controlado é perfeito."]],
     airSquat: ["Agachamento", "Coxas · Glúteos", [
       "Pés na largura dos ombros. Leve o quadril para trás e para baixo, braços à frente.",
       "Os joelhos acompanham os pés, peito aberto.",
@@ -396,8 +431,13 @@ export const CONTENT = {
       "Com a outra mão, puxe os dedos de leve na sua direção.",
       "Cotovelo esticado e ombro solto. Ótimo depois de muito digitar."]],
   },
-  categories: { all: "Tudo", after: "Depois do treino", before: "Antes do treino", evening: "Noite", quick: "Rápido", strength: "Força" },
+  categories: { all: "Tudo", after: "Depois do treino", before: "Antes do treino", evening: "Relaxar", quick: "Rápido", strength: "Força" },
   routines: {
+    'full-body': ["Corpo inteiro", "Um pouco mais longo e um pouco mais difícil: pernas, glúteos, empurrar, ombros, core e costas de uma vez. Uns oito minutos."],
+    'upper-back': ["Costas e postura", "Para ombros curvados e costas de escritório: fortaleça os músculos que mantêm você ereto."],
+    'glutes-hips': ["Glúteos e quadril", "Glúteos e quadril fortes protegem joelhos e costas. Pontes, afundos e cadeirinha na parede, sem equipamento."],
+    'arms-shoulders': ["Braços e ombros", "Força para empurrar e ombros saudáveis, começando fácil na parede até chegar ao chão."],
+    'core-basics': ["Core básico", "Um core firme sem abdominais clássicos: os movimentos lentos e seguros que os fisioterapeutas ensinam primeiro."],
     'runner-warmup': ["Aquecimento para correr", "Panturrilhas, tornozelos e quadril prontos para a corrida: leve, ágil e rápido. Ideal antes de correr ou de um jogo."],
     'upper-warmup': ["Aquecimento da parte de cima", "Ombros, parte de cima das costas e coluna, prontos para musculação, escalada, natação ou esportes de raquete."],
     'tight-hips': ["Quadril travado", "Quadril travado depois de correr, pedalar ou ficar sentado: flexores, glúteos, virilha e a lateral do quadril."],

@@ -171,9 +171,16 @@ const EN = {
   // today's bonus tiles: one short word per kind of routine
   'q.before': "Before",
   'q.after': "After",
-  'q.evening': "Evening",
+  'q.evening': "Relax",
   'q.strength': "Strength",
   doneToday: "done",
+  stretchingTitle: "Stretching",
+  'focus.all': "All",
+  'focus.full': "Full body",
+  'focus.back': "Back",
+  'focus.legs': "Legs",
+  'focus.upper': "Arms & shoulders",
+  'focus.core': "Core",
   // settings
   'voiceSection': 'Voice',
   voiceGuidance: 'Voice guidance',

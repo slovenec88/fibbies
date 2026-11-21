@@ -128,9 +128,16 @@ export const UI = {
   "m.lucky": "GLÜCKSTREFFER!",
   'q.before': "Vorher",
   'q.after': "Nachher",
-  'q.evening': "Abends",
+  'q.evening': "Entspannen",
   'q.strength': "Kraft",
   doneToday: "erledigt",
+  stretchingTitle: "Dehnen",
+  'focus.all': "Alle",
+  'focus.full': "Ganzkörper",
+  'focus.back': "Rücken",
+  'focus.legs': "Beine",
+  'focus.upper': "Arme & Schultern",
+  'focus.core': "Rumpf",
   "voiceSection": "Stimme",
   voiceGuidance: "Sprachführung",
   voiceGuidanceSub: "Übungsnamen, Tipps und Seitenwechsel",
@@ -208,6 +215,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Wand-Liegestütz", "Brust · Schultern · Arme", [
+      "Hände in Brusthöhe an die Wand, Füße nach hinten setzen.",
+      "Beug die Ellbogen, bring die Brust zur Wand und drück dich wieder weg.",
+      "Halt den Körper gerade wie ein Brett. Je weiter die Füße, desto schwerer."]],
+    shoulderTaps: ["Schultertippen im Stütz", "Schultern · Rumpf", [
+      "Hoher Stütz, Hände unter den Schultern, Füße etwas auseinander.",
+      "Heb eine Hand und tippe die andere Schulter an, dann wechseln.",
+      "Die Hüfte bleibt ruhig, als stünde ein Glas Wasser auf deinem Rücken."]],
+    yRaise: ["Y-Heben in Bauchlage", "Oberer Rücken · Schultern", [
+      "Bauchlage, Arme als Y nach vorn, Daumen nach oben.",
+      "Zieh die Schulterblätter zusammen und heb die Arme vom Boden.",
+      "Nacken lang, Blick zum Boden. Langsam absenken."]],
+    wallAngel: ["Wandengel", "Oberer Rücken · Haltung", [
+      "Rücken, Kopf und Arme an die Wand, Ellbogen gebeugt wie ein W.",
+      "Schieb die Arme zu einem Y nach oben, sie bleiben an der Wand.",
+      "Wieder hinuntergleiten und die Schulterblätter zusammenziehen."]],
+    singleLegBridge: ["Einbeinige Brücke", "Gesäß · Oberschenkel hinten", [
+      "Auf dem Rücken, ein Fuß flach, das andere Bein gestreckt in der Luft.",
+      "Drück dich über die Ferse hoch und heb die Hüfte, dann langsam senken.",
+      "Hüfte gerade halten. Mit beiden Füßen am Boden ist es leichter."]],
+    sideLunge: ["Seitlicher Ausfallschritt", "Innenschenkel · Gesäß · Beine", [
+      "Füße weit, Zehen nach vorn. Setz die Hüfte nach hinten und zur Seite.",
+      "Dieses Knie beugen, das andere Bein bleibt gestreckt.",
+      "Zurück in die Mitte drücken. Die Brust bleibt die ganze Zeit aufrecht."]],
+    reverseCrunch: ["Umgekehrter Crunch", "Unterer Bauch · Rumpf", [
+      "Auf dem Rücken, Arme neben dem Körper, Knie gebeugt über der Hüfte.",
+      "Roll die Hüfte vom Boden und zieh die Knie zur Brust.",
+      "Langsam absenken, ohne Schwung. Klein und kontrolliert ist perfekt."]],
     airSquat: ["Kniebeuge", "Oberschenkel · Gesäß", [
       "Füße schulterbreit. Setz die Hüfte nach hinten und unten, Arme nach vorn.",
       "Die Knie folgen den Zehen, die Brust bleibt aufrecht.",
@@ -396,8 +431,13 @@ export const CONTENT = {
       "Zieh die Finger mit der anderen Hand sanft zu dir.",
       "Ellbogen gestreckt, Schulter locker. Ideal nach viel Tippen."]],
   },
-  categories: { all: "Alle", after: "Nach dem Training", before: "Vor dem Training", evening: "Abends", quick: "Schnell", strength: "Kraft" },
+  categories: { all: "Alle", after: "Nach dem Training", before: "Vor dem Training", evening: "Entspannen", quick: "Schnell", strength: "Kraft" },
   routines: {
+    'full-body': ["Ganzkörper-Aufbau", "Etwas länger und etwas härter: Beine, Gesäß, Drücken, Schultern, Rumpf und Rücken in einem Durchgang. Etwa acht Minuten."],
+    'upper-back': ["Oberer Rücken & Haltung", "Gegen runde Schultern und einen Schreibtischrücken: Stärke die Muskeln, die dich aufrecht halten."],
+    'glutes-hips': ["Gesäß & Hüfte", "Starkes Gesäß und starke Hüften schützen Knie und Rücken. Brücken, Ausfallschritte und Wandsitzen, ohne Geräte."],
+    'arms-shoulders': ["Arme & Schultern", "Kraft zum Drücken und gesunde Schultern, leicht an der Wand beginnend bis zum Boden."],
+    'core-basics': ["Rumpf-Grundlagen", "Ein stabiler Rumpf ohne Sit-ups: die langsamen, sicheren Übungen, die Physios zuerst zeigen."],
     'runner-warmup': ["Lauf-Aufwärmen", "Waden, Knöchel und Hüften bereit für die Strecke: leicht, federnd und schnell. Ideal vor einem Lauf oder einem Spiel."],
     'upper-warmup': ["Oberkörper aufwärmen", "Schultern, oberer Rücken und Wirbelsäule, bereit für Krafttraining, Klettern, Schwimmen oder Schlägersport."],
     'tight-hips': ["Feste Hüften", "Hüften, die sich nach Laufen, Radfahren oder Sitzen blockiert anfühlen: Hüftbeuger, Gesäß, Leiste und äußere Hüfte."],

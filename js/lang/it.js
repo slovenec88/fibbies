@@ -128,9 +128,16 @@ export const UI = {
   "m.lucky": "ALLUNGAMENTO FORTUNATO!",
   'q.before': "Prima",
   'q.after': "Dopo",
-  'q.evening': "Sera",
+  'q.evening': "Relax",
   'q.strength': "Forza",
   doneToday: "fatto",
+  stretchingTitle: "Stretching",
+  'focus.all': "Tutti",
+  'focus.full': "Corpo intero",
+  'focus.back': "Schiena",
+  'focus.legs': "Gambe",
+  'focus.upper': "Braccia e spalle",
+  'focus.core': "Core",
   "voiceSection": "Voce",
   voiceGuidance: "Guida vocale",
   voiceGuidanceSub: "Nomi, consigli e cambi di lato ad alta voce",
@@ -208,6 +215,34 @@ export const UI = {
 
 export const CONTENT = {
   stretches: {
+    wallPushup: ["Piegamenti al muro", "Petto · Spalle · Braccia", [
+      "Mani al muro all'altezza del petto, piedi indietro.",
+      "Piega i gomiti per portare il petto al muro, poi spingi via.",
+      "Corpo dritto come una tavola. Più lontani i piedi, più è difficile."]],
+    shoulderTaps: ["Tocchi alle spalle in plank", "Spalle · Core", [
+      "Plank alto, mani sotto le spalle, piedi un po' divaricati.",
+      "Solleva una mano e tocca la spalla opposta, poi cambia.",
+      "Fianchi fermi, come con un bicchiere d'acqua sulla schiena."]],
+    yRaise: ["Alzate a Y da proni", "Parte alta della schiena · Spalle", [
+      "A pancia in giù, braccia avanti a Y, pollici in su.",
+      "Stringi le scapole e solleva le braccia da terra.",
+      "Collo lungo, sguardo a terra. Scendi piano."]],
+    wallAngel: ["Angeli al muro", "Parte alta della schiena · Postura", [
+      "Schiena, testa e braccia al muro, gomiti piegati a W.",
+      "Fai scivolare le braccia in alto a Y, sempre a contatto col muro.",
+      "Torna giù e stringi le scapole."]],
+    singleLegBridge: ["Ponte su una gamba", "Glutei · Femorali", [
+      "Sulla schiena, un piede a terra, l'altra gamba tesa in aria.",
+      "Spingi col tallone e solleva i fianchi, poi scendi piano.",
+      "Fianchi in linea. Con entrambi i piedi a terra è più facile."]],
+    sideLunge: ["Affondo laterale", "Interno coscia · Glutei · Gambe", [
+      "Piedi larghi, punte avanti. Porta i fianchi indietro e di lato.",
+      "Piega quel ginocchio, l'altra gamba resta tesa.",
+      "Spingi per tornare al centro. Petto alto sempre."]],
+    reverseCrunch: ["Crunch inverso", "Addome basso · Core", [
+      "Sulla schiena, braccia lungo i fianchi, ginocchia piegate sopra i fianchi.",
+      "Arrotola i fianchi da terra portando le ginocchia al petto.",
+      "Scendi piano senza slancio. Piccolo e controllato è perfetto."]],
     airSquat: ["Squat a corpo libero", "Cosce · Glutei", [
       "Piedi alla larghezza delle spalle. Porta i fianchi indietro e in basso, braccia avanti.",
       "Le ginocchia seguono le punte dei piedi, petto alto.",
@@ -396,8 +431,13 @@ export const CONTENT = {
       "Con l’altra mano tira piano le dita verso di te.",
       "Gomito teso e spalla rilassata. Ottimo dopo tanto scrivere al computer."]],
   },
-  categories: { all: "Tutti", after: "Dopo l’allenamento", before: "Prima dell’allenamento", evening: "Sera", quick: "Veloce", strength: "Forza" },
+  categories: { all: "Tutti", after: "Dopo l’allenamento", before: "Prima dell’allenamento", evening: "Relax", quick: "Veloce", strength: "Forza" },
   routines: {
+    'full-body': ["Corpo completo", "Un po' più lungo e un po' più duro: gambe, glutei, spinta, spalle, core e schiena in una volta. Circa otto minuti."],
+    'upper-back': ["Schiena alta e postura", "Contro spalle curve e schiena da scrivania: rinforza i muscoli che ti tengono dritto."],
+    'glutes-hips': ["Glutei e anche", "Glutei e anche forti proteggono ginocchia e schiena. Ponti, affondi e sedia al muro, senza attrezzi."],
+    'arms-shoulders': ["Braccia e spalle", "Forza di spinta e spalle sane, partendo facile al muro fino al pavimento."],
+    'core-basics': ["Core di base", "Un core stabile senza crunch classici: gli esercizi lenti e sicuri che i fisioterapisti insegnano per primi."],
     'runner-warmup': ["Riscaldamento per la corsa", "Polpacci, caviglie e anche pronti per la strada: leggero, elastico e veloce. Ideale prima di una corsa o di una partita."],
     'upper-warmup': ["Riscaldamento parte alta", "Spalle, parte alta della schiena e colonna, pronte per pesi, arrampicata, nuoto o sport con la racchetta."],
     'tight-hips': ["Anche rigide", "Anche bloccate dopo corsa, bici o tante ore seduti: flessori, glutei, inguine e anca esterna."],
