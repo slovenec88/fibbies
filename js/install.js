@@ -16,23 +16,17 @@ export function setupInstallPrompt() {
   const firefox = /Firefox\/(\d+)/.exec(navigator.userAgent);
   const firefoxWindows = firefox && Number(firefox[1]) >= 143 && /Windows/.test(navigator.userAgent);
   const firefoxHelp = !!firefox && (androidMobile || firefoxWindows);
-  const helpPlatform = appleMobile ? 'apple' : androidMobile ? 'android' : firefoxWindows ? 'windows' : null;
-  if (helpPlatform) {
-    const instructions = document.getElementById('install-help-' + helpPlatform);
-    instructions.hidden = false;
-    if (firefoxHelp) {
-      homeHelp.dataset.i18n = instructions.dataset.i18n;
-      homeHelp.textContent = instructions.textContent;
-    }
-  }
+  document.getElementById('install-help-apple').hidden = !appleMobile;
+  document.getElementById('install-help-android').hidden = appleMobile || !androidMobile;
+  if (firefoxHelp) homeHelp.dataset.i18n = firefoxWindows ? 'installHelpWindows' : 'installHelpAndroid';
   let offer = null;
   let installed = false;
 
   const refresh = () => {
     const available = !installed && !standalone.matches;
     card.hidden = !available || !(offer || firefoxHelp);
-    settingsButton.hidden = !available || !offer;
-    help.hidden = !available || !!offer || !helpPlatform;
+    settingsButton.hidden = !available || !offer || firefoxHelp;
+    help.hidden = !available || !!offer || firefoxHelp || !(appleMobile || androidMobile);
     if (!available || offer) homeHelp.hidden = true;
     if (available && firefoxHelp && !offer) {
       button.setAttribute('aria-controls', homeHelp.id);
