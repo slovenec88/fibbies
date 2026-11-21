@@ -134,9 +134,10 @@ h1, h2, h3, p { margin: 0; }
 .lang-hint-close { width: 40px; height: 40px; }
 #sec-lang { scroll-margin-top: 12px; } /* the hint opens Settings here */
 .lang-hint-close .ms { font-size: 20px; }
+.lang-hint.install-priority { display: none; }
 .install-app {
   display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px;
-  margin: 0 0 16px; padding: 8px 12px; border-radius: 24px;
+  margin: 4px 0 12px; padding: 8px 12px; border-radius: 24px;
   background: var(--surface-container); color: var(--on-surface-variant);
 }
 .install-app > .btn { justify-self: start; padding-inline: 16px; }

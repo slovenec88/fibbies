@@ -13,13 +13,18 @@ export function setupInstallPrompt() {
   const help = document.getElementById('install-help');
   const appleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const androidMobile = /Android/.test(navigator.userAgent);
+  const hasInstructions = appleMobile || androidMobile;
+  document.getElementById('install-help-apple').hidden = !appleMobile;
+  document.getElementById('install-help-android').hidden = appleMobile || !androidMobile;
   let offer = null;
   let installed = false;
   let dismissed = false;
 
   const refresh = () => {
-    card.hidden = !languageHint.hidden || installed || standalone.matches || dismissed || !(offer || appleMobile);
-    if (appleMobile && !offer) {
+    card.hidden = installed || standalone.matches || dismissed || !(offer || hasInstructions);
+    languageHint.classList.toggle('install-priority', !card.hidden);
+    if (hasInstructions && !offer) {
       button.setAttribute('aria-controls', help.id);
       button.setAttribute('aria-expanded', String(!help.hidden));
     } else {
@@ -44,7 +49,6 @@ export function setupInstallPrompt() {
     refresh();
   });
   standalone.addEventListener('change', refresh);
-  new MutationObserver(refresh).observe(languageHint, { attributes: true, attributeFilter: ['hidden'] });
   document.getElementById('install-dismiss').addEventListener('click', dismiss);
   button.addEventListener('click', async () => {
     if (!offer) {
@@ -54,11 +58,17 @@ export function setupInstallPrompt() {
     }
     const prompt = offer;
     offer = null;
+    button.disabled = true;
     refresh();
     try {
       await prompt.prompt();
       if ((await prompt.userChoice).outcome === 'dismissed') dismiss();
+      else installed = true;
     } catch { /* The browser can revoke an install offer before it is used. */ }
+    finally {
+      button.disabled = false;
+      refresh();
+    }
   });
   refresh();
 }
