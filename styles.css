@@ -354,8 +354,6 @@ h1, h2, h3, p { margin: 0; }
 .player-top { display: flex; align-items: center; justify-content: space-between; height: 56px; margin: 0 -4px; }
 .player-title { display: flex; flex-direction: column; align-items: center; gap: 2px; font-weight: 600; font-size: 15px; min-width: 0; }
 .player-title > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56vw; }
-.awake-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--primary); letter-spacing: .02em; }
-.awake-chip .ms { font-size: 14px; }
 .segments { display: flex; gap: 4px; height: 6px; }
 .seg { flex: 1; border-radius: 3px; background: var(--surface-container-highest); overflow: hidden; }
 .seg > i { display: block; height: 100%; width: 0; background: var(--primary); border-radius: 3px; }
@@ -506,7 +504,6 @@ html:has(dialog[open]) { overflow: hidden; }
 .segmented button[aria-checked="true"] { background: var(--secondary-container); color: var(--on-secondary-container); }
 .segmented button[aria-checked="true"] .ms { display: none; }
 .segmented button[aria-checked="true"]::before { content: 'check' / ''; font-family: 'Material Symbols Rounded'; font-size: 18px; line-height: 1; }
-#set-cloud-sub.warn { color: var(--on-surface); font-weight: 600; }
 
 .dialog {
   border: 0; border-radius: 28px; padding: 24px; max-width: min(340px, calc(100vw - 48px));

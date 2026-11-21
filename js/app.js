@@ -11,7 +11,6 @@ import { playReward } from './reward-screen.js';
 import { playMerge } from './merge-fx.js';
 import { native, isNative } from './native.js';
 import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
-import { cloud } from './cloud.js';
 import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
 import { localizeContent } from './localize.js';
 import { setupInstallPrompt } from './install.js';
@@ -838,7 +837,6 @@ $('#pl-prev').onclick = () => session?.prev();
 $('#pl-close').onclick = () => confirmEnd();
 $('#pl-sound').onclick = openSettings;
 
-wakeLock.onChange((on) => { $('#pl-awake').hidden = !on; });
 
 function setSoundIcon() {
   $('#pl-sound .ms').textContent = settings.voice ? 'record_voice_over' : 'volume_up';
@@ -911,7 +909,7 @@ function finish(s) {
   const firstToday = !log.some((h) => h.day === day && counts(h));
   log.push({ day, id: s.routine.id, cat: s.routine.cat, secs, ratio: Math.round(ratio * 100) / 100, at: Date.now() });
   log = log.slice(-HISTORY_MAX);
-  if (writeJSON('limber.history', log)) cloud.touch();
+  writeJSON('limber.history', log);
   const profile = loadProfile();
   const reward = ratio < 0.5 ? null : computeReward({
     routine: s.routine,
@@ -974,7 +972,6 @@ function openSettings() {
   setScaleNote();
   $('#set-lang').innerHTML = LANGS.map((l) => `<button class="m3-item ripple" data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}"><span class="li-text"><b>${l.label}</b></span><span class="m3-radio" aria-hidden="true"></span></button>`).join('');
   checkVoice();
-  renderCloud();
   sheet.showModal();
 }
 function setScaleNote() {
@@ -1099,84 +1096,6 @@ function route() {
   }
 }
 
-// ---------- Google Play Games cloud save (Android only, optional) ----------
-async function renderCloud() {
-  const box = $('#set-cloud-group');
-  box.hidden = !cloud.supported;
-  if (!cloud.supported) return;
-  const ok = await cloud.available();
-  const sw = $('#set-cloud');
-  sw.checked = cloud.on;
-  // Never disabled: a disabled switch ignores taps, so a tap instead explains what is missing.
-  sw.disabled = cloudBusy;
-  const sub = $('#set-cloud-sub');
-  sub.classList.toggle('warn', !!(cloudMsg && cloudMsg.warn));
-  if (cloudMsg) { sub.textContent = cloudMsg.text; return; }
-  const when = cloud.syncedAt ? new Date(cloud.syncedAt).toLocaleString(numLocale(), { dateStyle: 'short', timeStyle: 'short' }) : '';
-  sub.textContent = !ok ? t('cloudNotSetUp')
-    : cloud.signedOut ? t('cloudSignedOut')
-    : cloud.on ? [cloud.name ? t('cloudSignedIn', { name: cloud.name }) : '', when ? t('cloudSynced', { when }) : ''].filter(Boolean).join(' · ') || t('cloudSub')
-    : t('cloudSub');
-}
-cloud.onChange(() => { if (sheet.open) renderCloud(); });
-let cloudBusy = false;
-// A message shown in place of the status line (snackbars are hidden behind the open sheet).
-let cloudMsg = null;
-sheet.addEventListener('close', () => { cloudMsg = null; });
-const dlgCloud = $('#dlg-cloud');
-function chooseCopy(remote) {
-  const lvl = levelProgress(xpOf(remote.data)).level;
-  const here = levelProgress(loadProfile().xp).level;
-  const fmt = (ms) => new Date(ms).toLocaleString(numLocale(), { dateStyle: 'medium', timeStyle: 'short' });
-  $('#dlg-cloud-body').textContent = t('cloudChoose', { cloud: lvl, when: fmt(remote.at), here });
-  return new Promise((res) => {
-    // Only the two buttons are choices; any other way of closing cancels and changes nothing.
-    dlgCloud.onclose = () => { const v = dlgCloud.returnValue; dlgCloud.returnValue = ''; res(v === 'local' || v === 'cloud' ? v : null); };
-    dlgCloud.showModal();
-  });
-}
-$('#dlg-cloud-use').onclick = () => dlgCloud.close('cloud');
-$('#dlg-cloud-keep').onclick = () => dlgCloud.close('local');
-$('#set-cloud').onchange = async (e) => {
-  cloudMsg = null;
-  if (!e.target.checked) { cloud.disable(); renderCloud(); return; }
-  if (!(await cloud.available())) {
-    e.target.checked = false;
-    cloudMsg = { text: t('cloudNeedsSetup'), warn: true };
-    renderCloud();
-    return;
-  }
-  cloudBusy = true;
-  cloudMsg = { text: t('cloudConnecting') };
-  renderCloud();
-  try {
-    const r = await cloud.enable(chooseCopy);
-    if (r === 'pulled') { reloadAfterPull(); return; }
-    cloudMsg = r === 'off' ? { text: t('cloudSignInFailed'), warn: true }
-      : r === 'cancelled' ? null
-      : { text: t('cloudOnNow') };
-  } catch {
-    cloud.disable();
-    cloudMsg = { text: t('cloudError'), warn: true };
-  } finally {
-    cloudBusy = false;
-    renderCloud();
-  }
-};
-// Pull a newer copy from another device when the app opens or comes back, but never mid-session.
-async function cloudSync() {
-  const r = await cloud.sync({
-    canReplace: () => !session && !dlgEnd.open && currentView !== 'player' && !document.querySelector('dialog[open]'),
-    choose: chooseCopy,
-  }).catch(() => 'error');
-  if (r === 'pulled') reloadAfterPull();
-}
-// Reload at once so nothing in memory (settings, history) can write stale data over the download.
-function reloadAfterPull() {
-  try { sessionStorage.setItem('fibbies.restored', '1'); } catch { /* ignore */ }
-  location.reload();
-}
-
 // ---------- Bottom sheets: pull down to close ----------
 // Dragging down from the handle, or anywhere while the sheet is scrolled to the top, moves the
 // sheet with the finger; letting go far enough (or with a quick flick) closes it.
@@ -1264,11 +1183,10 @@ function openSafety() {
 }
 $('#btn-safety').onclick = openSafety;
 $('#dlg-safety-ok').onclick = () => dlgSafety.close();
-// Per device (outside "limber." so cloud save neither uploads nor removes it).
+// Per device (outside "limber." so a backup code neither carries nor removes it).
 const SAFETY_KEY = 'fibbies.safety-seen';
 dlgSafety.addEventListener('close', () => {
   try { localStorage.setItem(SAFETY_KEY, '1'); } catch { /* ignore */ }
-  if (cloud.on) cloudSync(); // a startup pull waits while any dialog is open
 });
 function maybeShowSafety() {
   let seen = false;
@@ -1295,13 +1213,13 @@ window.addEventListener('storage', (e) => {
 });
 onSaveFail(() => setTimeout(() => snackbar(t('saveFailed')), 300));
 
-// Backup code: copy all progress as text, or restore it on this phone (works without Google Play).
+// Backup code: copy all progress as text, or restore it on this phone.
 const dlgBackup = $('#dlg-backup');
 $('#set-backup-copy').onclick = async () => {
   const code = makeBackupCode();
   let copied = false;
   try { await navigator.clipboard.writeText(code); copied = true; } catch { /* fall back to showing it */ }
-  if (copied) { cloudMsgSet(t('backupCopied')); return; }
+  if (copied) { backupNote(t('backupCopied')); return; }
   openBackup(code); // no clipboard access: show the code selected so it can be copied by hand
 };
 $('#set-backup-restore').onclick = () => openBackup('');
@@ -1331,16 +1249,15 @@ $('#dlg-backup-ok').onclick = () => {
   }
   const b = backupPending;
   try { replaceProgress(b.data); } catch { $('#backup-msg').textContent = t('saveFailed'); return; }
-  cloud.touch(); // with cloud save on, the restored copy is what gets uploaded next
   try { sessionStorage.setItem('fibbies.restored-backup', '1'); } catch { /* ignore */ }
   location.reload();
 };
 // A short note in place of the backup row's subtitle (snackbars sit behind the open sheet).
-function cloudMsgSet(text) {
+function backupNote(text) {
   const el = $('#set-backup-copy small');
   el.textContent = text;
-  clearTimeout(cloudMsgSet.t);
-  cloudMsgSet.t = setTimeout(() => { el.textContent = t('backupCopySub'); }, 3500);
+  clearTimeout(backupNote.t);
+  backupNote.t = setTimeout(() => { el.textContent = t('backupCopySub'); }, 3500);
 }
 
 // ---------- Boot ----------
@@ -1363,16 +1280,13 @@ route();
 window.__booted = true;
 native.hideSplash();
 try {
-  if (sessionStorage.getItem('fibbies.restored')) { sessionStorage.removeItem('fibbies.restored'); setTimeout(() => snackbar(t('cloudRestored')), 600); }
   if (sessionStorage.getItem('fibbies.restored-backup')) { sessionStorage.removeItem('fibbies.restored-backup'); setTimeout(() => snackbar(t('backupDone')), 600); }
 } catch { /* ignore */ }
-if (cloud.on) cloudSync();
 setTimeout(maybeShowSafety, 700);
-native.onResume(() => { if (cloud.on) cloudSync(); });
+try { localStorage.removeItem('fibbies.cloud'); } catch { /* ignore */ } // left over from the old cloud save
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) return;
   if (session && !session.finished && !session.paused) { session.pause(); setPausedUI(true); wakeLock.off(); }
-  if (cloud.on) cloud.sync().catch(() => {});
   if (pendingReload && safeToReload()) location.reload(); // apply a waiting update while nobody is looking
 });
 

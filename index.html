@@ -55,7 +55,6 @@
           <button class="icon-btn ripple" id="pl-close" aria-label="End session" data-i18n-aria="endSession"><span aria-hidden="true" class="ms">close</span></button>
           <div class="player-title">
             <span id="pl-routine">Routine</span>
-            <span class="awake-chip" id="pl-awake" hidden><span aria-hidden="true" class="ms filled">light_mode</span><span data-i18n="screenOn">Screen on</span></span>
           </div>
           <button class="icon-btn ripple" id="pl-sound" aria-label="Sound and voice" data-i18n-aria="soundAndVoice"><span aria-hidden="true" class="ms">volume_up</span></button>
         </header>
@@ -158,16 +157,6 @@
       </button>
     </div>
 
-    <div id="set-cloud-group" hidden>
-      <h3 class="m3-section">Google Play Games</h3>
-      <div class="m3-group">
-        <label class="m3-item ripple">
-          <span class="m3-lead"><span aria-hidden="true" class="ms">cloud_sync</span></span>
-          <span class="li-text"><b data-i18n="cloudSave">Cloud save</b><small id="set-cloud-sub"></small></span>
-          <input type="checkbox" class="switch" id="set-cloud">
-        </label>
-      </div>
-    </div>
     <h3 class="m3-section" data-i18n="about">About</h3>
     <div class="m3-group">
       <a class="m3-item ripple" href="https://github.com/slovenec88/fibbies" target="_blank" rel="noopener">
@@ -238,16 +227,7 @@
     </div>
   </dialog>
 
-  <!-- Cloud save: both this phone and Google Play already have progress -->
-  <dialog class="dialog" id="dlg-cloud">
-    <span aria-hidden="true" class="ms dialog-icon">cloud_sync</span>
-    <h2 data-i18n="cloudFound">Cloud save found</h2>
-    <p id="dlg-cloud-body"></p>
-    <div class="dialog-actions">
-      <button class="btn text ripple" id="dlg-cloud-keep" data-i18n="cloudKeep">Keep this phone's</button>
-      <button class="btn text ripple" id="dlg-cloud-use" data-i18n="cloudUse">Use cloud save</button>
-    </div>
-  </dialog>
+
 
   <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
 

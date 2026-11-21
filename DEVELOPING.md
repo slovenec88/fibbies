@@ -32,8 +32,7 @@ npm test
 This runs `scripts/selftest.mjs`. The test needs no dependencies. It covers the code that could lose someone's progress:
 - saving;
 - backup codes;
-- restore;
-- the cloud-save decisions.
+- restore.
 
 ## Where things live
 
@@ -47,7 +46,6 @@ This runs `scripts/selftest.mjs`. The test needs no dependencies. It covers the 
 | Procedural Fibbies, merging, evolution | `js/fibbies.js`, `js/critter.js`, `js/merge-fx.js` |
 | Flexibility check | `js/flex.js` |
 | Saving on the device, backup codes | `js/storage.js` |
-| Cloud save (Play Games) | `js/cloud.js`, `android/.../PlayGamesPlugin.java` |
 | Sound, voice, haptics | `js/audio.js`, `js/native.js` |
 | Translations | English UI text in `js/i18n.js`, English content in `js/data.js` and `js/rewards.js`; each other language is one file in `js/lang/`, swapped in by `js/localize.js` |
 
@@ -74,19 +72,6 @@ They live in `js/native.js` and do nothing on the web.
 | `npm run android:open` | Open the project in Android Studio |
 
 Change the web code at the repo root, then run `npm run sync`. Don't edit `www/` or `android/app/src/main/assets`; both are generated.
-
-### Optional: cloud save with Google Play Games
-
-The Android app can keep the player's progress (Fibbies, level, history) in their own Google Play Games account through the free [Saved Games](https://developer.android.com/games/pgs/savedgames) service. It's off until the app is set up in the Play Console; until then Settings says "Cloud save isn't set up". Separately, Android's Auto Backup (`allowBackup`) already copies the app's data to the user's Google Drive backup and restores it on a reinstall.
-
-To switch it on:
-1. Upload the app to the Play Console (an internal testing track is enough) and add yourself as a tester.
-2. In Play Console → **Play Games Services → Setup and management → Configuration**, create a games project for the app.
-3. Add an **Android credential** with the app's package name (`appId` in `capacitor.config.json`) and the SHA-1 of the signing key (the upload key's and the Play app signing key's; for debug builds run `cd android && ./gradlew signingReport`).
-4. Under **Saved Games**, turn the feature on, then publish the Play Games configuration and add testers.
-5. Copy the **project ID** (a number) into `android/gradle.properties` as `playGamesAppId=1234567890`, and rebuild.
-
-`js/cloud.js` handles the syncing. The newest copy wins, and the app asks which copy to keep when two phones both have progress.
 
 ## Recorded voice
 

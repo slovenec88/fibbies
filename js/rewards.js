@@ -3,7 +3,6 @@
 
 import { t, getLang, numLocale } from './i18n.js';
 import { fibbie, keyOf, countOf, dropFibbie, addFibbie, migrateProfile } from './fibbies.js';
-import { cloud } from './cloud.js';
 import { readJSON, writeJSON } from './storage.js';
 
 export const FIBERS_PER_SEC = 1337;
@@ -22,7 +21,7 @@ export function loadProfile() {
   return migrateProfile(Object.assign({ xp: 0, fibers: 0, chests: 0, buddy: null }, p && typeof p === 'object' && !Array.isArray(p) ? p : {}));
 }
 export function saveProfile(p) {
-  if (writeJSON(KEY, p)) cloud.touch();
+  writeJSON(KEY, p);
 }
 
 // ---------- Levels ----------

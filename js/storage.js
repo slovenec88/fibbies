@@ -1,6 +1,6 @@
 // One place for everything the app saves on the device (localStorage).
 //
-// - Progress lives under "limber." keys. Those keys are what cloud save and backup codes carry,
+// - Progress lives under "limber." keys. Those keys are what backup codes carry,
 //   except DEVICE_KEYS (language, theme, last category), which stay on each phone.
 // - A value that can't be read is copied to "fibbies.rescue.<key>" before the app falls back to
 //   an empty value, so the next save never destroys the only copy.
@@ -42,7 +42,7 @@ function writeRaw(key, str) {
 
 const synced = (k) => k && k.startsWith(PREFIX) && !DEVICE_KEYS.has(k);
 
-/** All progress keys as raw strings (what cloud save and backups carry). */
+/** All progress keys as raw strings (what backup codes carry). */
 export function snapshotProgress() {
   const data = {};
   try {

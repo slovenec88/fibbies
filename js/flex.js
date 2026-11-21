@@ -1,7 +1,6 @@
 // Weekly flexibility self-check: four tests rated on a 0-4 scale, no tools needed.
-// History lives in localStorage under "limber.flex" (so it also goes into cloud save).
+// History lives in localStorage under "limber.flex" (so it also goes into backup codes).
 import { t, numLocale } from './i18n.js';
-import { cloud } from './cloud.js';
 import { readJSON, writeJSON } from './storage.js';
 
 export const FLEX_TESTS = [
@@ -32,7 +31,7 @@ export function imbalances(e) {
 
 /** In memory: [{ day: 'YYYY-MM-DD', r: { toe: 0-4, quad: [L, R], ... } }], oldest first, one per day.
  *  On disk every answer in `r` stays a single number (the rounded average) and the two sides go in
- *  `s`, so an older app version (another phone on cloud save) still reads sensible levels. */
+ *  `s`, so an older app version (restoring a backup code) still reads sensible levels. */
 export function loadFlex() {
   try {
     const v = readJSON(KEY, []);
@@ -54,7 +53,7 @@ export function saveFlex(day, r) {
   const list = loadFlex().filter((e) => e.day !== day);
   list.push({ day, r });
   list.sort((a, b) => (a.day < b.day ? -1 : a.day > b.day ? 1 : 0));
-  if (writeJSON(KEY, list.slice(-200).map(toDisk))) cloud.touch();
+  writeJSON(KEY, list.slice(-200).map(toDisk));
 }
 
 /** 0-100 score for one check. */
