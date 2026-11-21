@@ -145,6 +145,9 @@ const EN = {
   chestBanked: ({ f, name }) => `Chest banked: +${f} fibers and ${name}!`,
   // done / reward
   soClose: 'So close!',
+  wellDone: "Well done!",
+  noChestToday: "All four chests are open for today. New ones tomorrow.",
+  noChestNext: ({ kinds }) => `No chest this time: chests come with a new kind of routine. Still waiting today: ${kinds}.`,
   soCloseBody: 'Finish at least half of a routine to unlock a chest, earn fibers and keep your streak alive.',
   tryAgain: 'Try again',
   home: 'Home',
@@ -175,6 +178,7 @@ const EN = {
   'q.strength': "Strength",
   doneToday: "done",
   stretchingTitle: "Stretching",
+  pickedToday: "Picked for today",
   'focus.all': "All",
   'focus.full': "Full body",
   'focus.back': "Back",

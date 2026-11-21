@@ -80,6 +80,7 @@ export function todaysCats(log, day) {
 }
 
 // ---------- Reward computation ----------
+const RUN_AWAY = [0.4, 0.12, 0, 0]; // chance a Fibbie runs off, by chest tier
 const round2 = (x) => Math.round(x * 100) / 100;
 
 /**
@@ -115,33 +116,23 @@ export function computeReward(o, rand = Math.random) {
     steps.push(total);
   }
 
-  // Chest tier is a roll: wooden chests are the usual result, so a rare one feels special.
-  // Luck (streaks, a big daily bonus, Flex 60s) tilts the odds; a lucky stretch is at least rare.
-  // No luck: 75 % wooden, 20 % rare, 4 % epic, 1 % legendary. All four: about 32/44/18/6 %.
-  let luck = 0;
-  if (streak >= 3) luck++;
-  if (streak >= 7) luck++;
-  if (daily >= 1.5) luck++;
-  if (scale === 'flex') luck++;
-  const pLeg = 0.01 + 0.012 * luck;
-  const pEpic = 0.04 + 0.035 * luck;
-  const pRare = 0.2 + 0.06 * luck;
-  const roll = rand();
-  let tier = roll < pLeg ? 3 : roll < pLeg + pEpic ? 2 : roll < pLeg + pEpic + pRare ? 1 : 0;
-  if (lucky) tier = Math.max(tier, 1);
-  if (!profile.chests) tier = Math.max(tier, 1); // first chest is always special
-  if (ratio < 0.3) tier = 0;
-
-  const fib = fibbie(dropFibbie(tier, profile, rand), 1);
-  // Now and then a Fibbie is too shy and runs off. Never in the first few chests, never from
-  // an epic or legendary chest, and never twice in a row.
-  const ranAway = profile.chests >= 3 && tier <= 1 && !profile.lastRanAway && rand() < 0.08;
-  const copies = countOf(profile, fib.key) + (ranAway ? 0 : 1);
+  // Chests come with today's bonus: the first new kind of routine today opens a wooden chest, the
+  // next one a rare, then epic, then legendary. A kind already done today, or a routine that is
+  // no kind at all (Quick), still earns fibers and XP but no chest; after all four, none until tomorrow.
+  const isKind = QUESTS.some((q) => q.cat === routine.cat);
+  const chest = isKind && !priorToday.has(routine.cat);
+  const tier = Math.min(3, QUESTS.filter((q) => priorToday.has(q.cat)).length);
+  const fib = chest ? fibbie(dropFibbie(tier, profile, rand), 1) : null;
+  // Shy Fibbies run off: often from a wooden chest, rarely from a rare one, never from the best two.
+  // Never in someone's first few chests, and never twice in a row.
+  const ranAway = chest && profile.chests >= 3 && !profile.lastRanAway && rand() < RUN_AWAY[tier];
+  const copies = fib ? countOf(profile, fib.key) + (ranAway ? 0 : 1) : 0;
   const before = levelProgress(profile.xp);
   const after = levelProgress(profile.xp + total);
   return {
-    base, mults, steps, total, tier, perfect, daily, lucky, ranAway,
-    fibbie: fib, isNew: !profile.dex[fib.key], copies,
+    base, mults, steps, total, chest, tier, perfect, daily, lucky, ranAway,
+    fibbie: fib, isNew: !!fib && !profile.dex[fib.key], copies,
+    kindsLeft: QUESTS.filter((q) => !priorToday.has(q.cat) && q.cat !== routine.cat).map((q) => q.cat),
     xpBefore: profile.xp, xpAfter: profile.xp + total,
     levelBefore: before.level, levelAfter: after.level,
   };
@@ -150,6 +141,7 @@ export function computeReward(o, rand = Math.random) {
 export function applyReward(profile, r) {
   profile.xp += r.total;
   profile.fibers += r.total;
+  if (!r.chest) return profile;
   profile.chests += 1;
   profile.lastRanAway = !!r.ranAway;
   if (!r.ranAway) addFibbie(profile, keyOf(r.fibbie.sp, 1));

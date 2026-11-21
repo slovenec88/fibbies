@@ -6,7 +6,7 @@
 
 **Stretch for a few minutes. Open a chest. Collect a critter.**
 
-A follow-along stretching app for before and after a workout, at bedtime and during a work break, plus short strength sessions, with a treasure chest at the end of every session.
+A follow-along stretching app for before and after a workout, at bedtime and during a work break, plus short strength sessions, with treasure chests that grow through your day.
 
 **[Try Fibbies in your browser →](https://fibbies.juringari.com/)** · [Project and Android updates](https://juringari.com/fibbies/)
 
@@ -34,9 +34,9 @@ Most people know they should stretch, and most skip it. Fibbies makes it short, 
 
 ## A reward every time
 
-- **A treasure chest after every session.** Tap to open it and watch the counter of "muscle fibers stretched" spin up.
-- **Multipliers stack up.** You get them for a daily streak, a perfect session, a lucky roll and *today's bonus*: each kind of routine you do in a day (warm-up, cool-down, relax, strength) adds +25% to every chest for the rest of that day.
-- **Chests come in four tiers,** from Wooden to Legendary. Most are Wooden, so a Legendary one feels special. Streaks and a big daily bonus improve your odds.
+- **Four chests a day, each bigger than the last.** The first new kind of routine you do in a day (warm-up, cool-down, relax or strength) opens a Wooden chest, the next a Rare one, then Epic, then a full-force Legendary show. Tap to open it and watch the counter of "muscle fibers stretched" spin up.
+- **Multipliers stack up.** You get them for a daily streak, a perfect session, a lucky roll and *today's bonus*: each kind of routine you do in a day (warm-up, cool-down, relax, strength) adds +25% to everything you earn for the rest of that day. A day runs until 2 AM.
+- **Better chests, braver Fibbies.** A Fibbie in a Wooden chest runs off 4 times in 10; from an Epic or Legendary chest it never does. Repeats and Quick routines still earn fibers and XP.
 - **Skipping doesn't pay.** Sessions less than half done earn nothing.
 
 ## Meet the Fibbies

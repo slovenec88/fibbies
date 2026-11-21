@@ -62,6 +62,28 @@ await test('a restore that fails half way leaves the old progress untouched', ()
   assert.ok(!mem.has('limber.flex'));
 });
 
+// ---- chests come with today's bonus ----
+{
+  const { computeReward } = await import(new URL('rewards.js', root));
+  const prof = () => ({ xp: 0, fibers: 0, chests: 5, fibs: [], dex: {} });
+  const run = (cat, prior) => computeReward({ routine: { cat, items: [] }, holdSecs: 300, ratio: 1, skips: 0, scale: 1, priorToday: new Set(prior), firstToday: !prior.length, streak: 1, profile: prof() }, () => 0.99);
+  await test('chests: the 1st new kind today opens a wooden chest, then rare, epic, legendary', async () => {
+    assert.deepEqual([run('before', []), run('after', ['before']), run('evening', ['before', 'after']), run('strength', ['before', 'after', 'evening'])].map((r) => [r.chest, r.tier]),
+      [[true, 0], [true, 1], [true, 2], [true, 3]]);
+  });
+  await test('chests: a kind already done today, or a Quick routine, gives fibers but no chest', async () => {
+    for (const r of [run('before', ['before']), run('quick', []), run('before', ['before', 'after', 'evening', 'strength'])]) {
+      assert.equal(r.chest, false); assert.equal(r.fibbie, null); assert.ok(r.total > 0);
+    }
+  });
+  await test('chests: a wooden chest loses its Fibbie 40% of the time, the best two never', async () => {
+    const roll = (cat, prior, x) => computeReward({ routine: { cat, items: [] }, holdSecs: 300, ratio: 1, skips: 0, scale: 1, priorToday: new Set(prior), firstToday: false, streak: 1, profile: prof() }, () => x).ranAway;
+    assert.equal(roll('before', [], 0.39), true);
+    assert.equal(roll('before', [], 0.41), false);
+    assert.equal(roll('evening', ['before', 'after'], 0), false);
+  });
+}
+
 // ---- voice picking ----
 const { bestVoice } = await import(new URL('voice-pick.js', root));
 const V = (pairs) => pairs.map(([name, lang]) => ({ name, lang }));

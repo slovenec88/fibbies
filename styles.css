@@ -180,6 +180,7 @@ h1, h2, h3, p { margin: 0; }
 .routine-list { display: grid; gap: 10px; }
 .sec-title { font-size: 22px; font-weight: 600; margin: 30px 4px 0; scroll-margin-top: 12px; font-family: var(--font-display); }
 .sec-title + .chips { margin-top: 10px; }
+.routine-list[data-featured="true"]::before { content: var(--picked); font-size: 13px; font-weight: 600; color: var(--on-surface-variant); margin: -4px 4px 0; }
 .routine-card {
   display: grid; grid-template-columns: 76px 1fr auto; align-items: center; gap: 14px;
   width: 100%; text-align: left; padding: 10px 14px 10px 10px; border-radius: 24px;
@@ -490,9 +491,11 @@ html:has(dialog[open]) { overflow: hidden; }
 .rw-core { width: 75vmin; height: 75vmin; opacity: 0; transform: scale(.3); transition: opacity .4s, transform .6s cubic-bezier(.2,1.5,.4,1); }
 .rw-flare { width: 170vw; height: 34px; opacity: 0; mix-blend-mode: normal; }
 .reward.opened .rw-beams { opacity: .8; transform: none; }
+.reward.opened[data-power="0"] .rw-beams { opacity: .5; }
 .reward.opened[data-power="2"] .rw-beams { opacity: .92; }
 .reward.opened[data-power="3"] .rw-beams { opacity: 1; }
 .reward.opened .rw-core { opacity: .75; transform: none; animation: core-pulse 1.8s ease-in-out .6s infinite; }
+.reward.opened[data-power="0"] .rw-core { opacity: .4; }
 .reward.opened[data-power="1"] .rw-core { opacity: .55; }
 @keyframes core-pulse { 50% { opacity: 1; transform: scale(1.12); } }
 .reward.done .rw-core { animation-duration: 3.2s; }
@@ -753,6 +756,11 @@ html:has(dialog[open]) { overflow: hidden; }
 }
 .rw-nochest { justify-content: center; gap: 12px; }
 .rw-nochest .rw-chest { filter: grayscale(.6) brightness(.8); }
+.rw-earned .rw-done-icon { position: relative; z-index: 3; font-size: 96px; color: var(--primary); animation: done-glow 2.4s ease-in-out .8s infinite; }
+@keyframes done-glow { 0%, 100% { filter: drop-shadow(0 0 6px rgba(126, 224, 181, .35)); } 50% { filter: drop-shadow(0 0 22px rgba(126, 224, 181, .9)); } }
+.rw-earned h1, .rw-earned p, .rw-earned .rw-actions { position: relative; z-index: 3; }
+@media (prefers-reduced-motion: reduce) { .rw-earned .rw-done-icon { animation: none; } }
+.rw-earned .rw-earned-n { font-size: 22px; font-weight: 800; color: #ffd166; }
 .rw-nochest .rw-chest::after { content: none; }
 .rw-nochest h1 { font-size: 32px; font-weight: 800; }
 .rw-nochest p { opacity: .8; max-width: 300px; }
@@ -789,6 +797,8 @@ html:has(dialog[open]) { overflow: hidden; }
 /* party mode: rays turn faster (fastest for the best chests) and the second layer breathes */
 .reward.party:not(.done) .rw-beams .ray-a { animation-duration: 8s; }
 .reward.party:not(.done) .rw-beams .ray-b { animation: spin-back 12s linear infinite, beam-breathe 2.4s ease-in-out infinite; }
+.reward.party[data-power="0"]:not(.done) .rw-beams .ray-a { animation-duration: 14s; }
+.reward.party[data-power="0"]:not(.done) .rw-beams .ray-b { animation: spin-back 20s linear infinite; }
 .reward.party[data-power="2"]:not(.done) .rw-beams .ray-a { animation-duration: 6s; }
 .reward.party[data-power="3"]:not(.done) .rw-beams .ray-a { animation-duration: 4.5s; }
 .reward.party[data-power="3"]:not(.done) .rw-beams .ray-b { animation-duration: 7s, 1.6s; }

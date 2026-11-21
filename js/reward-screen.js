@@ -12,9 +12,9 @@ const fmtX = (x) => new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 
 const TAPS = 3; // taps to break the chest open
 
 // Chest colours (the same as --tc / --tc2 in styles.css) and how big the show gets:
-// a wooden chest gets the basic show, a rare one a stronger show, epic and legendary the biggest.
+// each tier a clear step up: a gentle wooden show, then rare, epic, and legendary at full force.
 const TIER_COLORS = [['#f2c14e', '#ff9f1c'], ['#5aa9e6', '#4cc9f0'], ['#b388ff', '#ff5fa2'], ['#ffd60a', '#ff5fa2']];
-const POWER = [1, 2, 3, 3];
+const POWER = [0.7, 1.7, 2.4, 3]; // wooden subtle ... legendary the full show
 const RAINBOW = ['#ff5fa2', '#ffd60a', '#4cc9f0', '#5ee38f', '#b388ff'];
 
 export function playReward(root, rw, { stats, onHome, onAgain }) {
@@ -71,6 +71,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const bigWrap = big.parentElement;
   const inner = $('.rw-inner');
   const P = POWER[rw.tier];
+  /** A size for this chest from the [small, medium, big] it has at power 1, 2 and 3 (wooden goes below small). */
+  const lv = (a, b, c) => Math.round(P <= 1 ? a * P : P <= 2 ? a + (b - a) * (P - 1) : b + (c - b) * (P - 2));
   const [tc, tc2] = TIER_COLORS[rw.tier];
   const legendary = rw.tier === 3;
   const fxAll = createFx(wrap, { colors: [tc, tc2], reduce });
@@ -78,7 +80,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' ? f : (...a) => { if (!fast) f(...a); }]));
   // Lighting: god rays (two layers turning opposite ways), a white-hot core behind the chest and a
   // lens-flare streak. All are small pre-drawn canvases that the graphics chip scales, spins and fades.
-  const rayCount = [14, 18, 22][P - 1];
+  const rayCount = Math.max(8, lv(14, 18, 22));
   const raysA = raysCanvas(legendary ? RAINBOW : [tc, tc, tc2], rayCount, { seed: rw.tier + 1 });
   const raysB = raysCanvas(legendary ? [...RAINBOW].reverse() : [tc2, '#ffffff', tc], Math.round(rayCount * 0.6), { soft: 1.6, seed: rw.tier + 7 });
   raysA.className = 'ray-a'; raysB.className = 'ray-b';
@@ -87,7 +89,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const flare = flareCanvas(legendary ? '#ffe680' : tc2); flare.className = 'rw-flare';
   $('.rw-light').append(core, flare);
   $('.rw-pillar').append(pillarCanvas(tc));
-  wrap.dataset.power = String(P);
+  wrap.dataset.power = ['0', '2', '3', '3'][rw.tier]; // light, rays and glow: wooden gentle, rare bright, epic and legendary full
   $('#rw-home').onclick = () => { stop(); onHome(); };
   // Taps never cut the show short; only this small Skip button does.
   let releaseTaps = null;
@@ -173,7 +175,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (reduce || fast) return;
     core.animate([{ transform: 'scale(1)' }, { transform: `scale(${1 + 0.25 * k})`, offset: 0.3 }, { transform: 'scale(1)' }], { duration: 450, easing: 'ease-out' });
     $('.rw-beams').animate([{ transform: 'scale(1)' }, { transform: `scale(${1 + 0.08 * k})`, offset: 0.3 }, { transform: 'scale(1)' }], { duration: 450, easing: 'ease-out' });
-    if (P >= 2) flare.animate([{ opacity: 0.45 }, { opacity: 1, offset: 0.25 }, { opacity: 0.45 }], { duration: 450, easing: 'ease-out' });
+    if (P >= 1.5) flare.animate([{ opacity: 0.45 }, { opacity: 1, offset: 0.25 }, { opacity: 0.45 }], { duration: 450, easing: 'ease-out' });
   }
   /** Moves the light so it sits right behind the chest (after the chest shrinks). */
   function placeLight() {
@@ -239,8 +241,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         if (now - lastTick > 55 && p < 1) {
           lastTick = now; fx.count(p); haptics.buzz(5);
           const c = chestPos();
-          vfx.fountain(c.x, c.y, P + 1, P >= 2);
-          if (P >= 2) vfx.twinkles(P - 1, 0.7);
+          vfx.fountain(c.x, c.y, P + 1, P >= 1.5);
+          if (P >= 1.5) vfx.twinkles(P - 1, 0.7);
         }
         if (p >= 1 || fast) { setBig(to); res(); } else requestAnimationFrame(step);
       };
@@ -286,7 +288,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         haptics.buzz(30 + hits * 25);
         const c = centerOf(chest);
         vfx.burst(c.x, c.y, 5 + hits * 4 * P, ['spark', 'star', 'band'], 0.7);
-        if (P >= 2) vfx.ring(c.x, c.y, { color: tc, speed: 500, width: 6, life: 0.35 });
+        if (P >= 1.5) vfx.ring(c.x, c.y, { color: tc, speed: 500, width: 6, life: 0.35 });
         shake(1);
         $('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
       }
@@ -299,8 +301,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.charge();
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
     // Light swirls in and gets sucked into the chest: longer and denser for better chests.
-    const chargeMs = [950, 1150, 1400][P - 1];
-    { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, [18, 45, 90][P - 1], chargeMs); }
+    const chargeMs = lv(950, 1150, 1400);
+    { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, lv(18, 45, 90), chargeMs); }
     await sleep(chargeMs);
     if (!alive) return;
     flash();
@@ -310,21 +312,21 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.open();
     haptics.buzz(160);
     shake();
-    if (P >= 3) punch();
-    if (P >= 2 && !reduce) {
+    if (P >= 2.2) punch();
+    if (P >= 1.5 && !reduce) {
       // Lens flare: a streak that shoots out sideways and then glows on, dimmer.
       flare.animate([
-        { transform: 'scaleX(0)', opacity: 1 }, { transform: `scaleX(${P >= 3 ? 1.5 : 1.15})`, opacity: 1, offset: 0.35 }, { transform: 'scaleX(1)', opacity: 0.45 },
+        { transform: 'scaleX(0)', opacity: 1 }, { transform: `scaleX(${P >= 2.2 ? 1.5 : 1.15})`, opacity: 1, offset: 0.35 }, { transform: 'scaleX(1)', opacity: 0.45 },
       ], { duration: 700, easing: 'ease-out', fill: 'forwards' });
     }
     {
       const c = chestPos();
       vfx.ring(c.x, c.y, { color: '#fff', speed: 1100, width: 12 + P * 4, life: 0.5 + P * 0.08 });
-      if (P >= 2) vfx.ring(c.x, c.y, { color: tc, speed: 750, width: 10, life: 0.75 });
-      if (P >= 3) vfx.ring(c.x, c.y, { color: tc2, speed: 450, width: 8, life: 1 });
-      vfx.burst(c.x, c.y, [40, 80, 130][P - 1], P >= 2 ? ['band', 'star', 'spark', 'fiber', 'gem'] : ['band', 'star', 'spark', 'fiber'], 0.9 + P * 0.15);
-      vfx.fountain(c.x, c.y, [16, 28, 45][P - 1], P >= 2);
-      if (P >= 3) {
+      if (P >= 1.5) vfx.ring(c.x, c.y, { color: tc, speed: 750, width: 10, life: 0.75 });
+      if (P >= 2.2) vfx.ring(c.x, c.y, { color: tc2, speed: 450, width: 8, life: 1 });
+      vfx.burst(c.x, c.y, lv(40, 80, 130), P >= 1.5 ? ['band', 'star', 'spark', 'fiber', 'gem'] : ['band', 'star', 'spark', 'fiber'], 0.9 + P * 0.15);
+      vfx.fountain(c.x, c.y, lv(16, 28, 45), P >= 1.5);
+      if (P >= 2.2) {
         // Epic and legendary: a second blast a moment later.
         const id = setTimeout(() => {
           timers.delete(id);
@@ -341,7 +343,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.musicStart(rw.tier);
 
     // Let the burst play out in the middle, then glide up to make room for the payout.
-    await sleep([1000, 1200, 1400][P - 1]);
+    await sleep(lv(1000, 1200, 1400));
     if (!alive) return;
     moveUp();
     await sleep(380);
@@ -372,7 +374,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         vfx.ring(b.x, b.y, { color: m.hot ? '#ff9f1c' : tc, speed: 420 + P * 120, width: 6, life: 0.4 });
         vfx.burst(b.x, b.y, (m.hot ? 14 : 8) * P, ['spark', 'star', 'band'], 0.6);
         const c = chestPos();
-        vfx.fountain(c.x, c.y, (m.hot ? 10 : 5) * P, P >= 2);
+        vfx.fountain(c.x, c.y, (m.hot ? 10 : 5) * P, P >= 1.5);
       }
       await countTo(rw.steps[i], rw.steps[i + 1], 650);
       if (!alive) return;
@@ -391,15 +393,15 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     {
       const b = centerOf(bigWrap);
       vfx.ring(b.x, b.y, { color: '#fff', speed: 900, width: 10 + P * 3, life: 0.5 });
-      vfx.burst(b.x, b.y, [30, 55, 90][P - 1], ['band', 'spark', 'star', 'fiber'], 1);
+      vfx.burst(b.x, b.y, lv(30, 55, 90), ['band', 'spark', 'star', 'fiber'], 1);
       // Loot from all around flies into the total, some pieces landing with a little spark.
-      vfx.magnet(b.x, b.y, [10, 26, 44][P - 1]);
+      vfx.magnet(b.x, b.y, lv(10, 26, 44));
       const c = chestPos();
-      vfx.fountain(c.x, c.y, [20, 26, 30][P - 1], P >= 2);
-      if (P >= 2) vfx.rain([0, 24, 40][P - 1]);
-      vfx.rockets([2, 4, 7][P - 1]);
+      vfx.fountain(c.x, c.y, lv(20, 26, 30), P >= 1.5);
+      if (P >= 1.5) vfx.rain(lv(0, 24, 40));
+      vfx.rockets(lv(2, 4, 7));
       vfx.twinkles(P * 6);
-      if (P >= 3) {
+      if (P >= 2.2) {
         punch();
         const id = setTimeout(() => { timers.delete(id); if (alive && !fast) { vfx.rockets(5); vfx.twinkles(20); } }, 1300);
         timers.add(id);
@@ -464,7 +466,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.add('done');
     $('#rw-skip').hidden = true;
     chestAt = null; placeLight(); // in case anything moved while the show raced through
-    if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) { vfx.embers(1); if (P >= 3) vfx.twinkles(1, 0.6); } }, 450);
+    if (!reduce) ambient = setInterval(() => { if (alive && !document.hidden) { vfx.embers(1); if (P >= 2.2) vfx.twinkles(1, 0.6); } }, 450);
     const act = $('.rw-actions');
     if (act.getBoundingClientRect().bottom > innerHeight) act.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
   }

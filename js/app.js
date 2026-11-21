@@ -8,6 +8,7 @@ import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG, esc, stars } from './critter.js';
 import { playReward } from './reward-screen.js';
+import { createFx } from './fx-canvas.js';
 import { playMerge } from './merge-fx.js';
 import { native, isNative } from './native.js';
 import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
@@ -174,10 +175,20 @@ function show(name) {
 }
 
 // ---------- Home ----------
-let activeCat = readJSON('limber.cat', 'all'); // stretching filter
-if (!CATEGORIES.some((c) => c.id === activeCat && c.id !== 'strength')) activeCat = 'all';
-let activeFocus = readJSON('limber.focus', 'all'); // strength filter
-if (!FOCUS.some((f) => f.id === activeFocus)) activeFocus = 'all';
+// Filters start empty each time the app opens: each section then shows a few routines picked for
+// today. Picking a filter shows its list; tapping it again goes back to today's picks.
+let activeCat = null; // stretching filter
+let activeFocus = null; // strength filter
+const FEATURED = 3;
+/** `n` routines from `list`, the same all day and different the next (a shuffle seeded by the day). */
+function picksForToday(list, salt) {
+  let h = 2166136261;
+  for (const ch of dayKey() + salt) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const rnd = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296;
+  const a = [...list];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a.slice(0, FEATURED);
+}
 const STRETCH_CATS = () => CATEGORIES.filter((c) => c.id !== 'strength');
 const chipHTML = (key, id, on, icon, label) => `
     <button class="chip ripple" role="tab" aria-selected="${on}" data-${key}="${id}">
@@ -194,6 +205,7 @@ function renderHome() {
   $('#chips').innerHTML = STRETCH_CATS().map((c) => chipHTML('cat', c.id, c.id === activeCat, c.icon, c.label)).join('');
   const sc = catOf('strength');
   $('#strength-title').textContent = sc.label;
+  document.documentElement.style.setProperty('--picked', JSON.stringify(t('pickedToday')));
   $('#chips-strength').setAttribute('aria-label', sc.label);
   $('#chips-strength').innerHTML = FOCUS.map((f) => chipHTML('focus', f.id, f.id === activeFocus, f.icon, t(`focus.${f.id}`))).join('');
 
@@ -604,8 +616,19 @@ function routineCard(r) {
   return b;
 }
 function renderList() {
-  $('#routine-list').replaceChildren(...ROUTINES.filter((r) => r.cat !== 'strength' && (activeCat === 'all' || r.cat === activeCat)).map(routineCard));
-  $('#routine-list-strength').replaceChildren(...ROUTINES.filter((r) => r.cat === 'strength' && (activeFocus === 'all' || r.focus === activeFocus)).map(routineCard));
+  // The Top 5s already have their quick starts above, so today's picks come from the rest.
+  const stretching = ROUTINES.filter((r) => r.cat !== 'strength');
+  const strength = ROUTINES.filter((r) => r.cat === 'strength');
+  // Today's picks favour kinds that still give a chest today (not Quick, not done yet).
+  const doneToday = todaysCats(log, dayKey());
+  const fresh = stretching.filter((r) => !r.top && QUESTS.some((q) => q.cat === r.cat) && !doneToday.has(r.cat));
+  const pool = fresh.length >= FEATURED ? fresh : stretching.filter((r) => !r.top && r.cat !== 'quick');
+  const s1 = activeCat ? stretching.filter((r) => activeCat === 'all' || r.cat === activeCat) : picksForToday(pool, 'stretch');
+  const s2 = activeFocus ? strength.filter((r) => activeFocus === 'all' || r.focus === activeFocus) : picksForToday(strength.filter((r) => !r.top), 'strength');
+  $('#routine-list').replaceChildren(...s1.map(routineCard));
+  $('#routine-list-strength').replaceChildren(...s2.map(routineCard));
+  $('#routine-list').dataset.featured = String(!activeCat);
+  $('#routine-list-strength').dataset.featured = String(!activeFocus);
 }
 
 function markChips(box, key, value, iconOf) {
@@ -617,23 +640,21 @@ function markChips(box, key, value, iconOf) {
 }
 function setCat(cat) {
   activeCat = cat;
-  writeJSON('limber.cat', activeCat);
   markChips($('#chips'), 'cat', activeCat, (id) => catOf(id).icon);
   renderList();
 }
 function setFocus(focus) {
   activeFocus = focus;
-  writeJSON('limber.focus', activeFocus);
   markChips($('#chips-strength'), 'focus', activeFocus, (id) => FOCUS.find((f) => f.id === id).icon);
   renderList();
 }
 $('#chips').addEventListener('click', (e) => {
   const c = e.target.closest('[data-cat]');
-  if (c) setCat(c.dataset.cat);
+  if (c) setCat(c.dataset.cat === activeCat ? null : c.dataset.cat); // a second tap: back to today's picks
 });
 $('#chips-strength').addEventListener('click', (e) => {
   const c = e.target.closest('[data-focus]');
-  if (c) setFocus(c.dataset.focus);
+  if (c) setFocus(c.dataset.focus === activeFocus ? null : c.dataset.focus);
 });
 // A bonus tile takes you down to that kind of routine, already filtered.
 $('#progress-card').addEventListener('click', (e) => {
@@ -858,7 +879,9 @@ function announceBanked() {
   if (!lastResult || lastResult.shown || !lastResult.reward) return false;
   lastResult.shown = true;
   const rw = lastResult.reward;
-  setTimeout(() => snackbar(rw.ranAway ? t('chestBankedRan', { f: fmtBig(rw.total) }) : t('chestBanked', { f: fmtBig(rw.total), name: rw.fibbie.name })), 400);
+  const msg = !rw.chest ? t('fibersStretched', { x: `+${fmtBig(rw.total)}` })
+    : rw.ranAway ? t('chestBankedRan', { f: fmtBig(rw.total) }) : t('chestBanked', { f: fmtBig(rw.total), name: rw.fibbie.name });
+  setTimeout(() => snackbar(msg), 400);
   return true;
 }
 /** Ends the current session. Returns true when a "chest banked" message was queued. */
@@ -948,12 +971,67 @@ function renderDone() {
     $('#rw-home').onclick = () => replace('#/');
     return;
   }
+  if (!res.reward.chest) {
+    // Fibers and XP without a chest: a kind already done today, a Quick routine, or all four opened.
+    const rw = res.reward;
+    const left = rw.kindsLeft.map((c) => catOf(c).label).join(', ');
+    v.innerHTML = `
+      <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned">
+        <span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span>
+        <h1>${t('wellDone')}</h1>
+        <p class="rw-earned-n">${esc(t('fibersStretched', { x: `+${fmtBig(rw.total)}` }))}</p>
+        <p>${esc(left ? t('noChestNext', { kinds: left }) : t('noChestToday'))}</p>
+        <div class="rw-actions">
+          <button class="rw-btn primary ripple" id="rw-home"><span aria-hidden="true" class="ms filled">check</span>${t('collect')}</button>
+          <button class="rw-btn ripple" id="rw-again"><span aria-hidden="true" class="ms">replay</span>${t('again')}</button>
+        </div>
+      </div></div>`;
+    $('#rw-again').onclick = again;
+    $('#rw-home').onclick = () => replace('#/');
+    celebrateEarned(v, rw.total);
+    return;
+  }
   const st = streak();
   rewardPlayer = playReward(v, res.reward, {
     stats: [[fmtTime(res.secs), t('statActive')], [String(res.moves), t(r.cat === 'strength' ? 'exercisesWord' : 'stretchesWord', { n: res.moves })], [String(st), t('statStreak', { n: st })]],
     onHome: () => replace('#/'),
     onAgain: again,
   });
+}
+
+/** A small payoff for a session without a chest: the check pops in with a ring and a puff of
+ *  bands and sparks, and the fibers count up. Much quieter than a chest. */
+function celebrateEarned(v, total) {
+  if (reduceMotion()) return;
+  const wrap = v.querySelector('.reward');
+  const icon = v.querySelector('.rw-done-icon');
+  const num = v.querySelector('.rw-earned-n');
+  const fxs = createFx(wrap, { colors: ['#7ee0b5', '#ffd166'], reduce: false });
+  const timers = [];
+  rewardPlayer = { stop() { timers.forEach(clearTimeout); fxs.stop(); } };
+  icon.animate([
+    { transform: 'scale(0) rotate(-40deg)', opacity: 0 },
+    { transform: 'scale(1.25) rotate(8deg)', opacity: 1, offset: 0.55 },
+    { transform: 'scale(1) rotate(0)', opacity: 1 },
+  ], { duration: 700, easing: 'cubic-bezier(.3,1.4,.5,1)', fill: 'backwards' });
+  timers.push(setTimeout(() => {
+    const r = icon.getBoundingClientRect();
+    const x = r.left + r.width / 2, y = r.top + r.height / 2;
+    fxs.ring(x, y, { color: '#ffffff', speed: 650, width: 7, life: 0.45 });
+    fxs.burst(x, y, 26, ['band', 'spark', 'star'], 0.8);
+    fxs.twinkles(6, 0.7);
+    fx.pop();
+    haptics.buzz(30);
+  }, 320));
+  // The fibers count up from zero.
+  let t0 = null;
+  const step = (now) => {
+    t0 ??= now + 250;
+    const k = Math.max(0, Math.min(1, (now - t0) / 900));
+    num.textContent = t('fibersStretched', { x: `+${fmtBig(Math.round(total * (1 - (1 - k) ** 3)))}` });
+    if (k < 1 && num.isConnected) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 
 // ---------- Settings sheet ----------
