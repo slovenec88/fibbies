@@ -20,6 +20,14 @@ function ik(root, target, l1, l2, bend) {
   return [j, [j[0] + (ex / ed) * l2, j[1] + (ey / ed) * l2]];
 }
 
+/** Two-bone IK that picks whichever of the two elbow (or knee) positions points most along `pref`. */
+function ikToward(root, target, l1, l2, pref) {
+  const a = ik(root, target, l1, l2, 1);
+  const b = ik(root, target, l1, l2, -1);
+  const score = (j) => (j[0] - root[0]) * pref[0] + (j[1] - root[1]) * pref[1];
+  return score(a[0]) >= score(b[0]) ? a : b;
+}
+
 function lerp(a, b, t) {
   if (typeof a === 'number') return a + (b - a) * t;
   if (Array.isArray(a)) return a.map((v, i) => lerp(v, b[i], t));
@@ -30,6 +38,44 @@ function blend(pa, pb, t) {
   const out = {};
   for (const k of Object.keys(pa)) out[k] = pb && k in pb ? lerp(pa[k], pb[k], t) : pa[k];
   return out;
+}
+
+/** Shoulder points for a pose, the same way solve() places them. */
+function shoulders(p, view) {
+  const neck = add(p.h, dir(p.t, LEN.torso));
+  const sw = view === 'side' ? 0 : 15;
+  return { hN: add(neck, dir(p.t + 90, sw)), hF: add(neck, dir(p.t + 90, -sw)) };
+}
+
+/**
+ * The pose at `t` between a and b. A hand that travels far (raising the arms, say) moves along an
+ * arc around its shoulder, the way an arm swings, instead of in a straight line through the head.
+ * Hands that stay put (on a wall or the floor) keep the straight blend so they don't slide off.
+ */
+function pose(s, t) {
+  const p = blend(s.a, s.b, t);
+  if (s.view === 'top') return p;
+  const sa = shoulders(s.a, s.view), sb = shoulders(s.b, s.view), sp = shoulders(p, s.view);
+  for (const k of ['hN', 'hF']) {
+    const A = s.a[k], B = s.b[k];
+    if (!A || !B || Math.hypot(B[0] - A[0], B[1] - A[1]) < 24) continue;
+    const ra = [A[0] - sa[k][0], A[1] - sa[k][1]], rb = [B[0] - sb[k][0], B[1] - sb[k][1]];
+    const aa = Math.atan2(ra[1], ra[0]);
+    let da = Math.atan2(rb[1], rb[0]) - aa;
+    da = Math.atan2(Math.sin(da), Math.cos(da));
+    // Seen from the front, an arm passes in front of the body, so a far swing (a twist) goes straight.
+    // Seen from the side, take the way round whose middle points farthest from the hips, so the arm
+    // swings out in front or overhead and never sweeps through the body.
+    if (s.view !== 'side' && Math.abs(da) > rad(150)) continue;
+    const toHip = Math.atan2(s.a.h[1] - sa[k][1], s.a.h[0] - sa[k][0]);
+    const away = (d) => Math.abs(Math.atan2(Math.sin(aa + d / 2 - toHip), Math.cos(aa + d / 2 - toHip)));
+    const other = da - Math.sign(da) * Math.PI * 2;
+    if (s.view === 'side' && away(other) > away(da)) da = other;
+    const ang = aa + da * t;
+    const len = Math.hypot(...ra) + (Math.hypot(...rb) - Math.hypot(...ra)) * t;
+    p[k] = [sp[k][0] + Math.cos(ang) * len, sp[k][1] + Math.sin(ang) * len];
+  }
+  return p;
 }
 
 const fmt = (p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
@@ -46,10 +92,19 @@ function solve(p, view) {
   const shF = add(neck, dir(perp, -sw));
   const hpN = add(hip, dir(perp, hw));
   const hpF = add(hip, dir(perp, -hw));
-  const eb = p.eb || (front ? [-1, 1] : [1, 1]);
   const kb = p.kb || (front ? [-1, 1] : [-1, -1]);
-  const [eN, wN] = ik(shN, p.hN, LEN.ua, LEN.fa, eb[0]);
-  const [eF, wF] = ik(shF, p.hF, LEN.ua, LEN.fa, eb[1]);
+  let eN, wN, eF, wF;
+  if (front && !p.eb) {
+    // Elbows point away from the body and a little down, whether the hands are low or overhead
+    // (a fixed bend direction turns them inward once the hands go up, and the arms cross).
+    const down = dir(p.t + 180, 0.5);
+    [eN, wN] = ikToward(shN, p.hN, LEN.ua, LEN.fa, add(dir(perp, 1), down));
+    [eF, wF] = ikToward(shF, p.hF, LEN.ua, LEN.fa, add(dir(perp, -1), down));
+  } else {
+    const eb = p.eb || (front ? [-1, 1] : [1, 1]);
+    [eN, wN] = ik(shN, p.hN, LEN.ua, LEN.fa, eb[0]);
+    [eF, wF] = ik(shF, p.hF, LEN.ua, LEN.fa, eb[1]);
+  }
   const [kN, aN] = ik(hpN, p.fN, LEN.th, LEN.sh, kb[0]);
   const [kF, aF] = ik(hpF, p.fF, LEN.th, LEN.sh, kb[1]);
   const footAng = (k, a, i) => {
@@ -65,6 +120,9 @@ function solve(p, view) {
   const ctrl = add(mid, dir(perp, p.s || 0));
   return { hip, neck, head, shN, shF, eN, wN, eF, wF, hpN, hpF, kN, aN, kF, aF, tN, tF, ctrl };
 }
+
+const calmQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
+const calm = () => !!calmQuery?.matches;
 
 function el(name, attrs = {}, parent) {
   const e = document.createElementNS(NS, name);
@@ -97,24 +155,26 @@ export class Figure {
       el('line', { x1: 8, y1: 182, x2: 192, y2: 182, class: 'fig-ground' }, g);
     } else this.shadow = null;
     const side = stretch.view === 'side';
-    const mk = (cls) => el('path', { class: `fig-limb ${cls}` }, g);
+    // The figure itself sits in its own group so it can breathe (see animate) while the floor and props stay still.
+    const body = this.body = el('g', {}, g);
+    const mk = (cls) => el('path', { class: `fig-limb ${cls}` }, body);
     this.strap = props.some((p) => p.strap) ? el('path', { class: 'fig-strap' }) : null;
     if (side) {
       this.armF = mk('far');
       this.legF = mk('far');
-      this.torso = el('path', { class: 'fig-torso' }, g);
-      this.head = el('circle', { r: 11, class: 'fig-head' }, g);
+      this.torso = el('path', { class: 'fig-torso' }, body);
+      this.head = el('circle', { r: 11, class: 'fig-head' }, body);
       this.legN = mk('near');
-      if (this.strap) g.appendChild(this.strap);
+      if (this.strap) body.appendChild(this.strap);
       this.armN = mk('near');
     } else {
       this.legF = mk('far');
       this.legN = mk('near');
-      this.torso = el('path', { class: 'fig-torso' }, g);
+      this.torso = el('path', { class: 'fig-torso' }, body);
       this.armF = mk('near');
       this.armN = mk('near');
-      this.head = el('circle', { r: 11, class: 'fig-head' }, g);
-      if (this.strap) g.appendChild(this.strap);
+      this.head = el('circle', { r: 11, class: 'fig-head' }, body);
+      if (this.strap) body.appendChild(this.strap);
     }
     this.draw(0);
   }
@@ -124,7 +184,7 @@ export class Figure {
     const s = this.stretch;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (const t of [0, 0.5, 1]) {
-      const j = solve(blend(s.a, s.b, t), s.view);
+      const j = solve(pose(s, t), s.view);
       for (const [k, p] of Object.entries(j)) {
         if (k === 'ctrl') continue;
         const r = k === 'head' ? 11 : 5;
@@ -148,11 +208,24 @@ export class Figure {
     const theta = (time / period) * Math.PI * 2;
     const t = (1 - Math.cos(theta)) / 2;
     this.draw(t, theta);
+    this.breathe(time, theta);
+  }
+
+  /**
+   * A little life, the way small game sprites bob: a held stretch breathes (a touch taller on the
+   * in-breath), and a moving exercise squashes softly at each end of the move, like landing a step.
+   * Scaled from the floor under the hips, so the feet stay planted.
+   */
+  breathe(time, theta) {
+    if (this.stretch.view === 'top' || calm()) { this.body.removeAttribute('transform'); return; }
+    const b = this.stretch.dynamic ? -Math.cos(2 * theta) * 0.022 : Math.sin((time / 3.6) * Math.PI * 2) * 0.012;
+    const x = this.hipX.toFixed(1);
+    this.body.setAttribute('transform', `translate(${x} 182) scale(${(1 - b * 0.6).toFixed(4)} ${(1 + b).toFixed(4)}) translate(-${x} -182)`);
   }
 
   draw(t, theta = 0) {
     const s = this.stretch;
-    const p = blend(s.a, s.b, t);
+    const p = pose(s, t);
     if (s.orbit) {
       const { parts, r, mirrorF } = s.orbit;
       for (const part of parts) {
@@ -169,6 +242,7 @@ export class Figure {
     this.torso.setAttribute('d', `M${fmt(j.hip)}Q${fmt(j.ctrl)} ${fmt(j.neck)}`);
     this.head.setAttribute('cx', j.head[0].toFixed(1));
     this.head.setAttribute('cy', j.head[1].toFixed(1));
+    this.hipX = j.hip[0];
     if (this.shadow) this.shadow.setAttribute('cx', j.hip[0].toFixed(1));
     if (this.strap) this.strap.setAttribute('d', `M${fmt(j.wN)}L${fmt(j.tN)}`);
   }

@@ -228,8 +228,8 @@ export const STRETCHES = {
   armCircles: {
     name: 'Arm Circles', target: 'Shoulders · Upper back', view: 'front', period: 1.3, dynamic: true,
     orbit: { parts: ['hN', 'hF'], r: [8, 8], mirrorF: true },
-    a: { h: [100, 104], t: -90, n: -90, hN: [164, 52], hF: [36, 52], fN: [110, 180], fF: [90, 180] },
-    b: { h: [100, 104], t: -90, n: -90, hN: [164, 52], hF: [36, 52], fN: [110, 180], fF: [90, 180] },
+    a: { h: [100, 104], t: -90, n: -90, hN: [178, 52], hF: [22, 52], fN: [110, 180], fF: [90, 180] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [178, 52], hF: [22, 52], fN: [110, 180], fF: [90, 180] },
     cues: [
       'Arms out wide. Make small, controlled circles.',
       'Gradually make them bigger.',
