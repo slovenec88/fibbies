@@ -983,7 +983,7 @@ function renderDone() {
       <div class="reward" data-tier="0"><div class="rw-inner rw-nochest rw-earned${reduceMotion() ? '' : ' waiting'}">
         <div class="rw-knot-box">
           <button class="rw-knot" aria-label="${esc(t('tapKnot'))}">${KNOT_SVG}</button>
-          <span aria-hidden="true" class="ms filled rw-done-icon">task_alt</span>
+          <span aria-hidden="true" class="ms filled rw-done-icon">check_circle</span>
         </div>
         <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapKnot')}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(3)}</span></div>
         <h1>${t('wellDone')}</h1>
@@ -1007,17 +1007,39 @@ function renderDone() {
   });
 }
 
-// A knot of muscle fibers: each of three taps loosens it a little, like a small chest, and the
-// third lets it go to show the check. It waits for you, so the moment isn't spent while the screen slides in.
-const KNOT_SVG = `<svg viewBox="-60 -60 120 120" aria-hidden="true">
-  <defs><radialGradient id="kn-g"><stop offset="0" stop-color="#ffb3c1" stop-opacity=".55"/><stop offset="1" stop-color="#ff5d73" stop-opacity="0"/></radialGradient></defs>
-  <circle class="kn-glow" r="58" fill="url(#kn-g)"/>
-  <g class="kn" style="--a:0deg;--d:14deg"><ellipse cx="-3" cy="2" rx="46" ry="12" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-3" cy="2" rx="46" ry="12" stroke="#ffb3c1"/></g>
-  <g class="kn" style="--a:27deg;--d:-16deg"><ellipse cx="4" cy="-2" rx="41" ry="16" stroke="#ff7b54"/><ellipse class="kn-hi" cx="4" cy="-2" rx="41" ry="16" stroke="#ffd3a8"/></g>
-  <g class="kn" style="--a:64deg;--d:12deg"><ellipse cx="-2" cy="-4" rx="44" ry="10" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-2" cy="-4" rx="44" ry="10" stroke="#ffb3c1"/></g>
-  <g class="kn" style="--a:98deg;--d:-14deg"><ellipse cx="3" cy="3" rx="39" ry="17" stroke="#ff7b54"/><ellipse class="kn-hi" cx="3" cy="3" rx="39" ry="17" stroke="#ffd3a8"/></g>
-  <g class="kn" style="--a:131deg;--d:16deg"><ellipse cx="-4" cy="1" rx="45" ry="13" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-4" cy="1" rx="45" ry="13" stroke="#ffb3c1"/></g>
-  <g class="kn" style="--a:158deg;--d:-12deg"><ellipse cx="2" cy="-3" rx="40" ry="15" stroke="#ff7b54"/><ellipse class="kn-hi" cx="2" cy="-3" rx="40" ry="15" stroke="#ffd3a8"/></g>
+// A knot of muscle fibers with a face, like the chest's. It starts tense; each of three taps loosens it
+// and cheers it up a little more, and the third sets the fibers free: it beams and thanks you with hearts.
+// It waits for you, so the moment isn't spent while the screen slides in.
+// The face shows one look per stage: s0 tense, s1 relieved, s2 smiling, s3 (opened) beaming.
+const KNOT_INK = '#2b2233';
+const KNOT_SVG = `<svg viewBox="-80 -80 160 160" aria-hidden="true">
+  <defs>
+    <radialGradient id="kn-g"><stop offset="0" stop-color="#ffb3c1" stop-opacity=".5"/><stop offset="1" stop-color="#ff5d73" stop-opacity="0"/></radialGradient>
+    <radialGradient id="kn-body" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#ffc2cc"/><stop offset=".55" stop-color="#ff8798"/><stop offset="1" stop-color="#e2475f"/></radialGradient>
+  </defs>
+  <circle class="kn-glow" r="78" fill="url(#kn-g)"/>
+  <g class="kn" style="--a:0deg;--d:14deg"><ellipse cx="-3" cy="2" rx="62" ry="16" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-3" cy="2" rx="62" ry="16" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:27deg;--d:-16deg"><ellipse cx="4" cy="-2" rx="57" ry="21" stroke="#ff7b54"/><ellipse class="kn-hi" cx="4" cy="-2" rx="57" ry="21" stroke="#ffd3a8"/></g>
+  <g class="kn" style="--a:64deg;--d:12deg"><ellipse cx="-2" cy="-4" rx="60" ry="14" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-2" cy="-4" rx="60" ry="14" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:98deg;--d:-14deg"><ellipse cx="3" cy="3" rx="55" ry="22" stroke="#ff7b54"/><ellipse class="kn-hi" cx="3" cy="3" rx="55" ry="22" stroke="#ffd3a8"/></g>
+  <g class="kn" style="--a:131deg;--d:16deg"><ellipse cx="-4" cy="1" rx="61" ry="17" stroke="#ff5d73"/><ellipse class="kn-hi" cx="-4" cy="1" rx="61" ry="17" stroke="#ffb3c1"/></g>
+  <g class="kn" style="--a:158deg;--d:-12deg"><ellipse cx="2" cy="-3" rx="56" ry="19" stroke="#ff7b54"/><ellipse class="kn-hi" cx="2" cy="-3" rx="56" ry="19" stroke="#ffd3a8"/></g>
+  <g class="kn-body">
+    <circle r="40" fill="url(#kn-body)" stroke="#c93a52" stroke-width="2.5"/>
+    <path d="M-26 -30 C-6 -14 -30 10 -8 38 M-4 -40 C16 -20 -10 8 14 37 M18 -35 C36 -14 12 10 30 26 M-38 -8 C-24 4 -40 18 -26 30" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <g stroke="${KNOT_INK}" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path class="kf s0" d="M-20 -10 l7 4 l-7 4 M20 -10 l-7 4 l7 4"/>
+      <path class="kf s0" d="M-9 14 q3 -4 6 0 q3 4 6 0 q3 -4 6 0"/>
+      <path class="kf s1" d="M-6 13 q6 3 12 0"/>
+      <path class="kf s2" d="M-8 10 q8 9 16 0"/>
+      <path class="kf s3" d="M-17 -4 q5 -7 10 0 M7 -4 q5 -7 10 0"/>
+    </g>
+    <g class="kf s1 s2" fill="${KNOT_INK}"><circle cx="-12" cy="-5" r="5"/><circle cx="12" cy="-5" r="5"/><circle cx="-10.4" cy="-6.8" r="1.8" fill="#fff"/><circle cx="13.6" cy="-6.8" r="1.8" fill="#fff"/></g>
+    <g class="kf s3"><path d="M-10 8 q10 15 20 0 z" fill="${KNOT_INK}"/><ellipse cx="0" cy="13.2" rx="4.4" ry="2.4" fill="#ff8fab"/></g>
+    <path class="kf s0" d="M27 -24 q4 7 0 10 q-4 -3 0 -10z" fill="#bfe8ff" stroke="#6bb8e6" stroke-width="1.2"/>
+    <g class="kf s2 s3" fill="#ff5d73" opacity=".7"><ellipse cx="-24" cy="6" rx="6.5" ry="3.8"/><ellipse cx="24" cy="6" rx="6.5" ry="3.8"/></g>
+  </g>
+  <g transform="translate(-30 -50) scale(1.1)"><path class="kn-heart" style="--hd:0s" d="M0 4 C-9 -3 -6 -11 0 -6 C6 -11 9 -3 0 4Z" fill="#ff5d73"/></g><g transform="translate(28 -56) scale(1.4)"><path class="kn-heart" style="--hd:0.15s" d="M0 4 C-9 -3 -6 -11 0 -6 C6 -11 9 -3 0 4Z" fill="#ff5d73"/></g><g transform="translate(2 -66) scale(0.9)"><path class="kn-heart" style="--hd:0.3s" d="M0 4 C-9 -3 -6 -11 0 -6 C6 -11 9 -3 0 4Z" fill="#ff5d73"/></g>
 </svg>`;
 function loosenKnot(v, total) {
   const wrap = v.querySelector('.reward');
