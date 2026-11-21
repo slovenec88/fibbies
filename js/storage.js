@@ -1,13 +1,13 @@
 // One place for everything the app saves on the device (localStorage).
 //
 // - Progress lives under "limber." keys. Those keys are what backup codes carry,
-//   except DEVICE_KEYS (language, theme, last category), which stay on each phone.
+//   except DEVICE_KEYS (settings, a one-time notice), which stay on each phone.
 // - A value that can't be read is copied to "fibbies.rescue.<key>" before the app falls back to
 //   an empty value, so the next save never destroys the only copy.
 // - Failed writes (storage full, private mode) are reported once, so progress is never lost silently.
 
 const PREFIX = 'limber.';
-export const DEVICE_KEYS = new Set(['limber.settings', 'limber.cat', 'limber.levels-v2']);
+export const DEVICE_KEYS = new Set(['limber.settings', 'limber.levels-v2']);
 const RESCUE = 'fibbies.rescue.';
 
 let onFail = null;

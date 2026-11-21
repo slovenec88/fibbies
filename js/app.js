@@ -195,7 +195,11 @@ const chipHTML = (key, id, on, icon, label) => `
       <span aria-hidden="true" class="ms">${on ? 'check' : icon}</span>${esc(label)}
     </button>`;
 
+let homeDay = null; // the day the home screen was drawn for
+// Back after 2 AM (an app or sheet left open overnight): yesterday's bonus tiles, streak and picks go.
+const refreshIfNewDay = () => { if (currentView === 'home' && homeDay !== dayKey() && !document.querySelector('dialog[open]')) renderHome(); };
 function renderHome() {
+  homeDay = dayKey();
   renderProgress();
   renderQuickStarts();
   renderCollection();
@@ -1099,7 +1103,6 @@ $('#set-lang').onclick = (e) => {
   setLang(b.dataset.v);
 };
 onLangChange(() => {
-  hideLangHint(); // they found the language setting
   localizeContent();
   translateDom();
   setScaleNote();
@@ -1131,7 +1134,6 @@ $('#set-scale').onclick = (e) => {
   if (session && !session.finished) snackbar(t('holdNextSession'));
 };
 
-// ---------- First launch: a quiet offer to change the language ----------
 // ---------- Router ----------
 // pushState-based navigation; state.d is our depth so in-app "back" can pop real history.
 const depth = () => (window.history.state && window.history.state.d) || 0;
@@ -1298,7 +1300,10 @@ function maybeShowSafety() {
 // Number dialogs in the order they open, so Back can close the one on top.
 let dialogSeq = 0;
 const dialogWatch = new MutationObserver((ms) => ms.forEach((m) => { if (m.target.open) m.target.dataset.seq = String(++dialogSeq); }));
-document.querySelectorAll('dialog').forEach((d) => dialogWatch.observe(d, { attributes: true, attributeFilter: ['open'] }));
+document.querySelectorAll('dialog').forEach((d) => {
+  dialogWatch.observe(d, { attributes: true, attributeFilter: ['open'] });
+  d.addEventListener('close', refreshIfNewDay);
+});
 
 // ---------- Keeping data safe ----------
 // Another open copy of the app (a browser tab next to the installed app) changed the saved data.
@@ -1386,9 +1391,10 @@ try {
   if (sessionStorage.getItem('fibbies.restored-backup')) { sessionStorage.removeItem('fibbies.restored-backup'); setTimeout(() => snackbar(t('backupDone')), 600); }
 } catch { /* ignore */ }
 setTimeout(maybeShowSafety, 700);
-try { localStorage.removeItem('fibbies.cloud'); } catch { /* ignore */ } // left over from the old cloud save
+// Left over from older versions: the cloud save, and saved filters (they now start empty each launch).
+try { for (const k of ['fibbies.cloud', 'limber.cat', 'limber.focus']) localStorage.removeItem(k); } catch { /* ignore */ }
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) return;
+  if (!document.hidden) { refreshIfNewDay(); return; }
   if (session && !session.finished && !session.paused) { session.pause(); setPausedUI(true); wakeLock.off(); }
   if (pendingReload && safeToReload()) location.reload(); // apply a waiting update while nobody is looking
 });
