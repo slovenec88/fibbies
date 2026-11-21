@@ -243,16 +243,13 @@ function renderHome() {
 function renderProgress() {
   const p = loadProfile();
   const lp = levelProgress(p.xp);
-  const bk = p.buddy && parseKey(p.buddy);
-  const buddy = bk ? fibbie(bk.sp, bk.stage) : null;
   const done = todaysCats(log, dayKey());
   const x = dailyBonus(done);
   const shown = bonusShownAt(done); // the value last seen: it grows to x on screen
   const order = [...done].filter((c) => QUESTS.some((q) => q.cat === c)); // in the order they were done today
-  // The top of the home screen: buddy, level and XP, with Settings in the corner (no separate app bar).
   $('#progress-card').innerHTML = `
     <div class="pc-top">
-      <div class="pc-buddy">${critterSVG(buddy, { locked: !buddy })}</div>
+      <img class="pc-icon" src="icons/icon.svg" width="52" height="52" alt="">
       <div class="pc-main">
         <div class="pc-head"><b>${t('level', { n: lp.level })}</b>
           <button class="icon-btn ripple" id="btn-settings" aria-label="${esc(t('settings'))}"><span aria-hidden="true" class="ms">tune</span></button></div>

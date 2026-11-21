@@ -691,10 +691,10 @@ html:has(dialog[open]) { overflow: hidden; }
 
 /* ========= Home: progress, quests, collection ========= */
 .progress-card { background: var(--surface-container-low); border-radius: 28px; padding: 14px; margin: 8px 0 12px; }
-.pc-top { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 8px; align-items: center; }
+.pc-top { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; }
 .pc-head { display: flex; align-items: center; justify-content: space-between; height: 32px; margin: -4px -8px 2px 0; }
 .pc-head b { font-size: 17px; font-weight: 700; }
-.pc-buddy .critter { display: block; width: 100%; height: auto; }
+.pc-icon { justify-self: center; filter: drop-shadow(0 0 10px #2fbf9860); }
 .pc-line { display: flex; align-items: baseline; justify-content: space-between; gap: 2px 8px; flex-wrap: wrap; }
 .pc-line b { font-size: 17px; font-weight: 700; }
 .pc-line small { color: var(--on-surface-variant); font-size: 12px; font-weight: 600; }
