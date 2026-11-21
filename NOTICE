@@ -15,4 +15,5 @@ attribution "Fibbies was created by Davor Val Vega" in this NOTICE file and in t
 README, or in an equivalent place that users can see.
 
 The bundled fonts in fonts/ keep their own licences (SIL Open Font License 1.1 for
-Roboto Flex and Bricolage Grotesque, Apache License 2.0 for Material Symbols).
+Atkinson Hyperlegible Next by the Braille Institute of America, Apache License 2.0
+for Material Symbols).

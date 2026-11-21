@@ -124,4 +124,4 @@ Everything is static, so any static host works. GitHub Pages can serve it straig
 
 - iOS: audio and voice only start after you tap a button, which the Start button handles. With the hardware mute switch on, sound effects stay silent.
 - Wake Lock needs HTTPS (or localhost) and is supported in Chrome, Edge and Safari 16.4+.
-- Fonts are bundled in `fonts/` with their licences (SIL Open Font License for Roboto Flex and Bricolage Grotesque, Apache 2.0 for Material Symbols).
+- Fonts are bundled in `fonts/` with their licences (SIL Open Font License for Atkinson Hyperlegible Next, Apache 2.0 for Material Symbols).
