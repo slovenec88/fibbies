@@ -1,6 +1,6 @@
 {
   "name": "fibbies",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "private": true,
   "description": "Fibbies: stretch & loot. Web app (GitHub Pages) and Android app (Capacitor) from one codebase.",
   "author": "Davor Val Vega",
