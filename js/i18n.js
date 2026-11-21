@@ -47,6 +47,9 @@ export const onLangChange = (fn) => { listeners.add(fn); return () => listeners.
 const en = (n, one, many) => (n === 1 ? one : many);
 
 const EN = {
+  installFibbies: "Install Fibbies",
+  installDismiss: "Dismiss install suggestion",
+  installHelp: "Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.",
   title: 'Fibbies · Stretch & Loot',
   // home
   suggestedNow: 'Suggested now',

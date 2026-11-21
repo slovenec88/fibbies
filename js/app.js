@@ -14,8 +14,10 @@ import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } fro
 import { cloud } from './cloud.js';
 import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
 import { localizeContent } from './localize.js';
+import { setupInstallPrompt } from './install.js';
 
 const $ = (s, r = document) => r.querySelector(s);
+setupInstallPrompt();
 
 // ---------- Storage ----------
 // All reads and writes go through js/storage.js (unreadable data is rescued, failed writes reported).

@@ -2,9 +2,9 @@
 // Every deploy bumps VERSION. A new worker downloads the whole app shell fresh
 // (bypassing the HTTP cache) before it takes over, and pages are always served
 // from one consistent cache, so old and new files can never be mixed.
-const VERSION = 'fibbies-v42';
+const VERSION = 'fibbies-v43';
 const SHELL = [
-  './', 'styles.css', 'manifest.webmanifest',
+  './', 'styles.css', 'manifest.webmanifest', 'js/install.js',
   'js/app.js', 'js/data.js', 'js/figure.js', 'js/audio.js', 'js/session.js', 'js/wakelock.js',
   'js/rewards.js', 'js/critter.js', 'js/reward-screen.js', 'js/native.js', 'js/i18n.js', 'js/localize.js', 'js/fibbies.js', 'js/cloud.js', 'js/flex.js', 'js/merge-fx.js', 'js/fx-canvas.js', 'js/fx-engine.js', 'js/fx-worker.js', 'js/storage.js', 'js/voice-pick.js', 'js/voice-clips.js',
   'js/lang/de.js', 'js/lang/es.js', 'js/lang/fr.js', 'js/lang/it.js', 'js/lang/pt.js', 'js/lang/sl.js',

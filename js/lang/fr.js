@@ -3,6 +3,9 @@
 const pl = (n, one, many) => (Math.abs(n) < 2 ? one : many);
 
 export const UI = {
+  installFibbies: "Installer Fibbies",
+  installDismiss: "Fermer la suggestion d’installation",
+  installHelp: "Ouvre le menu Partager, choisis Sur l’écran d’accueil, puis touche Ajouter. Active Ouvrir comme app web si cette option apparaît.",
   title: "Fibbies · Étire-toi et gagne",
   suggestedNow: "Suggestion du moment",
   footnote: "Étire-toi en douceur. Une légère tension, c'est bien ; la douleur, non.",

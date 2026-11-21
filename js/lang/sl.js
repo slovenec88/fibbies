@@ -6,6 +6,9 @@ const sl = (n, one, two, few, many) => {
 };
 
 export const UI = {
+  installFibbies: "Namesti Fibbies",
+  installDismiss: "Zapri predlog za namestitev",
+  installHelp: "Odpri Deli, izberi Dodaj na začetni zaslon in tapni Dodaj. Če je na voljo, vklopi Odpri kot spletno aplikacijo.",
   title: 'Fibbies · Raztezanje in plen',
   suggestedNow: 'Predlog zate',
   footnote: 'Raztezaj se nežno. Rahla napetost je dobra, bolečina ni.',

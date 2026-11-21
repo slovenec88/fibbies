@@ -2,6 +2,9 @@
 const pl = (n, one, many) => (n === 1 ? one : many);
 
 export const UI = {
+  installFibbies: "Instalar Fibbies",
+  installDismiss: "Cerrar sugerencia de instalación",
+  installHelp: "Abre Compartir, elige Añadir a pantalla de inicio y pulsa Añadir. Activa Abrir como app web si aparece esa opción.",
   title: "Fibbies · Estira y gana",
   suggestedNow: "Sugerido ahora",
   footnote: "Estira con suavidad. Una tensión leve es buena, el dolor no.",
