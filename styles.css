@@ -65,6 +65,8 @@
 
 /* ========= Base ========= */
 *, *::before, *::after { box-sizing: border-box; }
+* { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
 [hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; background: var(--surface); }
 body {
@@ -210,9 +212,8 @@ h1, h2, h3, p { margin: 0; }
 
 /* ========= Chips ========= */
 .chips {
-  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 28px -16px 14px; padding: 2px 16px;
+  display: flex; gap: 8px; overflow-x: auto; margin: 28px -16px 14px; padding: 2px 16px;
 }
-.chips::-webkit-scrollbar { display: none; }
 .chip {
   flex: none; height: 40px; padding: 0 16px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;
   border: 1px solid var(--outline-variant); color: var(--on-surface-variant); font-weight: 600; font-size: 14px;
@@ -769,8 +770,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .col-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 4px 8px; }
 .col-head h2 { font-size: 18px; font-weight: 600; }
 .col-head small { color: var(--on-surface-variant); font-weight: 700; }
-.col-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 6px; }
-.col-row::-webkit-scrollbar { display: none; }
+.col-row { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 6px; }
 .col-item { flex: none; width: 76px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: var(--on-surface-variant); }
 .col-item .critter { width: 68px; height: 68px; }
 .col-item.owned .critter { animation: bob 2.4s ease-in-out infinite; }
