@@ -38,11 +38,13 @@ function applySettings() {
   requestAnimationFrame(updateThemeColor);
 }
 
+const darkScheme = matchMedia('(prefers-color-scheme: dark)');
 function updateThemeColor() {
+  const theme = $(darkScheme.matches ? 'meta[name="theme-color"][media]' : 'meta[name="theme-color"]:not([media])');
   // Resolve the surface color to rgb for <meta name="theme-color">
   const view = $('.view.active');
   if (view && view.id === 'view-done') {
-    $('meta[name="theme-color"]').setAttribute('content', '#140e26');
+    theme.setAttribute('content', '#140e26');
     native.statusBar(true);
     return;
   }
@@ -56,10 +58,10 @@ function updateThemeColor() {
   x.fillStyle = c;
   x.fillRect(0, 0, 1, 1);
   const [r, g, b] = x.getImageData(0, 0, 1, 1).data;
-  $('meta[name="theme-color"]').setAttribute('content', `rgb(${r},${g},${b})`);
+  theme.setAttribute('content', `rgb(${r},${g},${b})`);
   native.statusBar((r * 299 + g * 587 + b * 114) / 1000 < 128);
 }
-matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => requestAnimationFrame(updateThemeColor));
+darkScheme.addEventListener?.('change', () => requestAnimationFrame(updateThemeColor));
 
 // ---------- Helpers ----------
 const catOf = (id) => CATEGORIES.find((c) => c.id === id);
