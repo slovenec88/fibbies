@@ -161,7 +161,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* ========= Chips ========= */
 .chips {
-  display: flex; gap: 8px; overflow-x: auto; margin: 28px -16px 14px; padding: 2px 16px;
+  display: flex; gap: 8px; overflow-x: auto; margin: 28px -16px 14px; padding: 2px 16px; scroll-margin-top: 12px;
 }
 .chip {
   flex: none; height: 40px; padding: 0 16px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;
@@ -626,7 +626,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .quest {
   display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 16px;
   background: var(--surface-container); color: var(--on-surface-variant); font-size: 11.5px; font-weight: 600; text-align: center; line-height: 1.2;
-  min-width: 0; overflow-wrap: anywhere;
+  min-width: 0; overflow-wrap: anywhere; font-family: inherit; border: 0; cursor: pointer; position: relative; overflow: hidden;
 }
 .quest .ms { font-size: 22px; }
 .quest.done { background: var(--primary); color: var(--on-primary); position: relative; overflow: hidden; isolation: isolate; }

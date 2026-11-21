@@ -252,7 +252,7 @@ function renderProgress() {
         <div class="pc-line" style="margin-top:4px"><small>${fmtBig(lp.into)} / ${fmtBig(lp.need)} XP</small></div>
       </div>
     </div>
-    <div class="quests" style="--n:${QUESTS.length}" role="img" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}${order.length ? `: ${order.map((c) => catOf(c).label).join(', ')}` : ''}`)}">
+    <div class="quests" style="--n:${QUESTS.length}" role="group" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}${order.length ? `: ${order.map((c) => catOf(c).label).join(', ')}` : ''}`)}">
       ${QUESTS.map((q) => questTile(q, celebrating(done, q.cat) ? 0 : order.indexOf(q.cat) + 1)).join('')}
     </div>`;
   celebrateBonus(done);
@@ -262,7 +262,7 @@ function renderProgress() {
  *  lights up plainly, the 2nd already shines, the 3rd turns gold, the 4th gets the full show. */
 function questTile(q, lv) {
   const sparks = lv >= 3 ? '<i class="q-spark" aria-hidden="true"></i>'.repeat(lv === 4 ? 5 : 3) : '';
-  return `<div class="quest${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span>${esc(t(`q.${q.cat}`))}</span>${sparks}</div>`;
+  return `<button class="quest ripple${lv ? ` done lv${lv}` : ''}" data-cat="${q.cat}" data-lv="${lv}" aria-label="${esc(catOf(q.cat).label)}"><span aria-hidden="true" class="ms ${lv ? 'filled' : ''}">${lv ? 'check_circle' : q.icon}</span><span aria-hidden="true">${esc(t(`q.${q.cat}`))}</span>${sparks}</button>`;
 }
 
 // The daily bonus grows with each kind of routine done today. When it has grown since the home
@@ -604,10 +604,8 @@ function renderList() {
   }
 }
 
-$('#chips').addEventListener('click', (e) => {
-  const c = e.target.closest('[data-cat]');
-  if (!c) return;
-  activeCat = c.dataset.cat;
+function setCat(cat) {
+  activeCat = cat;
   writeJSON('limber.cat', activeCat);
   document.querySelectorAll('#chips .chip').forEach((ch) => {
     const on = ch.dataset.cat === activeCat;
@@ -615,6 +613,21 @@ $('#chips').addEventListener('click', (e) => {
     ch.querySelector('.ms').textContent = on ? 'check' : catOf(ch.dataset.cat).icon;
   });
   renderList();
+}
+$('#chips').addEventListener('click', (e) => {
+  const c = e.target.closest('[data-cat]');
+  if (c) setCat(c.dataset.cat);
+});
+// A bonus tile takes you down to that kind of routine, already filtered.
+$('#progress-card').addEventListener('click', (e) => {
+  const q = e.target.closest('.quest[data-cat]');
+  if (!q) return;
+  setCat(q.dataset.cat);
+  const chips = $('#chips');
+  const smooth = reduceMotion() ? 'auto' : 'smooth';
+  chips.scrollIntoView({ behavior: smooth, block: 'start' });
+  const chip = chips.querySelector('[aria-selected="true"]');
+  if (chip) chips.scrollTo({ left: chip.offsetLeft - 16, behavior: smooth });
 });
 
 document.addEventListener('click', (e) => {
