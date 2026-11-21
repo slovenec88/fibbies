@@ -1,5 +1,8 @@
 /* An app, not a page: no pinch or double-tap zoom (scrolling still works) */
 html { touch-action: pan-x pan-y; }
+/* An app, not a page: a long press doesn't select or copy text, except in text fields (the backup code). */
+body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+input, textarea { -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; }
 /* ========= Material You tokens (tonal palette from a seed hue via OKLCH) ========= */
 :root { --h: 165; --font-display: 'Atkinson Hyperlegible Next', sans-serif; }
 
@@ -853,8 +856,6 @@ html:has(dialog[open]) { overflow: hidden; }
 
 /* ========= Native app (Capacitor) ========= */
 html.native, html.native body { overscroll-behavior: none; }
-html.native body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
-html.native input, html.native textarea { -webkit-user-select: text; user-select: text; }
 
 /* Language picker */
 .lang-note { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
