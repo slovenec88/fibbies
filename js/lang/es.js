@@ -5,6 +5,7 @@ export const UI = {
   installFibbies: "Instalar Fibbies",
   installHelp: "Abre Compartir, elige Añadir a pantalla de inicio y pulsa Añadir. Activa Abrir como app web si aparece esa opción.",
   installHelpAndroid: "Abre el menú del navegador y elige Instalar aplicación o Añadir a pantalla de inicio.",
+  installHelpWindows: "Haz clic en el icono de aplicaciones web en la barra de direcciones de Firefox.",
   title: "Fibbies · Estira y gana",
   suggestedNow: "Sugerido ahora",
   footnote: "Estira con suavidad. Una tensión leve es buena, el dolor no.",

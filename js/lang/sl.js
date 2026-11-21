@@ -9,6 +9,7 @@ export const UI = {
   installFibbies: "Namesti Fibbies",
   installHelp: "Odpri Deli, izberi Dodaj na začetni zaslon in tapni Dodaj. Če je na voljo, vklopi Odpri kot spletno aplikacijo.",
   installHelpAndroid: "Odpri meni brskalnika in izberi Namesti aplikacijo ali Dodaj na začetni zaslon.",
+  installHelpWindows: "V naslovni vrstici Firefoxa klikni ikono za spletne aplikacije.",
   title: 'Fibbies · Raztezanje in plen',
   suggestedNow: 'Predlog zate',
   footnote: 'Raztezaj se nežno. Rahla napetost je dobra, bolečina ni.',

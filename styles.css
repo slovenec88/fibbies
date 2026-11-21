@@ -133,6 +133,7 @@ h1, h2, h3, p { margin: 0; }
 @keyframes install-glow {
   50% { filter: drop-shadow(0 0 10px #ffb96db3); }
 }
+#install-help-home { padding: 8px 12px 0; color: var(--on-surface-variant); font-size: 14px; }
 #install-settings { margin-top: 14px; }
 /* ========= Buttons ========= */
 .icon-btn {
@@ -690,11 +691,10 @@ html:has(dialog[open]) { overflow: hidden; }
 
 /* ========= Home: progress, quests, collection ========= */
 .progress-card { background: var(--surface-container-low); border-radius: 28px; padding: 14px; margin: 8px 0 12px; }
-.pc-top { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 12px; align-items: center; }
+.pc-top { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 8px; align-items: center; }
 .pc-head { display: flex; align-items: center; justify-content: space-between; height: 32px; margin: -4px -8px 2px 0; }
 .pc-head b { font-size: 17px; font-weight: 700; }
-.pc-buddy { width: 56px; height: 56px; border-radius: 18px; background: var(--primary-container); display: grid; place-items: center; overflow: hidden; }
-.pc-buddy .critter { width: 60px; height: 60px; margin-top: 4px; }
+.pc-buddy .critter { display: block; width: 100%; height: auto; }
 .pc-line { display: flex; align-items: baseline; justify-content: space-between; gap: 2px 8px; flex-wrap: wrap; }
 .pc-line b { font-size: 17px; font-weight: 700; }
 .pc-line small { color: var(--on-surface-variant); font-size: 12px; font-weight: 600; }

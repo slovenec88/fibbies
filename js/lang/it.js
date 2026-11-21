@@ -5,6 +5,7 @@ export const UI = {
   installFibbies: "Installa Fibbies",
   installHelp: "Apri Condividi, scegli Aggiungi alla schermata Home e tocca Aggiungi. Attiva Apri come app web se vedi l’opzione.",
   installHelpAndroid: "Apri il menu del browser e scegli Installa app o Aggiungi alla schermata Home.",
+  installHelpWindows: "Fai clic sull’icona delle app web nella barra degli indirizzi di Firefox.",
   title: "Fibbies · Allungati e vinci",
   suggestedNow: "Consigliato ora",
   footnote: "Allungati con delicatezza. Una leggera tensione va bene, il dolore no.",
