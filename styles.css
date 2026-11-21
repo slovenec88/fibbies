@@ -1,7 +1,7 @@
 /* An app, not a page: no pinch or double-tap zoom (scrolling still works) */
 html { touch-action: pan-x pan-y; }
 /* ========= Material You tokens (tonal palette from a seed hue via OKLCH) ========= */
-:root { --h: 165; --font-display: 'Atkinson Hyperlegible Next', system-ui, sans-serif; }
+:root { --h: 165; --font-display: 'Atkinson Hyperlegible Next', sans-serif; }
 
 :root, [data-hue] {
   --primary: oklch(0.47 0.115 var(--h));
@@ -76,7 +76,7 @@ body {
   min-height: 100dvh;
   background: var(--surface);
   color: var(--on-surface);
-  font-family: 'Atkinson Hyperlegible Next', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Atkinson Hyperlegible Next', sans-serif;
   font-size: 16px;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
@@ -84,6 +84,7 @@ body {
   overscroll-behavior-y: none;
 }
 button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; touch-action: manipulation; }
+input, textarea, select { font: inherit; } /* form fields don't take the page font by default */
 h1, h2, h3, p { margin: 0; }
 .ms {
   font-family: 'Material Symbols Rounded';
@@ -1135,7 +1136,7 @@ a.m3-item { text-decoration: none; }
 .settings-sheet .lang-note { margin: 10px 16px 0; }
 .settings-sheet .sheet-done { margin-top: 28px; }
 
-/* ---------- Display face for headings (body stays Roboto Flex, Material's typeface) ---------- */
+/* ---------- Headings (same Atkinson face as the body) ---------- */
 .detail-hero h1, .col-head h2, .qs-text b, .sheet-title, .dialog h2, .fs-name,
 .rw-nochest h1, .rw-banner, .mx-kicker, .mx-name, .al-head, .move-name, .rw-card-text b, .rw-level.levelup::after {
   font-family: var(--font-display);
@@ -1166,6 +1167,6 @@ a.m3-item { text-decoration: none; }
 .backup-dialog { max-width: min(400px, calc(100vw - 32px)); width: 100%; }
 .backup-text { display: block; width: 100%; margin-top: 16px; padding: 12px; border-radius: 12px; resize: none;
   border: 1px solid var(--outline); background: var(--surface-container-highest); color: var(--on-surface);
-  font: 12px/1.4 ui-monospace, 'Roboto Mono', monospace; word-break: break-all; }
+  font: 13px/1.4 'Atkinson Hyperlegible Next', sans-serif; word-break: break-all; }
 .backup-text:focus { outline: 2px solid var(--primary); outline-offset: -1px; border-color: transparent; }
 .backup-msg { text-align: left; min-height: 1.4em; }

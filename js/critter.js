@@ -221,7 +221,7 @@ export function critterSVG(f, { locked = false, className = '' } = {}) {
     return `<svg viewBox="-10 -14 140 140" class="critter ${className}" aria-hidden="true">
       <ellipse cx="60" cy="112" rx="30" ry="5" fill="#000" opacity=".1"/>
       <rect x="26" y="34" width="68" height="72" rx="34" fill="var(--surface-container-highest)"/>
-      <text x="60" y="80" text-anchor="middle" font-size="30" font-weight="800" fill="var(--outline)" font-family="system-ui">?</text></svg>`;
+      <text x="60" y="80" text-anchor="middle" font-size="30" font-weight="800" fill="var(--outline)" font-family="Atkinson Hyperlegible Next, sans-serif">?</text></svg>`;
   }
   const g = f.genome;
   const s = SHAPE[g.shape] || SHAPE.bean;
