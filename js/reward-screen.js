@@ -23,11 +23,13 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   let fast = reduce;
   let alive = true;
   const timers = new Set();
+  const waits = new Map(); // pending sleeps: Skip ends them at once
   // Once stopped, sleep never resolves, so the sequence halts at the next await.
   const sleep = (ms) => new Promise((res) => {
     if (!alive) return;
-    const id = setTimeout(() => { timers.delete(id); res(); }, fast ? Math.min(ms, 30) : ms);
+    const id = setTimeout(() => { timers.delete(id); waits.delete(id); res(); }, fast ? Math.min(ms, 30) : ms);
     timers.add(id);
+    waits.set(id, res);
   });
 
   root.innerHTML = `
@@ -99,6 +101,9 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     for (const a of wrap.getAnimations({ subtree: true })) {
       if (a.effect?.getComputedTiming().iterations !== Infinity) { try { a.finish(); } catch {} }
     }
+    // A wait already running (the burst playing out, say) ends now instead of finishing its time.
+    for (const [id, res] of waits) { clearTimeout(id); timers.delete(id); res(); }
+    waits.clear();
     releaseTaps?.();
   };
   // Start with the chest in the middle of the screen; it moves up once it opens.
@@ -192,13 +197,15 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     chestAt = null;
     placeLight();
     if (fast || reduce) return;
+    gliding = true; // the chest is measured with the glide included until it has landed
     const opts = { duration: 700, easing: 'cubic-bezier(.3,0,0,1)' };
     els.forEach((e, i) => {
       const b = before[i], a = e.getBoundingClientRect();
       const dx = b.left + b.width / 2 - (a.left + a.width / 2), dy = b.top + b.height / 2 - (a.top + a.height / 2);
       e.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${b.width / a.width})` }, { transform: 'none' }], opts);
     });
-    light.animate([{ transform: `translateY(${lightBefore - (parseFloat(light.style.top) || 0)}px)` }, { transform: 'none' }], opts);
+    const anim = light.animate([{ transform: `translateY(${lightBefore - (parseFloat(light.style.top) || 0)}px)` }, { transform: 'none' }], opts);
+    anim.finished.catch(() => {}).finally(() => { gliding = false; chestAt = null; });
   }
   function stamp(text) {
     if (fast) return; // after Skip the praise banner would only cover the payout
@@ -213,7 +220,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const centerOf = (el, dy = 0.5) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * dy }; };
   // Measuring forces a layout, so positions are cached while numbers count.
   let chestAt = null;
-  const chestPos = () => (chestAt ||= centerOf($('.rw-chest'), 0.45));
+  let gliding = false;
+  const chestPos = () => (gliding ? centerOf($('.rw-chest'), 0.45) : (chestAt ||= centerOf($('.rw-chest'), 0.45)));
 
   function setBig(v) { big.textContent = fmt(v); }
   function countTo(from, to, ms) {
