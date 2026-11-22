@@ -25,7 +25,7 @@ async function test(name, fn) {
 const profile = (xp) => JSON.stringify({ xp, fibers: xp, chests: 1, fibs: [], dex: {} });
 const reset = (data) => { mem.clear(); for (const [k, v] of Object.entries(data)) mem.set(k, v); };
 
-await test('every routine exercise has a guide and playback controls in every supported language', async () => {
+await test('every routine exercise has a guide and play button in every supported language', async () => {
   const { ROUTINES } = await import(new URL('data.js', root));
   const { LANGS, setLang, t } = await import(new URL('i18n.js', root));
   const { exerciseGuide } = await import(new URL('localize.js', root));
@@ -37,9 +37,7 @@ await test('every routine exercise has a guide and playback controls in every su
       assert.ok(guide.trim(), `${lang}: ${id}`);
       if (lang !== 'en') assert.notEqual(guide, exerciseGuide(id, 'en'), `${lang}: ${id}`);
     }
-    for (const key of ['playAnimation', 'pauseAnimation']) {
-      assert.notEqual(t(key), key, `${lang}: ${key}`);
-    }
+    assert.notEqual(t('playAnimation'), 'playAnimation', lang);
   }
   setLang('en');
 });

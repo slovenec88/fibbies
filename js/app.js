@@ -770,13 +770,9 @@ function renderDetail(r) {
 
 const movePreview = $('#sheet-move');
 const movePreviewFig = $('#move-preview-fig');
-const movePreviewToggle = $('#move-preview-toggle');
+const movePreviewPlay = $('#move-preview-play');
+const movePreviewClose = $('#move-preview-close');
 let movePreviewAnimation;
-let movePreviewPaused;
-function setMovePreviewPaused(paused) {
-  movePreviewPaused = paused;
-  movePreviewToggle.textContent = t(paused ? 'playAnimation' : 'pauseAnimation');
-}
 function openMovePreview(id, hue) {
   const stretch = STRETCHES[id];
   movePreview.style.setProperty('--h', hue);
@@ -785,13 +781,16 @@ function openMovePreview(id, hue) {
   const figure = new Figure(stretch);
   movePreviewFig.replaceChildren(figure.svg);
   animated.delete(movePreviewAnimation);
-  setMovePreviewPaused(reduceMotion());
-  movePreviewAnimation = animate(figure, { paused: () => movePreviewPaused || !movePreview.open });
+  movePreviewPlay.hidden = !reduceMotion();
+  movePreviewAnimation = animate(figure, { paused: () => !movePreviewPlay.hidden || !movePreview.open });
   movePreview.scrollTop = 0;
   movePreview.showModal();
 }
-movePreviewToggle.onclick = () => setMovePreviewPaused(!movePreviewPaused);
-$('#move-preview-close').onclick = () => movePreview.close();
+movePreviewPlay.onclick = () => {
+  movePreviewPlay.hidden = true;
+  movePreviewClose.focus();
+};
+movePreviewClose.onclick = () => movePreview.close();
 movePreview.addEventListener('close', () => {
   if (movePreview.open) return;
   animated.delete(movePreviewAnimation);

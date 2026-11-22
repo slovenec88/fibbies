@@ -111,7 +111,6 @@ const EN = {
   paused: 'Paused',
   pause: 'Pause',
   playAnimation: "Play animation",
-  pauseAnimation: "Pause animation",
   resume: 'Resume',
   getReady: 'Get ready',
   switchSides: 'Switch sides',

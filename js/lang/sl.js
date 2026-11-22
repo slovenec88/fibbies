@@ -78,7 +78,6 @@ export const UI = {
   paused: 'Premor',
   pause: 'Premor',
   playAnimation: "Predvajaj animacijo",
-  pauseAnimation: "Začasno ustavi",
   resume: 'Nadaljuj',
   getReady: 'Pripravi se',
   switchSides: 'Zamenjaj stran',

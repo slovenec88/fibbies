@@ -74,7 +74,6 @@ export const UI = {
   paused: "En pausa",
   pause: "Pausa",
   playAnimation: "Reproducir animación",
-  pauseAnimation: "Pausar animación",
   resume: "Reanudar",
   getReady: "Prepárate",
   switchSides: "Cambia de lado",
