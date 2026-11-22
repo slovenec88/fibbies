@@ -47,6 +47,14 @@ function shoulders(p, view) {
   return { hN: add(neck, dir(p.t + 90, sw)), hF: add(neck, dir(p.t + 90, -sw)) };
 }
 
+const onFloor = (f) => f[1] >= 176;
+/** True when the feet take turns: each one goes between the floor and the air, opposite to the other. */
+function steps(s) {
+  const { a, b } = s;
+  return !!(a.fN && a.fF && b.fN && b.fF) && onFloor(a.fN) !== onFloor(b.fN) && onFloor(a.fF) !== onFloor(b.fF)
+    && onFloor(a.fN) !== onFloor(a.fF);
+}
+
 /**
  * The pose at `t` between a and b. A hand that travels far (raising the arms, say) moves along an
  * arc around its shoulder, the way an arm swings, instead of in a straight line through the head.
@@ -55,6 +63,15 @@ function shoulders(p, view) {
 function pose(s, t) {
   const p = blend(s.a, s.b, t);
   if (s.view === 'top') return p;
+  // Running in place (one foot up, then the other): the lifted foot lands in the first half and the
+  // other only leaves the floor in the second, instead of both floating halfway through each step.
+  if (steps(s)) {
+    for (const k of ['fN', 'fF']) {
+      // Each foot eases onto and off the floor, so the step has a soft contact instead of a snap.
+      const u = onFloor(s.a[k]) ? 1 - Math.cos((Math.max(0, t * 2 - 1) * Math.PI) / 2) : Math.sin((Math.min(1, t * 2) * Math.PI) / 2);
+      p[k] = lerp(s.a[k], s.b[k], u);
+    }
+  }
   const sa = shoulders(s.a, s.view), sb = shoulders(s.b, s.view), sp = shoulders(p, s.view);
   for (const k of ['hN', 'hF']) {
     const A = s.a[k], B = s.b[k];
@@ -64,18 +81,41 @@ function pose(s, t) {
     let da = Math.atan2(rb[1], rb[0]) - aa;
     da = Math.atan2(Math.sin(da), Math.cos(da));
     // Seen from the front, an arm passes in front of the body, so a far swing (a twist) goes straight.
-    // Seen from the side, take the way round whose middle points farthest from the hips, so the arm
-    // swings out in front or overhead and never sweeps through the body.
+    // Seen from the side, a big swing (floor to overhead) keeps the short way round unless that
+    // sweeps the hand down through the body (past the line from shoulder to hips); then it goes the
+    // other way, out in front. Small swings past the hips (walking, running arms) stay as they are.
     if (s.view !== 'side' && Math.abs(da) > rad(150)) continue;
-    const toHip = Math.atan2(s.a.h[1] - sa[k][1], s.a.h[0] - sa[k][0]);
-    const away = (d) => Math.abs(Math.atan2(Math.sin(aa + d / 2 - toHip), Math.cos(aa + d / 2 - toHip)));
-    const other = da - Math.sign(da) * Math.PI * 2;
-    if (s.view === 'side' && away(other) > away(da)) da = other;
+    if (s.view === 'side' && Math.abs(da) > rad(120)) {
+      let h = Math.atan2(s.a.h[1] - sa[k][1], s.a.h[0] - sa[k][0]) - aa;
+      h = Math.atan2(Math.sin(h), Math.cos(h));
+      if (Math.sign(h) === Math.sign(da) && Math.abs(h) < Math.abs(da)) da -= Math.sign(da) * Math.PI * 2;
+    }
     const ang = aa + da * t;
     const len = Math.hypot(...ra) + (Math.hypot(...rb) - Math.hypot(...ra)) * t;
     p[k] = [sp[k][0] + Math.cos(ang) * len, sp[k][1] + Math.sin(ang) * len];
   }
   return p;
+}
+
+/**
+ * In a moving exercise the arms and head trail the body a moment, the way loose limbs follow
+ * through, which reads smoother than everything arriving at once. They trail in the body's own
+ * frame, so hands resting on the head or hips stay there, and hands that stay put in the world
+ * (on the floor, on a wall) don't trail at all, so they never slide.
+ */
+const LAG = 0.4; // radians of the cycle, about 6% of it
+function followThrough(s, p, theta) {
+  const q = pose(s, (1 - Math.cos(theta - LAG)) / 2);
+  const sp = shoulders(p, s.view), sq = shoulders(q, s.view);
+  const turn = rad(p.t - q.t);
+  const c = Math.cos(turn), sn = Math.sin(turn);
+  for (const k of ['hN', 'hF']) {
+    const A = s.a[k], B = s.b[k];
+    if (!A || !B || Math.hypot(B[0] - A[0], B[1] - A[1]) < 24) continue;
+    const r = [q[k][0] - sq[k][0], q[k][1] - sq[k][1]];
+    p[k] = [sp[k][0] + r[0] * c - r[1] * sn, sp[k][1] + r[0] * sn + r[1] * c];
+  }
+  if (p.n != null && q.n != null) p.n = p.t + (q.n - q.t);
 }
 
 const fmt = (p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
@@ -218,7 +258,7 @@ export class Figure {
    */
   breathe(time, theta) {
     if (this.stretch.view === 'top' || calm()) { this.body.removeAttribute('transform'); return; }
-    const b = this.stretch.dynamic ? -Math.cos(2 * theta) * 0.022 : Math.sin((time / 3.6) * Math.PI * 2) * 0.012;
+    const b = this.stretch.dynamic ? (steps(this.stretch) ? 1 : -1) * Math.cos(2 * theta) * 0.022 : Math.sin((time / 3.6) * Math.PI * 2) * 0.012;
     const x = this.hipX.toFixed(1);
     this.body.setAttribute('transform', `translate(${x} 182) scale(${(1 - b * 0.6).toFixed(4)} ${(1 + b).toFixed(4)}) translate(-${x} -182)`);
   }
@@ -226,6 +266,7 @@ export class Figure {
   draw(t, theta = 0) {
     const s = this.stretch;
     const p = pose(s, t);
+    if (s.dynamic && s.view !== 'top') followThrough(s, p, theta);
     if (s.orbit) {
       const { parts, r, mirrorF } = s.orbit;
       for (const part of parts) {
