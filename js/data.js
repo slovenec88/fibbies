@@ -760,18 +760,18 @@ export const ROUTINES = [
   },
   {
     id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', icon: 'workspace_premium', top: true,
-    blurb: 'Short on time? The five stretches with the biggest payoff, in about five minutes.',
-    items: [['lunge', 30], ['calf', 30], ['quad', 30], ['downdog', 40], ['worlds', 30]],
+    blurb: 'Short on time? The five stretches with the biggest payoff, in under four minutes.',
+    items: [['lunge', 20], ['calf', 20], ['quad', 20], ['downdog', 25], ['worlds', 20]],
   },
   {
     id: 'calf-sos', hero: 'downdog', title: 'Tight Calves SOS', cat: 'quick', icon: 'healing',
     blurb: 'Calves and Achilles feeling cranky? A focused lower-leg session.',
-    items: [['calfRaises', 30], ['calf', 30], ['downdog', 40], ['squat', 30], ['fold', 30], ['inchworm', 40], ['lyingHam', 30]],
+    items: [['calfRaises', 25], ['calf', 25], ['soleus', 20], ['downdog', 30], ['squat', 25], ['fold', 20]],
   },
   {
     id: 'desk-reset', hero: 'catcow', title: 'Desk Day Reset', cat: 'quick', icon: 'chair',
     blurb: 'Sat all day? Open your hips and wake up your spine before your evening workout.',
-    items: [['cobra', 30], ['catcow', 40], ['lunge', 30], ['sideBend', 30], ['squat', 40], ['fold', 30], ['bridge', 30]],
+    items: [['cobra', 20], ['catcow', 30], ['lunge', 25], ['sideBend', 20], ['squat', 25], ['fold', 20], ['bridge', 20]],
   },
   {
     id: 'two-minute', hero: 'standingTwist', title: '2-Minute Reset', cat: 'quick', icon: 'timer',
@@ -781,47 +781,128 @@ export const ROUTINES = [
   {
     id: 'work-break', hero: 'chestOpener', title: 'Work Break', cat: 'quick', icon: 'work',
     blurb: 'Stand up from your desk for a few minutes. Neck, shoulders, wrists, chest, hips, legs and back, all standing, nothing needed.',
-    items: [['neckTilt', 20], ['shoulderCross', 20], ['wristStretch', 20], ['chestOpener', 25], ['hipFlexorStand', 25], ['hamstringStand', 25], ['backBend', 20], ['standingTwist', 30]],
+    items: [['neckTilt', 15], ['shoulderCross', 15], ['wristStretch', 12], ['chestOpener', 15], ['hipFlexorStand', 15], ['hamstringStand', 15], ['backBend', 12]],
   },
   {
     id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', focus: 'full', icon: 'workspace_premium', top: true,
-    blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. No equipment, about five minutes. Move at a pace you can control.',
-    items: [['airSquat', 40], ['pushup', 30], ['bridge', 40], ['birdDog', 30], ['plank', 30]],
+    blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. A short warm-up first and a calm stretch to finish. No equipment, about eight minutes. Move at a pace you can control.',
+    items: [['armCircles', 35], ['hipCircles', 35], ['catcow', 35], ['airSquat', 50], ['pushup', 45], ['bridge', 50], ['birdDog', 35], ['plank', 50], ['child', 45]],
   },
   {
     id: 'full-body', hero: 'splitSquat', title: 'Full Body Builder', cat: 'strength', focus: 'full', icon: 'accessibility_new',
-    blurb: 'A little longer and a little harder: legs, glutes, push, shoulders, core and back in one go. About eight minutes.',
-    items: [['airSquat', 40], ['pushup', 30], ['splitSquat', 30], ['singleLegBridge', 30], ['shoulderTaps', 30], ['deadBug', 30], ['superman', 30]],
+    blurb: 'A little longer and a little harder: legs, glutes, push, shoulders, core and back in one go. About ten minutes.',
+    items: [['armCircles', 30], ['hipCircles', 30], ['inchworm', 40], ['airSquat', 50], ['pushup', 40], ['splitSquat', 30], ['singleLegBridge', 30], ['shoulderTaps', 35], ['goodMorning', 40], ['deadBug', 30], ['superman', 35], ['plank', 40]],
   },
   {
     id: 'strong-back', hero: 'birdDog', title: 'Strong Back', cat: 'strength', focus: 'back', icon: 'accessibility_new',
     blurb: 'For a back that complains: the strength moves physios give for a stronger, calmer lower back. Slow and controlled.',
-    items: [['birdDog', 30], ['deadBug', 30], ['bridge', 40], ['superman', 30], ['goodMorning', 40], ['plank', 30]],
+    items: [['catcow', 40], ['hipCircles', 30], ['birdDog', 40], ['deadBug', 35], ['bridge', 45], ['superman', 40], ['goodMorning', 45], ['yRaise', 35], ['plank', 40], ['child', 50]],
   },
   {
     id: 'upper-back', hero: 'wallAngel', title: 'Upper Back & Posture', cat: 'strength', focus: 'back', icon: 'airline_seat_recline_extra',
     blurb: 'For rounded shoulders and a desk-shaped back: strengthen the muscles that hold you upright.',
-    items: [['wallAngel', 40], ['yRaise', 30], ['superman', 30], ['birdDog', 30], ['plank', 30]],
+    items: [['armCircles', 30], ['catcow', 30], ['wallAngel', 50], ['wallPushup', 40], ['yRaise', 35], ['superman', 35], ['birdDog', 35], ['shoulderTaps', 35], ['plank', 45], ['chestOpener', 30]],
   },
   {
     id: 'strong-legs', hero: 'slowCalf', title: 'Strong Legs & Calves', cat: 'strength', focus: 'legs', icon: 'directions_walk',
     blurb: 'Calves, knees and thighs for walking, running and stairs, with slow calf lowers, a physio favourite for the Achilles.',
-    items: [['slowCalf', 40], ['airSquat', 40], ['splitSquat', 30], ['wallSit', 40], ['calfRaises', 40]],
+    items: [['hipCircles', 30], ['calfRaises', 45], ['bridge', 40], ['airSquat', 50], ['splitSquat', 35], ['sideLunge', 30], ['slowCalf', 40], ['wallSit', 45], ['quad', 25]],
   },
   {
     id: 'glutes-hips', hero: 'sideLunge', title: 'Glutes & Hips', cat: 'strength', focus: 'legs', icon: 'directions_run',
     blurb: 'Strong glutes and hips protect your knees and back. Bridges, lunges and a wall sit, no equipment.',
-    items: [['singleLegBridge', 30], ['sideLunge', 30], ['bridge', 40], ['splitSquat', 30], ['wallSit', 40]],
+    items: [['hipCircles', 30], ['bridge', 50], ['singleLegBridge', 35], ['sideLunge', 35], ['goodMorning', 40], ['splitSquat', 35], ['airSquat', 45], ['wallSit', 50], ['figureFour', 25]],
   },
   {
     id: 'arms-shoulders', hero: 'wallPushup', title: 'Arms & Shoulders', cat: 'strength', focus: 'upper', icon: 'fitness_center',
     blurb: 'Pushing strength and healthy shoulders, starting easy at the wall and building to the floor.',
-    items: [['wallPushup', 40], ['pushup', 30], ['shoulderTaps', 30], ['yRaise', 30], ['wallAngel', 40], ['plank', 30]],
+    items: [['armCircles', 30], ['catcow', 30], ['wallAngel', 40], ['wallPushup', 50], ['pushup', 40], ['shoulderTaps', 35], ['yRaise', 35], ['superman', 35], ['plank', 45], ['chestOpener', 30], ['tricep', 20]],
   },
   {
     id: 'core-basics', hero: 'deadBug', title: 'Core Basics', cat: 'strength', focus: 'core', icon: 'adjust',
     blurb: 'A steady core without sit-ups: the slow, safe moves physios teach first.',
-    items: [['deadBug', 30], ['reverseCrunch', 40], ['plank', 30], ['birdDog', 30], ['shoulderTaps', 30]],
+    items: [['catcow', 30], ['hipCircles', 30], ['deadBug', 35], ['reverseCrunch', 40], ['birdDog', 35], ['superman', 35], ['plank', 40], ['shoulderTaps', 35], ['bridge', 40], ['child', 40]],
+  },
+  // The long ones (about 15 minutes at the recommended length) come last, so every list ends with them.
+  {
+    id: 'full-warmup', hero: 'lungeReach', title: 'The Full Warm-Up', cat: 'before', icon: 'local_fire_department',
+    blurb: 'Fifteen minutes from easy circles to quick feet: joints, hips, legs and a little speed. For a long run, a match or a big training day.',
+    items: [['armCircles', 45], ['hipCircles', 45], ['standingTwist', 40], ['catcow', 45], ['inchworm', 60], ['worlds', 40], ['lungeReach', 60], ['sideLunge', 30], ['swingFront', 30], ['swingSide', 30], ['airSquat', 45], ['bridge', 40], ['calfRaises', 50], ['buttKicks', 50], ['highKnees', 50]],
+  },
+  {
+    id: 'gym-warmup', hero: 'inchworm', title: 'Gym Warm-Up', cat: 'before', icon: 'sports_gymnastics',
+    blurb: 'Before heavy lifting: loosen your spine, hips and shoulders, then wake up your glutes, core and upper back with light sets. About fifteen minutes.',
+    items: [['catcow', 50], ['armCircles', 40], ['hipCircles', 40], ['inchworm', 55], ['worlds', 35], ['wallAngel', 45], ['bridge', 45], ['goodMorning', 40], ['birdDog', 30], ['deadBug', 30], ['airSquat', 50], ['sideLunge', 30], ['wallPushup', 40], ['shoulderTaps', 35], ['lungeReach', 55], ['calfRaises', 40]],
+  },
+  {
+    id: 'full-cooldown', hero: 'pigeon', title: 'The Full Cooldown', cat: 'after', icon: 'hourglass_bottom',
+    blurb: 'Fifteen unhurried minutes for your legs and hips after a long or hard session: standing stretches first, then down to the floor.',
+    items: [['calf', 40], ['soleus', 30], ['quad', 40], ['lunge', 40], ['downdog', 35], ['pigeon', 45], ['lyingHam', 40], ['figureFour', 35], ['butterfly', 45], ['twist', 35], ['child', 50], ['legsUpWall', 55]],
+  },
+  {
+    id: 'gym-cooldown', hero: 'chestOpener', title: 'Gym Cooldown', cat: 'after', icon: 'accessibility',
+    blurb: 'After lifting: neck, shoulders, arms and chest first, then back, hips and legs. About fifteen minutes, head to toe.',
+    items: [['neckTilt', 30], ['shoulderCross', 35], ['tricep', 30], ['chestOpener', 45], ['wristStretch', 25], ['sideBend', 35], ['catcow', 45], ['child', 55], ['cobra', 30], ['lunge', 35], ['pigeon', 40], ['lyingHam', 35], ['butterfly', 40], ['twist', 35]],
+  },
+  {
+    id: 'long-wind-down', hero: 'happyBaby', title: 'Long Wind-Down', cat: 'evening', icon: 'dark_mode',
+    blurb: 'A slow fifteen minutes on the floor for a really calm evening: spine, hips and legs, ending with your legs up the wall.',
+    items: [['catcow', 50], ['child', 60], ['cobra', 30], ['seatedFold', 50], ['butterfly', 50], ['pigeon', 40], ['happyBaby', 50], ['kneeToChest', 35], ['figureFour', 40], ['lyingHam', 40], ['twist', 45], ['bridge', 30], ['legsUpWall', 80]],
+  },
+  {
+    id: 'head-to-toe', hero: 'sideBend', title: 'Head to Toe', cat: 'evening', icon: 'bed',
+    blurb: 'Start with your neck and shoulders, finish with your legs up the wall: a gentle fifteen minutes that lets go of the whole body.',
+    items: [['neckTilt', 30], ['shoulderCross', 30], ['tricep', 25], ['chestOpener', 40], ['sideBend', 40], ['catcow', 45], ['child', 50], ['downdog', 40], ['squat', 40], ['pigeon', 45], ['seatedFold', 50], ['lyingHam', 35], ['twist', 40], ['legsUpWall', 75]],
+  },
+  {
+    id: 'full-circuit', hero: 'airSquat', title: 'Full Body Circuit', cat: 'strength', focus: 'full', icon: 'all_inclusive',
+    blurb: 'A short warm-up, then two rounds of squats, push-ups, lunges, back and core work, and a calm finish. About fifteen minutes, no equipment.',
+    items: [['armCircles', 30], ['hipCircles', 30], ['inchworm', 40], ['airSquat', 50], ['pushup', 35], ['splitSquat', 35], ['superman', 35], ['shoulderTaps', 35], ['deadBug', 30], ['airSquat', 50], ['pushup', 35], ['sideLunge', 35], ['goodMorning', 40], ['birdDog', 30], ['plank', 50], ['reverseCrunch', 45], ['child', 50]],
+  },
+  {
+    id: 'full-endurance', hero: 'wallSit', title: 'Full Body Endurance', cat: 'strength', focus: 'full', icon: 'repeat',
+    blurb: 'Fifteen minutes that work every big muscle in turn: legs, push, back, hips and core. A steady pace, no equipment.',
+    items: [['armCircles', 30], ['catcow', 35], ['hipCircles', 30], ['airSquat', 45], ['wallPushup', 45], ['sideLunge', 35], ['yRaise', 35], ['goodMorning', 45], ['shoulderTaps', 35], ['deadBug', 35], ['bridge', 45], ['pushup', 35], ['splitSquat', 35], ['superman', 35], ['wallSit', 45], ['plank', 45], ['fold', 30], ['child', 35]],
+  },
+  {
+    id: 'back-builder', hero: 'goodMorning', title: 'Back Builder', cat: 'strength', focus: 'back', icon: 'airline_seat_recline_normal',
+    blurb: 'The moves physios use for a strong lower back, slow and controlled, the key ones twice. With a gentle warm-up and stretches at the end. About fifteen minutes.',
+    items: [['catcow', 45], ['hipCircles', 30], ['birdDog', 35], ['deadBug', 35], ['bridge', 45], ['superman', 35], ['goodMorning', 45], ['yRaise', 35], ['plank', 40], ['birdDog', 35], ['singleLegBridge', 35], ['superman', 35], ['goodMorning', 45], ['child', 55], ['cobra', 30], ['kneeToChest', 30]],
+  },
+  {
+    id: 'posture-plus', hero: 'yRaise', title: 'Posture Workout', cat: 'strength', focus: 'back', icon: 'height',
+    blurb: 'Fifteen minutes for your upper back and shoulders: open up, then two rounds of wall angels, Y raises, wall push-ups and planks.',
+    items: [['armCircles', 35], ['catcow', 40], ['standingTwist', 35], ['worlds', 30], ['wallAngel', 45], ['yRaise', 35], ['wallPushup', 40], ['superman', 35], ['shoulderTaps', 35], ['plank', 40], ['wallAngel', 45], ['yRaise', 35], ['wallPushup', 40], ['birdDog', 35], ['superman', 35], ['shoulderTaps', 35], ['plank', 40], ['chestOpener', 35], ['child', 45]],
+  },
+  {
+    id: 'leg-day', hero: 'splitSquat', title: 'Leg Day', cat: 'strength', focus: 'legs', icon: 'hiking',
+    blurb: 'Two rounds of squats, split squats and wall sits, plus slow calf lowers, for strong legs. About fifteen minutes, with stretches to finish.',
+    items: [['hipCircles', 30], ['swingFront', 20], ['calfRaises', 45], ['bridge', 45], ['airSquat', 50], ['splitSquat', 35], ['slowCalf', 40], ['wallSit', 50], ['sideLunge', 35], ['airSquat', 50], ['splitSquat', 35], ['wallSit', 50], ['quad', 35], ['calf', 35]],
+  },
+  {
+    id: 'glute-builder', hero: 'singleLegBridge', title: 'Glute Builder', cat: 'strength', focus: 'legs', icon: 'sports_martial_arts',
+    blurb: 'Bridges, side lunges and hip hinges, two rounds, for strong glutes and hips that look after your knees and back. About fifteen minutes.',
+    items: [['hipCircles', 30], ['swingSide', 20], ['bridge', 50], ['singleLegBridge', 35], ['sideLunge', 35], ['goodMorning', 45], ['airSquat', 45], ['bridge', 50], ['singleLegBridge', 35], ['sideLunge', 35], ['splitSquat', 35], ['goodMorning', 45], ['pigeon', 35], ['figureFour', 30]],
+  },
+  {
+    id: 'upper-builder', hero: 'pushup', title: 'Upper Body Builder', cat: 'strength', focus: 'upper', icon: 'exercise',
+    blurb: 'Two rounds of push-ups from the wall to the floor, shoulder taps, Y raises and planks, then stretches for chest and arms. About fifteen minutes.',
+    items: [['armCircles', 35], ['catcow', 35], ['inchworm', 40], ['wallAngel', 40], ['wallPushup', 45], ['pushup', 35], ['shoulderTaps', 35], ['yRaise', 35], ['plank', 45], ['wallPushup', 45], ['pushup', 35], ['shoulderTaps', 35], ['yRaise', 35], ['birdDog', 35], ['superman', 35], ['plank', 45], ['chestOpener', 35], ['tricep', 25], ['shoulderCross', 25]],
+  },
+  {
+    id: 'strong-shoulders', hero: 'wallAngel', title: 'Strong Shoulders', cat: 'strength', focus: 'upper', icon: 'sports_handball',
+    blurb: 'Easy on the joints, hard on the muscles: two rounds of wall angels, Y raises, wall push-ups and planks for healthy shoulders. About fifteen minutes.',
+    items: [['armCircles', 45], ['catcow', 35], ['neckTilt', 20], ['wallAngel', 45], ['yRaise', 35], ['wallPushup', 45], ['shoulderTaps', 35], ['plank', 40], ['wallAngel', 45], ['yRaise', 35], ['wallPushup', 45], ['shoulderTaps', 35], ['superman', 35], ['birdDog', 35], ['plank', 40], ['chestOpener', 40], ['shoulderCross', 30], ['tricep', 25]],
+  },
+  {
+    id: 'core-circuit', hero: 'reverseCrunch', title: 'Core Circuit', cat: 'strength', focus: 'core', icon: 'radio_button_checked',
+    blurb: 'Two full rounds of dead bugs, reverse crunches, planks, bird dogs and supermans: the front, back and sides of your core. About fifteen minutes.',
+    items: [['catcow', 40], ['hipCircles', 30], ['deadBug', 35], ['reverseCrunch', 40], ['plank', 45], ['birdDog', 35], ['superman', 35], ['shoulderTaps', 35], ['deadBug', 35], ['reverseCrunch', 40], ['plank', 45], ['birdDog', 35], ['superman', 35], ['shoulderTaps', 35], ['bridge', 40], ['child', 50], ['cobra', 30]],
+  },
+  {
+    id: 'core-stability', hero: 'birdDog', title: 'Core & Balance', cat: 'strength', focus: 'core', icon: 'balance',
+    blurb: 'Slow, steady moves that teach your core to hold you still, with single-leg bridges and side lunges for balance. About fifteen minutes.',
+    items: [['catcow', 45], ['hipCircles', 30], ['birdDog', 35], ['deadBug', 35], ['bridge', 50], ['shoulderTaps', 35], ['plank', 50], ['singleLegBridge', 30], ['sideLunge', 30], ['birdDog', 35], ['deadBug', 35], ['superman', 35], ['reverseCrunch', 40], ['plank', 50], ['child', 50]],
   },
 ];
 // Every routine takes its section's colour, so a section reads as one.
