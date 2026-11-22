@@ -62,9 +62,9 @@ export function fmtBig(n) {
 // ---------- Quests ----------
 export const QUESTS = [
   { cat: 'before', icon: 'bolt' },
+  { cat: 'strength', icon: 'exercise' },
   { cat: 'after', icon: 'fitness_center' },
   { cat: 'evening', icon: 'self_improvement' },
-  { cat: 'strength', icon: 'exercise' },
 ];
 
 /** Today's bonus: +25% on every chest for each kind of routine (warm-up, cool-down, relax,
