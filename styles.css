@@ -294,14 +294,17 @@ h1, h2, h3, p { margin: 0; }
 .move-list { margin-top: 24px; display: grid; gap: 2px; counter-reset: mv; }
 .move-list h3 { font-size: 14px; font-weight: 600; color: var(--on-surface-variant); margin: 0 4px 10px; }
 .move-row {
-  display: grid; grid-template-columns: 60px 1fr auto; gap: 14px; align-items: center;
+  display: grid; grid-template-columns: 60px minmax(0, 1fr) auto 20px; gap: 8px; align-items: center;
   padding: 8px 6px; border-radius: 18px;
+  width: 100%; text-align: start;
 }
 .move-row:nth-child(even) { background: var(--surface-container-low); }
+.move-row:hover, .move-row:focus-visible { background: var(--surface-container); }
+.mr-more { font-size: 20px; color: var(--primary); }
 .mr-thumb { width: 60px; height: 60px; border-radius: 16px; background: var(--surface-container-high); display: grid; place-items: center; overflow: hidden; }
 .mr-thumb .fig { width: 100%; height: 100%; }
-.mr-name { font-weight: 600; font-size: 16px; line-height: 1.25; }
-.mr-target { color: var(--on-surface-variant); font-size: 13px; margin-top: 2px; }
+.mr-name { display: block; font-weight: 600; font-size: 16px; line-height: 1.25; overflow-wrap: anywhere; }
+.mr-target { display: block; color: var(--on-surface-variant); font-size: 13px; margin-top: 2px; }
 .mr-time { color: var(--on-surface-variant); font-size: 14px; font-weight: 600; text-align: right; white-space: nowrap; }
 .mr-time small { display: block; font-size: 12px; font-weight: 500; }
 .start-bar {
@@ -314,6 +317,14 @@ h1, h2, h3, p { margin: 0; }
   display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 14px 16px; border-radius: 20px;
   background: var(--surface-container); color: var(--on-surface-variant); font-size: 14px;
 }
+
+.move-preview-fig {
+  display: grid; place-items: center; margin: 12px 0;
+  background: var(--primary-container); border-radius: 24px; padding: 8px;
+}
+.move-preview-fig .fig { width: min(100%, 230px); }
+#move-preview-guide { max-width: 50ch; margin: 0 auto; }
+.move-preview-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 
 /* ========= Player ========= */
 #view-player { background: var(--surface); }

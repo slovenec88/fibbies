@@ -101,6 +101,18 @@
     <section id="view-done" class="view" data-view="done" aria-label="Finished" data-i18n-aria="finished"></section>
   </div>
 
+  <!-- Exercise preview -->
+  <dialog class="sheet move-preview" id="sheet-move" aria-labelledby="move-preview-title" aria-describedby="move-preview-guide" data-hue>
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <h2 class="sheet-title" id="move-preview-title"></h2>
+    <div class="move-preview-fig" id="move-preview-fig"></div>
+    <p id="move-preview-guide"></p>
+    <div class="move-preview-actions">
+      <button class="btn tonal ripple" id="move-preview-toggle" type="button"></button>
+      <button class="btn text ripple" id="move-preview-close" type="button" data-i18n="done" autofocus>Done</button>
+    </div>
+  </dialog>
+
   <!-- Settings sheet -->
   <dialog class="sheet settings-sheet" id="sheet-settings" aria-label="Settings" data-i18n-aria="settings">
     <div class="sheet-handle" aria-hidden="true"></div>

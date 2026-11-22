@@ -13,7 +13,7 @@ import { playMerge } from './merge-fx.js';
 import { native, isNative } from './native.js';
 import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } from './i18n.js';
 import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
-import { localizeContent } from './localize.js';
+import { exerciseGuide, localizeContent } from './localize.js';
 import { setupInstallPrompt } from './install.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -745,24 +745,59 @@ function renderDetail(r) {
     </div>`;
   const df = new Figure(firstStretch(r));
   v.querySelector('.detail-fig').appendChild(df.svg);
-  animate(df);
+  animate(df, { paused: () => movePreview.open });
   const ml = v.querySelector('.move-list');
   for (const [id, secs] of r.items) {
     const s = STRETCHES[id];
     const d = holdSecs(s, secs, settings.scale, r.cat === 'strength');
-    const row = document.createElement('div');
-    row.className = 'move-row';
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'move-row ripple';
+    row.setAttribute('aria-haspopup', 'dialog');
     row.innerHTML = `
-      <div class="mr-thumb"></div>
-      <div><div class="mr-name">${esc(s.name)}</div><div class="mr-target">${esc(s.target)}</div></div>
-      <div class="mr-time">${d}${t('sec')}<small>${t(s.sided ? 'eachSide' : s.dynamic ? 'moving' : 'holdShort')}</small></div>`;
+      <span class="mr-thumb"></span>
+      <span><span class="mr-name">${esc(s.name)}</span><span class="mr-target">${esc(s.target)}</span></span>
+      <span class="mr-time">${d}${t('sec')}<small>${t(s.sided ? 'eachSide' : s.dynamic ? 'moving' : 'holdShort')}</small></span>
+      <span class="ms mr-more" aria-hidden="true">chevron_right</span>`;
     row.querySelector('.mr-thumb').appendChild(staticFig(s, 0.5));
+    row.onclick = () => openMovePreview(id, r.hue);
     ml.appendChild(row);
   }
   $('#dt-back').onclick = () => back();
   $('#dt-settings').onclick = openSettings;
   $('#dt-start').onclick = () => startRoutine(r.id);
 }
+
+const movePreview = $('#sheet-move');
+const movePreviewFig = $('#move-preview-fig');
+const movePreviewToggle = $('#move-preview-toggle');
+let movePreviewAnimation;
+let movePreviewPaused;
+function setMovePreviewPaused(paused) {
+  movePreviewPaused = paused;
+  movePreviewToggle.textContent = t(paused ? 'playAnimation' : 'pauseAnimation');
+}
+function openMovePreview(id, hue) {
+  const stretch = STRETCHES[id];
+  movePreview.style.setProperty('--h', hue);
+  $('#move-preview-title').textContent = stretch.name;
+  $('#move-preview-guide').textContent = exerciseGuide(id);
+  const figure = new Figure(stretch);
+  movePreviewFig.replaceChildren(figure.svg);
+  animated.delete(movePreviewAnimation);
+  setMovePreviewPaused(reduceMotion());
+  movePreviewAnimation = animate(figure, { paused: () => movePreviewPaused || !movePreview.open });
+  movePreview.scrollTop = 0;
+  movePreview.showModal();
+}
+movePreviewToggle.onclick = () => setMovePreviewPaused(!movePreviewPaused);
+$('#move-preview-close').onclick = () => movePreview.close();
+movePreview.addEventListener('close', () => {
+  if (movePreview.open) return;
+  animated.delete(movePreviewAnimation);
+  movePreviewAnimation = undefined;
+  movePreviewFig.replaceChildren();
+});
 
 // ---------- Player ----------
 let session = null;
@@ -1220,6 +1255,7 @@ window.addEventListener('hashchange', () => {
 });
 
 function route() {
+  if (movePreview.open) movePreview.close();
   const hash = location.hash || '#/';
   const [, view, id] = hash.split('/');
 
@@ -1332,7 +1368,7 @@ function dragToClose(dlg, canClose = () => true) {
     cancel();
   });
 }
-for (const s of [sheet, flexSheet, albumSheet]) dragToClose(s);
+for (const s of [sheet, flexSheet, albumSheet, movePreview]) dragToClose(s);
 dragToClose(fibSheet, () => !merging);
 
 // ---------- Safety note ----------

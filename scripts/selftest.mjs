@@ -25,6 +25,25 @@ async function test(name, fn) {
 const profile = (xp) => JSON.stringify({ xp, fibers: xp, chests: 1, fibs: [], dex: {} });
 const reset = (data) => { mem.clear(); for (const [k, v] of Object.entries(data)) mem.set(k, v); };
 
+await test('every routine exercise has a guide and playback controls in every supported language', async () => {
+  const { ROUTINES } = await import(new URL('data.js', root));
+  const { LANGS, setLang, t } = await import(new URL('i18n.js', root));
+  const { exerciseGuide } = await import(new URL('localize.js', root));
+  const ids = new Set(ROUTINES.flatMap(({ items }) => items.map(([id]) => id)));
+  for (const { id: lang } of LANGS) {
+    setLang(lang);
+    for (const id of ids) {
+      const guide = exerciseGuide(id);
+      assert.ok(guide.trim(), `${lang}: ${id}`);
+      if (lang !== 'en') assert.notEqual(guide, exerciseGuide(id, 'en'), `${lang}: ${id}`);
+    }
+    for (const key of ['playAnimation', 'pauseAnimation']) {
+      assert.notEqual(t(key), key, `${lang}: ${key}`);
+    }
+  }
+  setLang('en');
+});
+
 // ---- storage ----
 await test('unreadable data is rescued, not dropped', () => {
   reset({ 'limber.profile': '{"xp": 1' });
