@@ -236,8 +236,6 @@ const EN = {
   safetyItems: ["Warm up first with a few minutes of walking or the moving stretches. Never push cold muscles hard.","Mild tension is good. Stop if you feel sharp pain, tingling or numbness.","Breathe slowly and never bounce in a hold.","Injured, pregnant or recovering from surgery? Check with a doctor or physio first."],
   safetyOk: "Got it",
   safetyLink: "How to stretch safely",
-  ranAway: "IT RAN AWAY!",
-  ranAwayBody: "This one was too shy and dashed off. You still keep all your fibers. Catch the next one!",
   "say.ranAway": ({ name }) => `Oh no, ${name} ran away!`,
   chestBankedRan: ({ f }) => `Chest banked: +${f} fibers. The Fibbie ran away!`,
   evolvedKicker: "EVOLVED!",

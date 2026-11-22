@@ -192,8 +192,6 @@ export const UI = {
   safetyItems: ["Calienta primero con unos minutos de caminar o con los estiramientos en movimiento. Nunca fuerces un músculo frío.","Una tensión suave está bien. Para si sientes dolor agudo, hormigueo o entumecimiento.","Respira despacio y nunca hagas rebotes al mantener.","¿Lesión, embarazo o recuperándote de una operación? Consulta antes con tu médico o fisio."],
   safetyOk: "Entendido",
   safetyLink: "Cómo estirar con seguridad",
-  ranAway: "¡SE ESCAPÓ!",
-  ranAwayBody: "Era demasiado tímido y salió corriendo. Te quedas con todas tus fibras. ¡Atrapa el siguiente!",
   "say.ranAway": ({ name }) => `¡Oh no, ${name} se escapó!`,
   chestBankedRan: ({ f }) => `Cofre guardado: +${f} fibras. ¡El Fibbie se escapó!`,
   evolvedKicker: "¡EVOLUCIONÓ!",

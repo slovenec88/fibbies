@@ -192,8 +192,6 @@ export const UI = {
   safetyItems: ["Prima scaldati con qualche minuto di camminata o con gli allungamenti in movimento. Non forzare mai i muscoli freddi.","Una leggera tensione va bene. Fermati se senti dolore acuto, formicolio o intorpidimento.","Respira lentamente e non molleggiare mai durante una tenuta.","Infortunio, gravidanza o convalescenza da un intervento? Chiedi prima a un medico o a un fisioterapista."],
   safetyOk: "Capito",
   safetyLink: "Come allungarsi in sicurezza",
-  ranAway: "È SCAPPATO!",
-  ranAwayBody: "Era troppo timido ed è corso via. Le fibre restano tutte tue. Prendi il prossimo!",
   "say.ranAway": ({ name }) => `Oh no, ${name} è scappato!`,
   chestBankedRan: ({ f }) => `Forziere ottenuto: +${f} fibre. Il Fibbie è scappato!`,
   evolvedKicker: "EVOLUTO!",

@@ -417,41 +417,57 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     if (!alive) return;
     const f = rw.fibbie;
     const loot = $('.rw-loot');
-    if (rw.ranAway) {
-      // The Fibbie peeks out, looks around, and dashes off the screen.
-      loot.innerHTML = `
-        <div class="rw-card runaway" data-rarity="${f.rarity}">
-          <div class="rw-critter"><div class="rw-runner">${critterSVG(f)}</div><i class="rw-dust" aria-hidden="true"></i><i class="rw-dust d2" aria-hidden="true"></i></div>
-          <div class="rw-card-text">
-            <span class="rw-new">${esc(t('ranAway'))}</span>
-            <b>${esc(f.name)}</b>
-            <small>${esc(t('ranAwayBody'))}</small>
-          </div>
-        </div>`;
-      wrap.classList.add('show-loot');
-      fx.boing();
-      haptics.buzz(40);
-      await sleep(1300);
-      if (!alive) return;
-      fx.runAway();
-      haptics.buzz([20, 30, 20, 30, 60]);
-      voiceGuide.say(t('say.ranAway', { name: f.name }), { interrupt: false, alt: t('say.ranAwayAny') });
-    } else {
+    // A shy Fibbie arrives like any other, with its name and everything; only then does it look
+    // around and bolt off the screen so fast that rubber bands pop up in its wake.
+    const ran = rw.ranAway;
+    const copies = rw.copies + (ran ? 1 : 0); // as it would have been, had it stayed
     loot.innerHTML = `
-      <div class="rw-card" data-rarity="${f.rarity}">
-        <div class="rw-critter">${critterSVG(f)}</div>
+      <div class="rw-card${ran ? ' runaway' : ''}" data-rarity="${f.rarity}">
+        <div class="rw-critter">${ran ? `<div class="rw-runner">${critterSVG(f)}</div>` : critterSVG(f)}</div>
         <div class="rw-card-text">
-          <span class="rw-new">${rw.isNew ? t('newFriend') : t('dupe', { n: rw.copies })}</span>
+          <span class="rw-new">${rw.isNew ? t('newFriend') : t('dupe', { n: copies })}</span>
           <b>${esc(f.name)}</b>
           <span class="rw-rarity">${t('rarity')[f.rarity]}</span>${stars(f.stage, false)}
-          <small${rw.copies >= 2 ? ' class="rw-merge"' : ''}>${esc(rw.copies >= 2 ? t('mergeHint') : f.blurb)}</small>
+          <small${!ran && copies >= 2 ? ' class="rw-merge"' : ''}>${esc(!ran && copies >= 2 ? t('mergeHint') : f.blurb)}</small>
         </div>
       </div>`;
     wrap.classList.add('show-loot');
     fx.boing();
     haptics.buzz(50);
     { const l = centerOf(loot.querySelector('.rw-critter') || loot); vfx.burst(l.x, l.y, 10 + P * 6, ['heart', 'star', 'spark'], 0.6); }
-    voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false, alt: t(rw.isNew ? 'say.newFriendAny' : 'say.copyAny') });
+    if (!ran) {
+      voiceGuide.say(rw.isNew ? t('say.newFriend', { name: f.name }) : t('say.copy', { name: f.name }), { interrupt: false, alt: t(rw.isNew ? 'say.newFriendAny' : 'say.copyAny') });
+    } else {
+      const card = loot.querySelector('.rw-card');
+      const runner = loot.querySelector('.rw-runner');
+      await sleep(1200);
+      if (!alive) return;
+      if (!fast) {
+        runner.classList.add('look'); // glances left, right, then crouches
+        await sleep(1000);
+        if (!alive) return;
+      }
+      if (!fast) { // Skip may have come during the look: then it is simply gone
+        const from = centerOf(runner, 0.6);
+        runner.classList.add('dash');
+        fx.runAway();
+        haptics.buzz([20, 30, 20, 30, 60]);
+        // Rubber bands spring up along its path as it accelerates away.
+        const to = innerWidth + 60;
+        for (let i = 0; i <= 9; i++) {
+          const id = setTimeout(() => {
+            timers.delete(id);
+            if (!alive) return;
+            const k = i / 9;
+            vfx.burst(from.x + (to - from.x) * k * k, from.y + (Math.random() - 0.5) * 18, i < 2 ? 4 : 2, ['band', 'band', 'spark'], 0.35);
+          }, 120 + i * 40);
+          timers.add(id);
+        }
+        await sleep(700);
+        if (!alive) return;
+      }
+      card.classList.add('gone');
+      voiceGuide.say(t('say.ranAway', { name: f.name }), { interrupt: false, alt: t('say.ranAwayAny') });
     }
 
     // 7. XP bar (can cross several levels)

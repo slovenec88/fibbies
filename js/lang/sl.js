@@ -196,8 +196,6 @@ export const UI = {
   safetyItems: ["Najprej se ogrej z nekaj minutami hoje ali raztezanji v gibanju. Hladnih mišic nikoli ne sili.","Rahla napetost je v redu. Ustavi se, če začutiš ostro bolečino, mravljinčenje ali odrevenelost.","Dihaj počasi in v zadrževanju nikoli ne poskakuj.","Poškodba, nosečnost ali okrevanje po operaciji? Najprej se posvetuj z zdravnikom ali fizioterapevtom."],
   safetyOk: "Razumem",
   safetyLink: "Kako se varno raztezati",
-  ranAway: "POBEGNIL JE!",
-  ranAwayBody: "Ta je bil preveč plašen in je odbrzel. Vsa vlakna ostanejo tvoja. Ujemi naslednjega!",
   "say.ranAway": ({ name }) => `Oh ne, ${name} je pobegnil!`,
   chestBankedRan: ({ f }) => `Skrinja shranjena: +${f} vlaken. Fibbie je pobegnil!`,
   evolvedKicker: "RAZVIL SE JE!",

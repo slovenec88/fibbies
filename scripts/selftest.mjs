@@ -76,11 +76,18 @@ await test('a restore that fails half way leaves the old progress untouched', ()
       assert.equal(r.chest, false); assert.equal(r.fibbie, null); assert.ok(r.total > 0);
     }
   });
-  await test('chests: a wooden chest loses its Fibbie 40% of the time, the best two never', async () => {
-    const roll = (cat, prior, x) => computeReward({ routine: { cat, items: [] }, holdSecs: 300, ratio: 1, skips: 0, scale: 1, priorToday: new Set(prior), firstToday: false, streak: 1, profile: prof() }, () => x).ranAway;
-    assert.equal(roll('before', [], 0.39), true);
-    assert.equal(roll('before', [], 0.41), false);
-    assert.equal(roll('evening', ['before', 'after'], 0), false);
+  await test('chests: Fibbies run off 35/25/12/0% by tier, never from the first two chests', async () => {
+    const roll = (cat, prior, x, chests = 5) => computeReward({ routine: { cat, items: [] }, holdSecs: 300, ratio: 1, skips: 0, scale: 1, priorToday: new Set(prior), firstToday: false, streak: 1, profile: { ...prof(), chests } }, () => x).ranAway;
+    assert.equal(roll('before', [], 0.34), true);
+    assert.equal(roll('before', [], 0.36), false);
+    assert.equal(roll('after', ['before'], 0.24), true);
+    assert.equal(roll('after', ['before'], 0.26), false);
+    assert.equal(roll('evening', ['before', 'after'], 0.11), true);
+    assert.equal(roll('evening', ['before', 'after'], 0.13), false);
+    assert.equal(roll('strength', ['before', 'after', 'evening'], 0), false);
+    assert.equal(roll('before', [], 0, 0), false);
+    assert.equal(roll('before', [], 0, 1), false);
+    assert.equal(roll('before', [], 0, 2), true);
   });
 }
 

@@ -80,7 +80,9 @@ export function todaysCats(log, day) {
 }
 
 // ---------- Reward computation ----------
-const RUN_AWAY = [0.4, 0.12, 0, 0]; // chance a Fibbie runs off, by chest tier
+// Chance a Fibbie runs off, by chest tier (wooden, rare, epic, legendary). Never twice in a row,
+// so a wooden chest really loses about 1 in 4.
+const RUN_AWAY = [0.35, 0.25, 0.12, 0];
 const round2 = (x) => Math.round(x * 100) / 100;
 
 /**
@@ -123,9 +125,9 @@ export function computeReward(o, rand = Math.random) {
   const chest = isKind && !priorToday.has(routine.cat);
   const tier = Math.min(3, QUESTS.filter((q) => priorToday.has(q.cat)).length);
   const fib = chest ? fibbie(dropFibbie(tier, profile, rand), 1) : null;
-  // Shy Fibbies run off: often from a wooden chest, rarely from a rare one, never from the best two.
-  // Never in someone's first few chests, and never twice in a row.
-  const ranAway = chest && profile.chests >= 3 && !profile.lastRanAway && rand() < RUN_AWAY[tier];
+  // Shy Fibbies run off: most often from a wooden chest, less from rare and epic, never from a
+  // legendary. Someone's first two Fibbies always stay, and none run off twice in a row.
+  const ranAway = chest && profile.chests >= 2 && !profile.lastRanAway && rand() < RUN_AWAY[tier];
   const copies = fib ? countOf(profile, fib.key) + (ranAway ? 0 : 1) : 0;
   const before = levelProgress(profile.xp);
   const after = levelProgress(profile.xp + total);

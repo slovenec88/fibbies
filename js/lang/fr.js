@@ -193,8 +193,6 @@ export const UI = {
   safetyItems: ["Échauffe-toi d’abord quelques minutes en marchant ou avec les étirements en mouvement. Ne force jamais un muscle froid.","Une légère tension, c’est bien. Arrête-toi si tu sens une douleur vive, des fourmillements ou un engourdissement.","Respire lentement et ne fais jamais de rebonds pendant un maintien.","Blessure, grossesse ou convalescence après une opération ? Demande d’abord l’avis d’un médecin ou d’un kiné."],
   safetyOk: "Compris",
   safetyLink: "Comment s’étirer en sécurité",
-  ranAway: "IL S’EST ENFUI !",
-  ranAwayBody: "Trop timide, il a filé. Tu gardes toutes tes fibres. Attrape le prochain !",
   "say.ranAway": ({ name }) => `Oh non, ${name} s’est enfui !`,
   chestBankedRan: ({ f }) => `Coffre gagné : +${f} fibres. Le Fibbie s’est enfui !`,
   evolvedKicker: "ÉVOLUTION !",

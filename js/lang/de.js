@@ -192,8 +192,6 @@ export const UI = {
   safetyItems: ["Wärm dich zuerst ein paar Minuten mit Gehen oder den Übungen in Bewegung auf. Dehne kalte Muskeln nie stark.","Leichte Spannung ist gut. Hör auf, wenn du stechenden Schmerz, Kribbeln oder Taubheit spürst.","Atme ruhig und federe beim Halten nie nach.","Verletzt, schwanger oder nach einer Operation? Frag zuerst deine Ärztin, deinen Arzt oder Physio."],
   safetyOk: "Verstanden",
   safetyLink: "So dehnst du dich sicher",
-  ranAway: "ABGEHAUEN!",
-  ranAwayBody: "Der war zu schüchtern und ist davongeflitzt. Deine Fasern behältst du trotzdem. Schnapp dir den nächsten!",
   "say.ranAway": ({ name }) => `Oh nein, ${name} ist weggelaufen!`,
   chestBankedRan: ({ f }) => `Truhe gesichert: +${f} Fasern. Der Fibbie ist weggelaufen!`,
   evolvedKicker: "ENTWICKELT!",
