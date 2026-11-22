@@ -371,9 +371,9 @@ export const CONTENT = {
       "Agrandis-les petit à petit.",
       "Maintenant, change de sens."]],
     worlds: ["Le meilleur étirement du monde", "Hanches · Colonne · Ischio-jambiers", [
-      "Fais une fente profonde, les deux mains à l'intérieur du pied avant.",
-      "Ouvre-toi en rotation et tends le bras du haut vers le ciel.",
-      "Suis ta main du regard, puis reviens."]],
+      "Avance un pied et pose la main opposée au sol, à l’intérieur du pied. Tourne la poitrine vers le genou avant et tends le bras libre vers le haut.",
+      "Le pied avant et la main d’appui restent au sol. Redescends le bras et recommence doucement.",
+      "Garde le bassin aussi stable que possible pendant la rotation."]],
     lungeReach: ["Fente arrière bras levés", "Fléchisseurs de hanche · Fessiers", [
       "Recule en fente et tends les deux bras au-dessus de la tête.",
       "Pousse sur le talon avant pour te relever.",
@@ -526,7 +526,7 @@ export const GUIDES = {
   highKnees: "Monte alternativement les genoux devant toi, jusqu’à une hauteur confortable. Garde le buste droit et accompagne le mouvement avec les bras.",
   calfRaises: "Monte sur la pointe des pieds, marque une courte pause, puis repose les talons en douceur. Tiens-toi à un support au besoin.",
   armCircles: "Écarte les bras et dessine de petits cercles qui s’agrandissent au fil des tours. Change de sens sans hausser les épaules.",
-  worlds: "Fais un grand pas en avant et pose les mains au sol, à l’intérieur du pied avant. Tourne la poitrine vers ce pied en levant le bras du même côté.",
+  worlds: "Si le pied gauche est devant, pose la main droite au sol, juste à l’intérieur du pied. Tourne la poitrine vers le genou gauche, tends le bras gauche vers le plafond, puis redescends-le. Inverse les appuis de l’autre côté.",
   lungeReach: "Fais un pas en arrière, plie les genoux et tends les bras vers le haut. Pousse dans le pied avant pour te redresser, puis change de jambe.",
   squat: "Écarte les pieds un peu plus que le bassin et descends en position accroupie. Garde les talons au sol si tu peux, ou assieds-toi sur un coussin.",
   cobra: "Allonge-toi sur le ventre, mains sous les épaules. Soulève doucement la poitrine, coudes près du corps et bassin posé au sol.",

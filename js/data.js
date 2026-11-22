@@ -238,13 +238,13 @@ export const STRETCHES = {
   },
 
   worlds: {
-    name: "World's Greatest Stretch", target: 'Hips · Spine · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 6,
-    a: { h: [96, 134], t: 10, n: 20, hN: [150, 180], hF: [146, 172], fN: [34, 180], fF: [140, 180], ft: [160, 0] },
-    b: { h: [98, 134], t: -10, n: -60, hN: [150, 180], hF: [150, 74], fN: [34, 180], fF: [140, 180], ft: [160, 0] },
+    name: "World's Greatest Stretch", target: 'Hips · Spine · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 6, dynamic: true,
+    a: { h: [91, 137], t: -3, n: 25, hN: [133, 180], hF: [147, 180], fN: [30, 180], fF: [151, 180], ft: [150, 0] },
+    b: { h: [91, 137], t: -11, n: -66, hN: [133, 180], hF: [142, 73], fN: [30, 180], fF: [151, 180], ft: [150, 0] },
     cues: [
-      'Step into a deep lunge, both hands inside your front foot.',
-      'Rotate open and reach your top arm to the sky.',
-      'Follow your hand with your eyes, then return.',
+      "Step one foot forward and put the opposite hand on the floor inside that foot. Turn your chest toward the front knee and reach the other arm up.",
+      "Keep your front foot and supporting hand planted. Lower the raised hand and repeat slowly.",
+      "Keep your hips steady as your chest turns.",
     ],
   },
 

@@ -370,9 +370,9 @@ export const CONTENT = {
       "Mach sie nach und nach größer.",
       "Jetzt die Richtung wechseln."]],
     worlds: ["Beste Dehnung der Welt", "Hüfte · Wirbelsäule · Oberschenkel hinten", [
-      "Geh in einen tiefen Ausfallschritt, beide Hände innen neben dem vorderen Fuß.",
-      "Dreh dich auf und streck den oberen Arm zum Himmel.",
-      "Folge der Hand mit den Augen, dann zurück."]],
+      "Setz einen Fuß nach vorn und stütz die gegenüberliegende Hand innen neben dem Fuß ab. Dreh den Brustkorb zum vorderen Knie und streck den freien Arm nach oben.",
+      "Lass den vorderen Fuß und die Stützhand am Boden. Senk den gehobenen Arm und wiederhol die Bewegung langsam.",
+      "Die Hüfte bleibt beim Drehen möglichst ruhig."]],
     lungeReach: ["Ausfallschritt rückwärts mit Strecken", "Hüftbeuger · Gesäß", [
       "Schritt zurück in den Ausfallschritt und beide Arme über den Kopf strecken.",
       "Über die vordere Ferse zurück in den Stand drücken.",
@@ -525,7 +525,7 @@ export const GUIDES = {
   highKnees: "Heb beim Laufen auf der Stelle abwechselnd die Knie. Bleib aufrecht, nimm die Arme mit und lande weich.",
   calfRaises: "Stell dich aufrecht hin und drück dich auf beide Fußballen hoch. Halt kurz inne und senk die Fersen langsam ab.",
   armCircles: "Streck die Arme seitlich aus und zeichne damit kleine Kreise. Lass die Kreise etwas größer werden und wechsel dann die Richtung.",
-  worlds: "Geh in einen tiefen Ausfallschritt und setz die Hände innen neben den vorderen Fuß. Dreh die Brust zur Vorderbeinseite und streck den Arm dieser Seite nach oben.",
+  worlds: "Steht der linke Fuß vorn, stütz die rechte Hand innen neben dem Fuß ab. Dreh den Brustkorb zum linken Knie, streck den linken Arm nach oben und senk ihn wieder. Auf der anderen Seite wechselst du Fuß und Hand.",
   lungeReach: "Setz einen Fuß zurück, sink in den Ausfallschritt und streck die Arme hoch. Drück dich über den vorderen Fuß zurück in den Stand.",
   squat: "Stell die Füße etwas breiter als hüftbreit und geh in eine bequeme tiefe Hocke. Lass die Fersen am Boden oder stütz dich mit einem Kissen ab.",
   cobra: "Leg dich auf den Bauch, die Hände unter den Schultern. Heb den Brustkorb leicht an, lass die Hüfte unten und entspann die Schultern.",

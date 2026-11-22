@@ -370,9 +370,9 @@ export const CONTENT = {
       "Aumente aos poucos.",
       "Agora inverta a direção."]],
     worlds: ["O melhor alongamento do mundo", "Quadril · Coluna · Posteriores da coxa", [
-      "Dê um afundo profundo, as duas mãos por dentro do pé da frente.",
-      "Gire abrindo o peito e estique o braço de cima para o céu.",
-      "Acompanhe a mão com o olhar e volte."]],
+      "Leve um pé à frente e apoie a mão oposta no chão, do lado de dentro desse pé. Gire o peito para o joelho da frente e levante o braço livre.",
+      "Mantenha o pé da frente e a mão de apoio no chão. Abaixe o braço e repita devagar.",
+      "Mantenha o quadril o mais firme possível enquanto gira o peito."]],
     lungeReach: ["Afundo para trás com braços para cima", "Flexores do quadril · Glúteos", [
       "Dê um passo para trás em afundo e estique os braços acima da cabeça.",
       "Empurre pelo calcanhar da frente para voltar a ficar em pé.",
@@ -525,7 +525,7 @@ export const GUIDES = {
   highKnees: "Eleve um joelho de cada vez até uma altura confortável. Mantenha o tronco ereto e deixe os braços acompanharem o movimento.",
   calfRaises: "Suba na ponta dos pés, faça uma pausa breve e apoie os calcanhares de novo com calma. Segure-se em um apoio se precisar.",
   armCircles: "Abra os braços e faça círculos pequenos, aumentando o tamanho aos poucos. Inverta o sentido sem erguer os ombros.",
-  worlds: "Dê um passo largo à frente e apoie as mãos no chão, do lado de dentro do pé da frente. Gire o peito para esse pé e eleve o braço do mesmo lado.",
+  worlds: "Com o pé esquerdo à frente, apoie a mão direita no chão, junto à parte interna do pé. Gire o peito em direção ao joelho esquerdo, levante o braço esquerdo e abaixe de novo. Inverta os apoios para fazer do outro lado.",
   lungeReach: "Dê um passo para trás, dobre os joelhos e estenda os braços acima da cabeça. Empurre o chão com o pé da frente para se levantar e troque de perna.",
   squat: "Afaste os pés um pouco além da largura do quadril e agache até onde for confortável. Mantenha os calcanhares no chão ou sente-se sobre uma almofada.",
   cobra: "Deite-se de barriga para baixo com as mãos sob os ombros. Eleve o peito devagar, mantendo os cotovelos perto do corpo e o quadril no chão.",

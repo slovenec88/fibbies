@@ -370,9 +370,9 @@ export const CONTENT = {
       "Hazlos más grandes poco a poco.",
       "Ahora cambia de sentido."]],
     worlds: ["El mejor estiramiento del mundo", "Cadera · Columna · Isquiotibiales", [
-      "Da una zancada profunda, ambas manos por dentro del pie delantero.",
-      "Gira abriendo el pecho y lleva el brazo de arriba hacia el cielo.",
-      "Sigue la mano con la mirada y vuelve."]],
+      "Adelanta un pie y apoya la mano contraria en el suelo, por dentro de ese pie. Gira el pecho hacia la rodilla adelantada y sube el brazo libre.",
+      "Mantén el pie delantero y la mano de apoyo en el suelo. Baja el brazo y repite despacio.",
+      "Procura que las caderas queden quietas al girar el pecho."]],
     lungeReach: ["Zancada atrás con brazos arriba", "Flexores de cadera · Glúteos", [
       "Da un paso atrás en zancada y estira ambos brazos sobre la cabeza.",
       "Empuja con el talón delantero para volver a ponerte de pie.",
@@ -525,7 +525,7 @@ export const GUIDES = {
   highKnees: "Trota en el sitio levantando una rodilla cada vez. Mantén el tronco erguido, acompaña con los brazos y aterriza con suavidad.",
   calfRaises: "Eleva los talones hasta apoyarte en la parte delantera de los pies. Haz una pausa breve y baja despacio.",
   armCircles: "Extiende los brazos hacia los lados y dibuja círculos pequeños. Amplíalos poco a poco y después gira en el otro sentido.",
-  worlds: "Da una zancada amplia y coloca las manos por dentro del pie adelantado. Gira el pecho hacia esa pierna y estira el brazo del mismo lado hacia arriba.",
+  worlds: "Con el pie izquierdo delante, apoya la mano derecha en el suelo, junto a la parte interior del pie. Gira el pecho hacia la rodilla izquierda, sube el brazo izquierdo y vuelve a bajarlo. Cambia de pie y de mano para el otro lado.",
   lungeReach: "Da un paso atrás, baja en zancada y levanta los brazos. Impúlsate con el pie de delante para volver de pie y alterna las piernas.",
   squat: "Con los pies algo más abiertos que las caderas, baja a una sentadilla cómoda. Deja los talones en el suelo o usa un cojín como apoyo.",
   cobra: "Túmbate boca abajo con las manos bajo los hombros. Eleva un poco el pecho sin despegar las caderas y relaja los hombros.",

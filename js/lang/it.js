@@ -370,9 +370,9 @@ export const CONTENT = {
       "Allargali a poco a poco.",
       "Ora cambia direzione."]],
     worlds: ["Il miglior allungamento del mondo", "Anche · Colonna · Femorali", [
-      "Fai un affondo profondo, entrambe le mani all'interno del piede davanti.",
-      "Ruota aprendo il petto e allunga il braccio in alto verso il cielo.",
-      "Segui la mano con lo sguardo, poi torna."]],
+      "Porta un piede avanti e appoggia la mano opposta a terra, all’interno del piede. Ruota il petto verso il ginocchio davanti e allunga in alto il braccio libero.",
+      "Tieni a terra il piede davanti e la mano d’appoggio. Abbassa il braccio e ripeti con calma.",
+      "Cerca di tenere fermo il bacino mentre ruoti il petto."]],
     lungeReach: ["Affondo indietro con braccia in alto", "Flessori dell'anca · Glutei", [
       "Fai un passo indietro in affondo e allunga le braccia sopra la testa.",
       "Spingi sul tallone davanti per tornare in piedi.",
@@ -525,7 +525,7 @@ export const GUIDES = {
   highKnees: "Solleva le ginocchia a turno fino a un’altezza comoda. Tieni il busto dritto e accompagna il movimento con le braccia.",
   calfRaises: "Sali sulle punte, fermati un istante e riporta i talloni a terra con calma. Usa un appoggio se ti serve per l’equilibrio.",
   armCircles: "Apri le braccia e fai piccoli cerchi, allargandoli un po’ alla volta. Cambia verso senza sollevare le spalle.",
-  worlds: "Fai un affondo ampio e appoggia le mani a terra all’interno del piede davanti. Ruota il petto verso quel piede e allunga in alto il braccio dello stesso lato.",
+  worlds: "Se il piede sinistro è davanti, appoggia la mano destra a terra sul lato interno del piede. Ruota il petto verso il ginocchio sinistro, alza il braccio sinistro e riportalo giù. Inverti gli appoggi per l’altro lato.",
   lungeReach: "Fai un passo indietro, scendi in affondo e allunga le braccia in alto. Spingi sul piede davanti per tornare in piedi, poi cambia gamba.",
   squat: "Metti i piedi appena più larghi delle anche e scendi in un’accosciata comoda. Tieni i talloni a terra oppure siediti su un cuscino.",
   cobra: "Sdraiati a pancia in giù con le mani sotto le spalle. Solleva piano il petto, tenendo i gomiti vicino al corpo e il bacino a terra.",

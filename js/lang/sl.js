@@ -374,9 +374,9 @@ export const CONTENT = {
       'Postopoma jih povečuj.',
       'Zdaj zamenjaj smer.']],
     worlds: ['Najboljše raztezanje na svetu', 'Boki · Hrbtenica · Zadnje stegenske', [
-      'Stopi v globok izpadni korak, obe roki ob notranji strani sprednjega stopala.',
-      'Zavrti se navzven in zgornjo roko iztegni proti nebu.',
-      'S pogledom sledi roki, nato se vrni.']],
+      "Stopi naprej in položi nasprotno dlan na tla ob notranji strani stopala. Obrni prsi proti sprednjemu kolenu in dvigni prosto roko.",
+      "Sprednje stopalo in oporna dlan ostaneta na tleh. Dvignjeno roko spusti in počasi ponovi.",
+      "Med zasukom naj boki ostanejo čim bolj pri miru."]],
     lungeReach: ['Izpadni korak nazaj z iztegom', 'Upogibalke kolka · Zadnjica', [
       'Stopi nazaj v izpadni korak in obe roki iztegni nad glavo.',
       'Odrini se skozi sprednjo peto nazaj v stoječ položaj.',
@@ -529,7 +529,7 @@ export const GUIDES = {
   highKnees: "Med lahkim tekom na mestu izmenično dviguj kolena. Ostani vzravnan, z rokami spremljaj ritem in mehko pristajaj.",
   calfRaises: "Vzravnaj se in se dvigni na sprednji del obeh stopal. Za trenutek obstani in počasi spusti peti.",
   armCircles: "Roke iztegni vstran in z njimi delaj majhne, enakomerne kroge. Kroge počasi povečaj, nato zamenjaj smer.",
-  worlds: "Stopi v izpadni korak in položi dlani na notranjo stran sprednjega stopala. Obrni prsi proti sprednji nogi in dvigni roko na tej strani.",
+  worlds: "Če je levo stopalo spredaj, položi desno dlan na tla tik ob njegovi notranji strani. Prsi obrni proti levemu kolenu, dvigni levo roko proti stropu in jo nato spusti. Na drugi strani zamenjaj nogo in roko.",
   lungeReach: "Stopi nazaj v izpadni korak in z rokami sezi nad glavo. Odrini se s sprednjim stopalom, se vzravnaj in zamenjaj nogi.",
   squat: "Stopi nekoliko širše od bokov in se spusti v udoben počep. Peti naj ostaneta na tleh, po potrebi pa si podloži blazino.",
   cobra: "Ulezi se na trebuh in postavi dlani pod ramena. Malo dvigni prsi, boke obdrži na tleh in sprosti ramena.",

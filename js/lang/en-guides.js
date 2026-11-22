@@ -19,7 +19,7 @@ export const GUIDES = {
   highKnees: "Lift one knee at a time as you jog in place. Stay tall, swing your arms in rhythm, and land softly.",
   calfRaises: "Stand tall and rise onto the balls of both feet. Pause briefly, then lower your heels with control.",
   armCircles: "Hold your arms out to the sides. Draw small, steady circles, let them grow gradually, and then reverse direction.",
-  worlds: "Step into a lunge with both hands inside your front foot. Rotate your chest toward the front leg and reach that arm upward.",
+  worlds: "If your left foot is forward, plant your right hand on the floor just inside it. Turn your chest toward your left knee, reach your left hand up, then lower it. Reverse the setup on the other side.",
   lungeReach: "Step back into a lunge and reach both hands up. Press through the front foot to stand, then switch legs.",
   squat: "Stand with feet a little wider than your hips and lower into a comfortable squat. Keep your heels grounded or sit on a cushion for support.",
   cobra: "Lie face down with hands under your shoulders. Lift your chest a little, keeping your hips down and shoulders away from your ears.",

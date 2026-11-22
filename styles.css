@@ -349,7 +349,7 @@ h1, h2, h3, p { margin: 0; }
   transition: background .5s;
 }
 .player[data-kind="rest"] .stage, .player[data-kind="prep"] .stage { background: var(--tertiary-container); }
-.stage-fig { width: min(92%, 52vh, 440px); aspect-ratio: 1; }
+.stage-fig { position: absolute; inset: 48px 0 0; width: min(92%, 440px); margin-inline: auto; }
 .stage-fig .fig { width: 100%; height: 100%; }
 .player[data-kind="rest"] .stage-fig, .player[data-kind="prep"] .stage-fig { opacity: .92; }
 .stage-badge {
