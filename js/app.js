@@ -348,7 +348,7 @@ function renderCollection() {
   const items = gs.map((g) => `
     <button class="col-item owned${g.canMerge ? ' can-merge' : ''}" data-fib="${esc(g.key)}">
       ${g.count > 1 ? `<span class="col-count">×${g.count}</span>` : ''}
-      ${critterSVG(g.fib)}<span class="col-name">${esc(g.fib.name)}</span>${stars(g.fib.stage)}
+      <span class="col-spin">${critterSVG(g.fib)}</span><span class="col-name">${esc(g.fib.name)}</span>${stars(g.fib.stage)}
     </button>`).join('');
   $('#collection').innerHTML = `
     <div class="col-head"><h2>${t('fibbieFriends')}</h2>
@@ -361,7 +361,8 @@ function renderCollection() {
 (function twirlSomeone() {
   setTimeout(() => {
     if (currentView === 'home' && !document.hidden && !reduceMotion()) {
-      const all = [...document.querySelectorAll('.col-item.owned:not(.can-merge) .critter')];
+      // The roll is on a wrapper, so the critter's own bobbing is never restarted (that made it jump).
+      const all = [...document.querySelectorAll('.col-item.owned:not(.can-merge) .col-spin')];
       const c = all[Math.floor(Math.random() * all.length)];
       if (c) {
         c.classList.add('twirl');

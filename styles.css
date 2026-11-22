@@ -766,7 +766,9 @@ html:has(dialog[open]) { overflow: hidden; }
 .col-item .critter { width: 68px; height: 68px; }
 .col-item.owned .critter { animation: bob 2.4s ease-in-out infinite; }
 /* Now and then one Fibbie friend (picked by js/app.js, never two at once) rolls a flat 360 with a little hop. */
-.col-item.owned .critter.twirl { animation: bob 2.4s ease-in-out infinite, col-twirl .8s ease-in-out; }
+/* The roll lives on its own wrapper (kept on its own layer), so it never touches the bobbing. */
+.col-spin { display: grid; will-change: transform; } /* grid: no inline gap under the critter */
+.col-spin.twirl { animation: col-twirl .8s ease-in-out; }
 @keyframes col-twirl {
   0% { rotate: 0turn; translate: 0 0; }
   50% { translate: 0 -5px; }
