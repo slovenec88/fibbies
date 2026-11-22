@@ -356,6 +356,22 @@ function renderCollection() {
     ${gs.length ? `<div class="col-row">${items}</div>` : `<div class="col-empty">${critterSVG(null, { locked: true })}<span>${t('moreToFind')}</span></div>`}`;
 }
 
+// Every 25-50 s, one Fibbie friend on the home screen rolls a 360: just one at a time, only while
+// the home screen is in view, and never with reduced motion. Merge-ready ones keep their ring still.
+(function twirlSomeone() {
+  setTimeout(() => {
+    if (currentView === 'home' && !document.hidden && !reduceMotion()) {
+      const all = [...document.querySelectorAll('.col-item.owned:not(.can-merge) .critter')];
+      const c = all[Math.floor(Math.random() * all.length)];
+      if (c) {
+        c.classList.add('twirl');
+        c.addEventListener('animationend', (e) => { if (e.animationName === 'col-twirl') c.classList.remove('twirl'); }, { once: true }); // bob never ends, so this is the roll
+      }
+    }
+    twirlSomeone();
+  }, 25000 + Math.random() * 25000);
+})();
+
 // ---------- Fibbie sheet: details + merging ----------
 const fibSheet = $('#sheet-fib');
 let fibKey = null;

@@ -765,19 +765,12 @@ html:has(dialog[open]) { overflow: hidden; }
 .col-item { flex: none; width: 76px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: var(--on-surface-variant); }
 .col-item .critter { width: 68px; height: 68px; }
 .col-item.owned .critter { animation: bob 2.4s ease-in-out infinite; }
-/* Now and then a Fibbie friend does a flat 360° roll with a little hop. Each one keeps its own rhythm, so
-   they never spin together; the twirl is a short slice of a long cycle. */
-@media (prefers-reduced-motion: no-preference) {
-  .col-item.owned .critter { animation: bob 2.4s ease-in-out infinite, col-twirl var(--tw, 13s) ease-in-out var(--td, 3s) infinite; }
-  .col-item.owned:nth-child(5n+2) .critter { --tw: 17s; --td: 6.5s; }
-  .col-item.owned:nth-child(5n+3) .critter { --tw: 11s; --td: 9s; }
-  .col-item.owned:nth-child(5n+4) .critter { --tw: 19s; --td: 12s; }
-  .col-item.owned:nth-child(5n+5) .critter { --tw: 23s; --td: 15.5s; }
-}
+/* Now and then one Fibbie friend (picked by js/app.js, never two at once) rolls a flat 360 with a little hop. */
+.col-item.owned .critter.twirl { animation: bob 2.4s ease-in-out infinite, col-twirl .8s ease-in-out; }
 @keyframes col-twirl {
   0% { rotate: 0turn; translate: 0 0; }
-  3.5% { translate: 0 -5px; }
-  7%, 100% { rotate: 1turn; translate: 0 0; } /* a full turn looks the same as none, so the loop has no jump */
+  50% { translate: 0 -5px; }
+  100% { rotate: 1turn; translate: 0 0; }
 }
 .col-item .lv { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: var(--secondary-container); color: var(--on-secondary-container); }
 
