@@ -54,8 +54,12 @@ const WINGS = ['wings', 'fairy', 'bat'];
 const SYL_A = ['Quad', 'Ham', 'Calf', 'Glu', 'Achi', 'Hip', 'Flex', 'Lun', 'Twis', 'Bend', 'Zen', 'Snoo', 'Sprin', 'Pivo',
   'Tendo', 'Fib', 'Sole', 'Pira', 'Psoa', 'Limb', 'Stre', 'Wig', 'Bou', 'Hop', 'Jog', 'Strid', 'Pac', 'Loo', 'Swi', 'Mo', 'Wob', 'Nim'];
 const SYL_B = ['y', 'ie', 'o', 'ix', 'kin', 'bo', 'zee', 'oo', 'ette', 'ster', 'ly', 'bug', 'pop', 'mo', 'wee', 'ling', 'bit', 'pip'];
-// Frozen list: adding stretches must not change the favourite stretch of Fibbies people already own.
-const STRETCH_IDS = Object.keys(STRETCHES).filter((id) => id !== 'stand' && !STRETCHES[id].work);
+// Frozen list: a Fibbie's favourite stretch is picked from these by index, so adding stretches
+// must never change it. New stretches don't go here.
+const STRETCH_IDS = ['quad', 'calf', 'fold', 'lunge', 'pigeon', 'seatedFold', 'butterfly', 'itband', 'child', 'catcow',
+  'downdog', 'twist', 'lyingHam', 'swingFront', 'swingSide', 'hipCircles', 'buttKicks', 'highKnees', 'calfRaises',
+  'armCircles', 'worlds', 'lungeReach', 'squat', 'cobra', 'sideBend', 'happyBaby', 'legsUpWall', 'bridge', 'inchworm',
+  'soleus', 'kneeToChest', 'figureFour'];
 
 /** Rarity is part of the seed, so a species is always the same rarity. 55/28/13/4 %. */
 export function rarityOf(seed) {

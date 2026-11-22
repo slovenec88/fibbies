@@ -84,6 +84,15 @@ await test('a restore that fails half way leaves the old progress untouched', ()
   });
 }
 
+// ---- a Fibbie never changes its favourite stretch when stretches are added ----
+{
+  const { fibbie } = await import(new URL('fibbies.js', root));
+  await test('fibbies: favourite stretches stay what they were when people found them', () => {
+    const fav = { g_1: 'lyingHam', g_16: 'catcow', g_ll: 'lungeReach', g_2n9c: 'bridge', g_1u5hvr4: 'swingSide' };
+    for (const [sp, stretch] of Object.entries(fav)) assert.equal(fibbie(sp).genome.stretch, stretch, sp);
+  });
+}
+
 // ---- voice picking ----
 const { bestVoice } = await import(new URL('voice-pick.js', root));
 const V = (pairs) => pairs.map(([name, lang]) => ({ name, lang }));
