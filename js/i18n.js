@@ -48,6 +48,7 @@ const en = (n, one, many) => (n === 1 ? one : many);
 
 const EN = {
   installFibbies: "Install Fibbies",
+  installSub: "Works offline, on your home screen",
   installHelp: "Open Share, choose Add to Home Screen, then tap Add. Turn on Open as Web App if you see it.",
   installHelpAndroid: "Open your browser menu and choose Install app or Add to Home screen.",
   installHelpWindows: "Click the web apps icon in the Firefox address bar.",

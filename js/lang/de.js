@@ -3,6 +3,7 @@ const pl = (n, one, many) => (n === 1 ? one : many);
 
 export const UI = {
   installFibbies: "Fibbies installieren",
+  installSub: "Läuft offline, direkt vom Startbildschirm",
   installHelp: "Öffne Teilen, wähle Zum Home-Bildschirm und tippe auf Hinzufügen. Aktiviere Als Web-App öffnen, falls die Option angezeigt wird.",
   installHelpAndroid: "Öffne das Browsermenü und wähle App installieren oder Zum Startbildschirm hinzufügen.",
   installHelpWindows: "Klicke auf das Web-App-Symbol in der Adressleiste von Firefox.",

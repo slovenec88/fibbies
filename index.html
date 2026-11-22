@@ -25,10 +25,14 @@
     <section id="view-home" class="view" data-view="home" aria-label="Home" data-i18n-aria="home">
       <h1 class="visually-hidden">Fibbies</h1>
       <div class="install-app" id="install-app" hidden>
-        <button class="btn ripple" id="install-fibbies" type="button">
-          <img class="install-icon" src="icons/icon.svg" width="36" height="36" alt="">
-          <span data-i18n="installFibbies">Install Fibbies</span>
-          <span aria-hidden="true" class="ms install-arrow">download</span>
+        <button class="btn ripple" id="install-fibbies" type="button" aria-labelledby="install-title" aria-describedby="install-sub">
+          <span class="install-tile" aria-hidden="true"><img class="install-icon" src="icons/icon.svg" width="40" height="40" alt=""></span>
+          <span class="install-text">
+            <b id="install-title" data-i18n="installFibbies">Install Fibbies</b>
+            <small id="install-sub" data-i18n="installSub">Works offline, on your home screen</small>
+          </span>
+          <span aria-hidden="true" class="install-go"><span class="ms">download</span></span>
+          <span class="install-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
         </button>
         <p id="install-help-home" hidden></p>
       </div>

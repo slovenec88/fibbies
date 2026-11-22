@@ -7,6 +7,7 @@ const sl = (n, one, two, few, many) => {
 
 export const UI = {
   installFibbies: "Namesti Fibbies",
+  installSub: "Deluje brez povezave, kar z začetnega zaslona",
   installHelp: "Odpri Deli, izberi Dodaj na začetni zaslon in tapni Dodaj. Če je na voljo, vklopi Odpri kot spletno aplikacijo.",
   installHelpAndroid: "Odpri meni brskalnika in izberi Namesti aplikacijo ali Dodaj na začetni zaslon.",
   installHelpWindows: "V naslovni vrstici Firefoxa klikni ikono za spletne aplikacije.",
