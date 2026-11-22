@@ -945,6 +945,17 @@ html.native, html.native body { overscroll-behavior: none; }
 .fs-stage[data-glow="3"] { background: radial-gradient(circle at 50% 60%, #ffd60a77, transparent 70%); }
 .fs-critter .critter { width: 170px; height: 170px; display: block; animation: bob 2s ease-in-out infinite; }
 .fs-critter.born .critter { animation: born .8s cubic-bezier(.3,1.7,.5,1) both, bob 2s ease-in-out .8s infinite; }
+/* Now and then the Fibbie in the sheet crouches, leaps with a 360 flip and lands with a squash.
+   It runs on the wrapper, so the critter's own bobbing is never restarted. */
+.fs-critter { will-change: transform; }
+.fs-critter.hop { animation: fs-hop .95s cubic-bezier(.4,0,.3,1); }
+@keyframes fs-hop {
+  0% { translate: 0 0; rotate: 0turn; scale: 1; }
+  16% { translate: 0 6px; rotate: 0turn; scale: 1.1 .88; }
+  52% { translate: 0 -16px; scale: .96 1.05; }
+  84% { translate: 0 2px; rotate: 1turn; scale: 1.08 .92; }
+  100% { translate: 0 0; rotate: 1turn; scale: 1; }
+}
 @keyframes born { from { transform: scale(.2) rotate(-20deg); filter: brightness(3); } }
 .fs-fx { position: absolute; left: 50%; top: 50%; pointer-events: none; }
 .fs-fx i { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: fs-spark .9s cubic-bezier(.2,.8,.4,1) forwards; }

@@ -380,7 +380,7 @@ let merging = false;
 function openFib(key) {
   fibKey = key;
   renderFib();
-  if (!fibSheet.open) fibSheet.showModal();
+  if (!fibSheet.open) { fibSheet.showModal(); hopLater(1200 + Math.random() * 1300); }
 }
 function renderFib(born = false) {
   const p = loadProfile();
@@ -443,6 +443,22 @@ async function runMerge(key, sp, stage) {
   if (currentView === 'home') { renderCollection(); renderProgress(); }
 }
 $('#fib-close').onclick = () => { if (!merging) fibSheet.close(); };
+// While a Fibbie's sheet is open it jumps now and then: soon after opening, then every 6-12 s.
+let hopTimer = 0;
+function hopLater(ms) {
+  clearTimeout(hopTimer);
+  hopTimer = setTimeout(() => {
+    if (!fibSheet.open) return;
+    const c = $('#fib-body .fs-critter');
+    if (c && !merging && !document.hidden && !reduceMotion()) {
+      c.classList.add('hop');
+      // (the critter's own "born" pop also ends here, bubbling up, so wait for the hop itself)
+      c.addEventListener('animationend', function done(e) { if (e.animationName === 'fs-hop') { c.classList.remove('hop'); c.removeEventListener('animationend', done); } });
+    }
+    hopLater(6000 + Math.random() * 6000);
+  }, ms);
+}
+fibSheet.addEventListener('close', () => clearTimeout(hopTimer));
 fibSheet.addEventListener('cancel', (e) => { if (merging) e.preventDefault(); });
 
 document.addEventListener('click', (e) => {
