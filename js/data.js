@@ -15,8 +15,8 @@ export const STRETCHES = {
 
   quad: {
     name: 'Standing Quad Stretch', target: 'Quads · Hip flexors', view: 'side', sided: true, limb: 'leg', period: 6,
-    a: { h: [100, 104], t: -88, n: -90, hN: [88, 112], hF: [150, 50], fN: [86, 110], fF: [100, 180], ft: [-60, 0] },
-    b: { h: [100, 104], t: -90, n: -88, hN: [90, 108], hF: [152, 46], fN: [89, 106], fF: [100, 180], ft: [-70, 0] },
+    a: { h: [100, 104], t: -88, n: -90, hN: [88, 112], hF: [150, 50], fN: [86, 110], fF: [100, 180], ft: [-150, 0] },
+    b: { h: [100, 104], t: -90, n: -88, hN: [90, 108], hF: [152, 46], fN: [89, 106], fF: [100, 180], ft: [-155, 0] },
     cues: [
       'Hold your ankle and draw your heel toward your glute.',
       'Keep your knees together and squeeze your glute.',
@@ -149,8 +149,8 @@ export const STRETCHES = {
 
   lyingHam: {
     name: 'Lying Hamstring Stretch', target: 'Hamstrings', view: 'side', sided: true, limb: 'leg', period: 8,
-    a: { h: [104, 172], t: 192, n: 188, hN: [108, 140], hF: [106, 142], fN: [120, 98], fF: [180, 176], ft: [-100, 0] },
-    b: { h: [104, 172], t: 194, n: 190, hN: [104, 134], hF: [102, 136], fN: [106, 97], fF: [180, 176], ft: [-110, 0] },
+    a: { h: [104, 172], t: 192, n: 188, hN: [108, 140], hF: [106, 142], fN: [120, 98], fF: [180, 176], ft: [-100, -80] },
+    b: { h: [104, 172], t: 194, n: 190, hN: [104, 134], hF: [102, 136], fN: [106, 97], fF: [180, 176], ft: [-110, -80] },
     cues: [
       'On your back, lift one leg and hold behind your thigh with both hands.',
       'Gently draw the leg toward you. A soft bend in the knee is fine.',
@@ -194,8 +194,8 @@ export const STRETCHES = {
 
   buttKicks: {
     name: 'Butt Kicks', target: 'Quads · Warm-up', view: 'side', period: 0.9, dynamic: true,
-    a: { h: [100, 102], t: -84, n: -86, hN: [124, 80], hF: [86, 92], fN: [84, 118], fF: [100, 180], ft: [-60, 0] },
-    b: { h: [100, 102], t: -84, n: -86, hN: [86, 92], hF: [124, 80], fN: [100, 180], fF: [84, 118], ft: [0, -60] },
+    a: { h: [100, 102], t: -84, n: -86, hN: [124, 80], hF: [86, 92], fN: [84, 118], fF: [100, 180], ft: [170, 0] },
+    b: { h: [100, 102], t: -84, n: -86, hN: [86, 92], hF: [124, 80], fN: [100, 180], fF: [84, 118], ft: [0, 170] },
     cues: [
       'Jog in place, kicking your heels up toward your glutes.',
       'Quick, light feet. Stay on the balls of your feet.',
@@ -239,8 +239,8 @@ export const STRETCHES = {
 
   worlds: {
     name: "World's Greatest Stretch", target: 'Hips · Spine · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 6, dynamic: true,
-    a: { h: [91, 137], t: -3, n: 25, hN: [133, 180], hF: [147, 180], fN: [30, 180], fF: [151, 180], ft: [150, 0] },
-    b: { h: [91, 137], t: -11, n: -66, hN: [133, 180], hF: [142, 73], fN: [30, 180], fF: [151, 180], ft: [150, 0] },
+    a: { h: [91, 137], t: -3, n: 25, hN: [133, 180], hF: [147, 180], fN: [30, 171], fF: [151, 180], ft: [70, 0] },
+    b: { h: [91, 137], t: -11, n: -66, hN: [133, 180], hF: [142, 73], fN: [30, 171], fF: [151, 180], ft: [70, 0] },
     cues: [
       "Step one foot forward and put the opposite hand on the floor inside that foot. Turn your chest toward the front knee and reach the other arm up.",
       "Keep your front foot and supporting hand planted. Lower the raised hand and repeat slowly.",
@@ -351,8 +351,8 @@ export const STRETCHES = {
 
   kneeToChest: {
     name: 'Knee to Chest', target: 'Glutes · Lower back', view: 'side', sided: true, limb: 'leg', period: 8,
-    a: { h: [104, 172], t: 182, n: 184, hN: [86, 128], hF: [84, 130], fN: [90, 110], fF: [180, 176], ft: [-60, 0] },
-    b: { h: [104, 172], t: 184, n: 188, hN: [82, 124], hF: [80, 126], fN: [86, 106], fF: [180, 176], ft: [-60, 0] },
+    a: { h: [104, 172], t: 182, n: 184, hN: [86, 128], hF: [84, 130], fN: [90, 110], fF: [180, 176], ft: [-160, -80] },
+    b: { h: [104, 172], t: 184, n: 188, hN: [82, 124], hF: [80, 126], fN: [86, 106], fF: [180, 176], ft: [-160, -80] },
     cues: [
       'Lie on your back and hug one knee toward your chest.',
       'Keep the other leg long and relaxed on the floor.',
@@ -540,8 +540,8 @@ export const STRETCHES = {
 
   splitSquat: {
     name: 'Split Squat', target: 'Thighs · Glutes · Knees', view: 'side', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
-    a: { h: [94, 116], t: -90, n: -90, hN: [104, 116], hF: [100, 118], fN: [52, 180], fF: [134, 180], ft: [150, 0] },
-    b: { h: [94, 146], t: -90, n: -90, hN: [104, 146], hF: [100, 148], fN: [52, 180], fF: [134, 180], ft: [150, 0] },
+    a: { h: [94, 116], t: -90, n: -90, hN: [104, 116], hF: [100, 118], fN: [52, 171], fF: [134, 180], ft: [65, 0] },
+    b: { h: [94, 146], t: -90, n: -90, hN: [104, 146], hF: [100, 148], fN: [52, 171], fF: [134, 180], ft: [80, 0] },
     cues: [
       'One foot forward, one back. Lower your back knee toward the floor.',
       'Front knee over your ankle, torso tall.',
@@ -606,7 +606,7 @@ export const STRETCHES = {
   stepCalfRaise: {
     name: 'Step Calf Raises', target: 'Calves · Arches · Achilles', view: 'side', period: 4, dynamic: true, strength: true,
     props: [{ step: [100, 140, 168] }, { wall: 146 }],
-    a: { h: [94, 99], t: -88, n: -88, hN: [143, 66], hF: [143, 72], fN: [95, 173], fF: [91, 173], ft: [-30, -30] },
+    a: { h: [94, 99], t: -88, n: -88, hN: [143, 66], hF: [143, 72], fN: [95, 173], fF: [91, 173], ft: [-22, -22] },
     b: { h: [98, 84], t: -90, n: -90, hN: [143, 52], hF: [143, 58], fN: [98, 159], fF: [94, 159], ft: [58, 58] },
     cues: [
       'Balls of your feet on a stair edge, a hand on the rail. A rolled towel under your toes makes it even better.',
@@ -629,7 +629,7 @@ export const STRETCHES = {
     name: 'Slow Calf Lowers', target: 'Calves · Achilles', view: 'side', sided: true, limb: 'leg', period: 4, dynamic: true, strength: true,
     props: [{ wall: 150 }],
     a: { h: [100, 94], t: -90, n: -90, hN: [146, 66], hF: [146, 72], fN: [106, 170], fF: [100, 170], ft: [58, 58] },
-    b: { h: [100, 104], t: -90, n: -90, hN: [146, 76], hF: [146, 82], fN: [104, 180], fF: [82, 148], ft: [0, -70] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [146, 76], hF: [146, 82], fN: [104, 180], fF: [82, 148], ft: [0, 100] },
     cues: [
       'Hand on a wall. Rise up on both feet.',
       'Lift one foot and lower slowly on the other. Count to three.',
