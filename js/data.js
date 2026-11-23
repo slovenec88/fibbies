@@ -485,8 +485,8 @@ export const STRETCHES = {
 
   pushup: {
     name: 'Push-Up', target: 'Chest · Arms · Core', view: 'side', period: 3, dynamic: true, strength: true,
-    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [-1, -1] },
-    b: { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [-1, -1] },
+    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+    b: { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
     cues: [
       'Hands under your shoulders, body in one straight line.',
       'Lower your chest toward the floor, then press back up.',

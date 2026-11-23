@@ -113,7 +113,11 @@ export function palTap(wrap, kinds) {
   say(wrap, true);
 }
 
+// When the app opens it greets you now and then (about 3 times in 10), not every time.
+const GREET_CHANCE = 0.3;
 export function palWelcome() {
   if (welcomed || document.hidden || document.querySelector('dialog[open]')) return;
+  welcomed = true; // decided once per launch, whether it speaks or not
+  if (Math.random() >= GREET_CHANCE) return;
   say(current()?.closest('.pal-wrap'), false, true);
 }
