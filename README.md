@@ -45,7 +45,7 @@ Find original Fibbies and wild ones with different shapes, colors, and faces. Th
 
 ## Make it yours
 
-- Watch the little knot next to your XP open into a mandala as you try different kinds of routines. It starts fresh each day.
+- Tap the little Fibbie next to your XP for a stretch and a kind thought. It also has a new thought for you when you open the app.
 - Build a streak, level up, and track changes with the [weekly flexibility check](docs/screenshots/flexibility.png).
 - Install Fibbies from your browser for offline use, or download the signed Android APK from GitHub Releases.
 - Use the app and spoken guidance in English, German, Spanish, French, Italian, Portuguese, or Slovenian.

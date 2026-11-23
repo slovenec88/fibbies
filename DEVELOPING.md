@@ -73,6 +73,8 @@ They live in `js/native.js` and do nothing on the web.
 
 Change the web code at the repo root, then run `npm run sync`. Don't edit `www/` or `android/app/src/main/assets`; both are generated.
 
+See [Releasing Fibbies](docs/releasing.md) for GitHub releases, localized store screenshots, and F-Droid setup.
+
 ## Recorded voice
 
 The voice guide plays recordings made with Azure neural text-to-speech, one gentle female voice per language. Lines without a recording use the device's own voice: the nicest one it has (`js/voice-pick.js`).

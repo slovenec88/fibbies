@@ -1,0 +1,1 @@
+Ao abrir a aplicação, o Fibbie dá-te as boas-vindas com um pensamento aleatório na tua língua e lembra-se do último que mostrou.

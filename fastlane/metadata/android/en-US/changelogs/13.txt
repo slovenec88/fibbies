@@ -1,0 +1,1 @@
+Fibbie now greets you with a random quote in your language and remembers the last one it showed.

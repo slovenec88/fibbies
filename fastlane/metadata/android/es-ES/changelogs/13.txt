@@ -1,0 +1,1 @@
+Al abrir la app, Fibbie te saluda con una frase al azar en tu idioma y recuerda la última que te mostró.
