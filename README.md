@@ -6,11 +6,11 @@
 
 **Stretch a little. Build a little strength.**
 
-Follow short guided routines to warm up, wind down, or build strength. Keep a streak and find Fibbies in daily chests.
+Follow short guided routines to warm up, stretch, or build strength. Open chests, collect little Fibbies, and come back to a fresh thought from the Fibbie on your home screen.
 
 **[Try Fibbies in your browser](https://fibbies.juringari.com/)** · [Android APK](https://github.com/slovenec88/fibbies/releases/latest) · [Project page](https://juringari.com/fibbies/)
 
-<img src="docs/screenshots/home.png" width="210" alt="Fibbies home screen with four quick starts, a streak, and six Fibbies discovered">
+<img src="docs/screenshots/home.png" width="210" alt="The green Fibbie mascot shares a welcome quote above the quick-start routines">
 <img src="docs/screenshots/stretch.png" width="210" alt="Top 5 Strength session showing an animated bodyweight squat and a countdown">
 
 </div>
@@ -19,15 +19,15 @@ Follow short guided routines to warm up, wind down, or build strength. Keep a st
 
 ### Meet the routines
 
-Start with one of today’s picks or browse stretching and bodyweight strength routines. Try the 2-Minute Reset at your desk, warm up before a run, or try a strength routine for your feet and arches. Tap a move inside any routine for an animated preview and a short guide.
+Take a 2-Minute Reset at your desk, warm up before a run, or try a strength routine for your feet and arches. Tap any exercise in a routine to see how it moves and read a short guide in your language before you start.
 
 ### Follow the stretch
 
-An animated figure shows each move and a timer keeps you on pace. Spoken cues tell you when to start, switch sides, or move on. You can pause or skip ahead, and **Session length** in Settings adjusts both stretches and strength exercises.
+[An animated figure](docs/screenshots/guided-session.png) shows each move and a timer keeps you on pace. Spoken cues tell you when to start, switch sides, or move on. You can pause or skip ahead, and **Session length** in Settings adjusts both stretches and strength exercises.
 
 <div align="center">
-<img src="docs/screenshots/routine.png" width="200" alt="Happy Feet routine with the exercise list and durations">
-<img src="docs/screenshots/guided-session.png" width="200" alt="Guided standing quad stretch with a countdown and playback controls">
+<img src="docs/screenshots/routine.png" width="200" alt="Top 5 Strength routine with the exercise list and durations">
+<img src="docs/screenshots/exercise-preview.png" width="200" alt="Arm Circles preview with an illustrated figure and a short guide">
 </div>
 
 ### Open a chest
@@ -45,7 +45,7 @@ Find original Fibbies and wild ones with different shapes, colors, and faces. Th
 
 ## Make it yours
 
-- Tap the little Fibbie next to your XP for a stretch and a kind thought. It also has a new thought for you when you open the app.
+- The Fibbie beside your XP blinks, waves, and stretches. Tap it to hear a soft sound and see a kind thought in your language.
 - Build a streak, level up, and track changes with the [weekly flexibility check](docs/screenshots/flexibility.png).
 - Install Fibbies from your browser for offline use, or download the signed Android APK from GitHub Releases.
 - Use the app and spoken guidance in English, German, Spanish, French, Italian, Portuguese, or Slovenian.
