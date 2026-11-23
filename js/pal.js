@@ -84,13 +84,17 @@ function say(wrap, lp, kindsToday, tapped) {
   try { met = !!localStorage.getItem('fibbies.pal-met'); if (tapped) localStorage.setItem('fibbies.pal-met', '1'); } catch { /* ignore */ }
   if (!met && tapped) msg = t('knotIntro');
   else {
-    const tier = kindsToday === 0 ? 0 : kindsToday <= 2 ? 1 : 2;
-    const notes = t('knotNotes')[tier];
+    // About two in five times a calm thought (zen, gratitude, a line from a teacher), otherwise a
+    // note that fits the day so far. Each list goes round in turn, from a random start.
+    const tier = Math.random() < 0.4 ? 'calm' : kindsToday === 0 ? 0 : kindsToday <= 2 ? 1 : 2;
+    const notes = tier === 'calm' ? t('palCalm') : t('knotNotes')[tier];
     next[tier] ??= Math.floor(Math.random() * notes.length);
     msg = notes[next[tier]++ % notes.length];
   }
+  // Just the kind words (the XP is right beside it already); a quote's teacher goes on a line of its own.
+  const [text, who] = msg.split(' — ');
   const note = wrap.querySelector('.pal-note');
-  note.innerHTML = `<b>${esc(msg)}</b>`; // just the kind words: the XP is right beside it already
+  note.innerHTML = `<b>${esc(text)}</b>${who ? `<small>${esc(who)}</small>` : ''}`;
   note.classList.remove('show');
   void note.offsetWidth;
   note.classList.add('show');
