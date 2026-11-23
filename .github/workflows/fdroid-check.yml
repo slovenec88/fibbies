@@ -33,6 +33,8 @@ jobs:
             "$image" -exc '
               git clone --depth 1 https://github.com/f-droid/fdroidserver.git /opt/fdroidserver-source
               mkdir -p /home/vagrant/test-build/metadata
+              mkdir -p /home/vagrant/test-build/config
+              curl --fail --location --output /home/vagrant/test-build/config/categories.yml https://raw.githubusercontent.com/f-droid/fdroiddata/6e52e1ad56721f12c49f48d936e9da05ef740d91/config/categories.yml
               cp /input/*.yml /home/vagrant/test-build/metadata/
               chown -R vagrant /home/vagrant/test-build
               cd /home/vagrant/test-build
