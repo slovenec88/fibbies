@@ -728,8 +728,8 @@ export const STRETCHES = {
 
 export const CATEGORIES = [
   { id: 'all', label: 'All', icon: 'apps' },
-  { id: 'after', label: 'After workout', icon: 'fitness_center', hue: 165 },
   { id: 'before', label: 'Before workout', icon: 'bolt', hue: 45 },
+  { id: 'after', label: 'After workout', icon: 'fitness_center', hue: 165 },
   { id: 'evening', label: 'Relax', icon: 'self_improvement', hue: 290 },
   { id: 'quick', label: 'Quick', icon: 'timer', hue: 235 },
   { id: 'strength', label: 'Strength', icon: 'exercise', hue: 95 },
