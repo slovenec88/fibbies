@@ -53,7 +53,6 @@ jobs:
               unset CI
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
-              sed -i "/^Binaries:/d" metadata/io.github.slovenec88.fibbies.yml
               sudo --set-home --user vagrant git config --global --add safe.directory /input/fibbies.git
               sudo --set-home --user vagrant git config --global url.file:///input/fibbies.git.insteadOf https://github.com/slovenec88/fibbies.git
               sdkmanager "platforms;android-36" "build-tools;35.0.0"
