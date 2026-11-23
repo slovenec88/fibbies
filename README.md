@@ -19,14 +19,14 @@ Follow short guided routines to warm up, wind down, or build strength. Keep a st
 
 ### Meet the routines
 
-Start with one of today’s picks or browse stretching and bodyweight strength routines. Try the 2-Minute Reset at your desk, warm up before a run, or work on your back, legs, arms, core, or feet. Open a routine to see its moves and timings before you start.
+Start with one of today’s picks or browse stretching and bodyweight strength routines. Try the 2-Minute Reset at your desk, warm up before a run, or try a strength routine for your feet and arches. Tap a move inside any routine for an animated preview and a short guide.
 
 ### Follow the stretch
 
 An animated figure shows each move and a timer keeps you on pace. Spoken cues tell you when to start, switch sides, or move on. You can pause or skip ahead, and **Session length** in Settings adjusts both stretches and strength exercises.
 
 <div align="center">
-<img src="docs/screenshots/routine.png" width="200" alt="Top 5 Strength preview with five exercises and the first movement listed">
+<img src="docs/screenshots/routine.png" width="200" alt="Happy Feet routine with the exercise list and durations">
 <img src="docs/screenshots/guided-session.png" width="200" alt="Guided standing quad stretch with a countdown and playback controls">
 </div>
 
@@ -45,6 +45,7 @@ Find original Fibbies and wild ones with different shapes, colors, and faces. Th
 
 ## Make it yours
 
+- Watch the little knot next to your XP open into a mandala as you try different kinds of routines. It starts fresh each day.
 - Build a streak, level up, and track changes with the [weekly flexibility check](docs/screenshots/flexibility.png).
 - Install Fibbies from your browser for offline use, or download the signed Android APK from GitHub Releases.
 - Use the app and spoken guidance in English, German, Spanish, French, Italian, Portuguese, or Slovenian.
