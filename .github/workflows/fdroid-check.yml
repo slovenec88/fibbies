@@ -35,6 +35,7 @@ jobs:
               mkdir -p /home/vagrant/test-build/metadata
               mkdir -p /home/vagrant/test-build/config
               curl --fail --location --output /home/vagrant/test-build/config/categories.yml https://raw.githubusercontent.com/f-droid/fdroiddata/6e52e1ad56721f12c49f48d936e9da05ef740d91/config/categories.yml
+              sed -i "/^[[:space:]]*icon:/d" /home/vagrant/test-build/config/categories.yml
               cp /input/*.yml /home/vagrant/test-build/metadata/
               chown -R vagrant /home/vagrant/test-build
               cd /home/vagrant/test-build
@@ -45,6 +46,7 @@ jobs:
               unset CI
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
+              sdkmanager "platforms;android-36" "build-tools;35.0.0"
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
             ' 2>&1 | tee "${RUNNER_TEMP}/fdroid-build.log"
   linux:
