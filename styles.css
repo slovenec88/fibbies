@@ -689,39 +689,45 @@ html:has(dialog[open]) { overflow: hidden; }
 .pc-streak { display: inline-flex; align-items: center; gap: 2px; height: 26px; padding: 0 9px 0 6px; margin-right: 4px; border-radius: 13px;
   font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; background: var(--tertiary-container); color: var(--on-tertiary-container); }
 .pc-streak .ms { font-size: 18px; }
-/* Your knot (js/knot.js): a tangle that opens into a bloom as XP grows, coloured by today's routines */
-.knot-wrap { position: relative; justify-self: center; width: 64px; height: 64px; }
-.knot { width: 64px; height: 64px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.knot:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-.knot svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.knot svg * { transform-box: view-box; }
-.kn-loops { animation: kn-sway 9s ease-in-out infinite; }
-.kn-all { transform-origin: 0 40px; }
-.kf-str { opacity: 0; }
-.knot:active .kn-all { transform: scale(1.06, .94); }
-.stretching .kn-tie { animation: kn-breathe 2.2s cubic-bezier(.4, 0, .3, 1); }
-.stretching .kn-all { animation: kn-stretch 2.2s ease-in-out; }
-.stretching .kf-norm { animation: kn-face-off 2.2s steps(1); }
-.stretching .kf-str { animation: kn-face 2.2s steps(1); }
-@keyframes kn-sway { 50% { transform: rotate(6deg) scale(1.03); } }
-@keyframes kn-breathe { 35% { transform: scale(1.16) rotate(10deg); } 70% { transform: scale(.97) rotate(-3deg); } }
-@keyframes kn-stretch { 15% { transform: scale(.96, 1.06); } 40% { transform: rotate(-7deg) scale(.97, 1.05); } 65% { transform: rotate(7deg) scale(.97, 1.05); } 88% { transform: scale(1.04, .96); } }
-@keyframes kn-face { 0% { opacity: 0; } 10% { opacity: 1; } 86% { opacity: 0; } }
-@keyframes kn-face-off { 0% { opacity: 1; } 10% { opacity: 0; } 86% { opacity: 1; } }
-/* Level-up: the loops burst open and the knot ties itself anew */
-.kn-burst .kn-tie { animation: kn-retie 1.6s cubic-bezier(.3, .8, .4, 1); }
-.kn-burst .kn-all { animation: kn-hop 1.6s ease-out; }
-@keyframes kn-retie { 30% { transform: scale(1.9) rotate(80deg); opacity: 0; } 31% { transform: scale(.2) rotate(-120deg); opacity: 0; } 70% { transform: scale(1.12) rotate(8deg); opacity: 1; } }
-@keyframes kn-hop { 20% { transform: scale(1.12, .88); } 34% { transform: translateY(-14px) scale(.94, 1.08); } 50% { transform: none; } }
-/* The note it gives when tapped */
-.knot-note { position: absolute; z-index: 5; left: 70px; top: 50%; width: max-content; max-width: min(240px, calc(100vw - 130px)); padding: 9px 13px 8px;
+/* Your Fibbie (js/pal.js): the logo come alive. It sways and breathes like the knot did, waves its arms,
+   blinks, smiles, and stretches when tapped. Parts move around their own boxes (fill-box). */
+.pal-wrap { position: relative; justify-self: center; width: 64px; height: 64px; }
+.pal { width: 64px; height: 64px; padding: 0; border: 0; border-radius: 15px; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pal:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.pal svg { display: block; width: 100%; height: 100%; }
+.pal svg g { transform-box: fill-box; }
+.pal-body { transform-origin: 50% 100%; animation: pal-sway 9s ease-in-out infinite; }
+.pal-arm-l { transform-origin: 85% 88%; animation: pal-wave-l 3.2s ease-in-out infinite; }
+.pal-arm-r { transform-origin: 15% 88%; animation: pal-wave-r 3.2s ease-in-out -1.1s infinite; }
+.pal-eyes { transform-origin: 50% 50%; transition: transform .07s; }
+.pal-happy, .pal-grin { opacity: 0; }
+.pal:active .pal-body { scale: 1.05 .95; }
+@keyframes pal-sway { 25% { transform: rotate(3deg) scale(1.03); } 50% { transform: scale(.98); } 75% { transform: rotate(-3deg) scale(1.03); } }
+@keyframes pal-wave-l { 50% { transform: rotate(-14deg); } }
+@keyframes pal-wave-r { 50% { transform: rotate(14deg); } }
+/* a blink */
+.pal-blink .pal-eyes { transform: scaleY(.08); }
+/* a smile: the mouth opens into a grin */
+.pal-smile .pal-mouth { opacity: 0; }
+.pal-smile .pal-grin { opacity: 1; }
+/* a stretch: arms high and wiggling, eyes shut happily, the body reaching up */
+.pal-stretch .pal-body { animation: pal-reach 2.2s ease-in-out; }
+.pal-stretch .pal-arm-l { animation: pal-cheer-l .55s ease-in-out 4 alternate; }
+.pal-stretch .pal-arm-r { animation: pal-cheer-r .55s ease-in-out 4 alternate; }
+.pal-stretch .pal-eyes { opacity: 0; }
+.pal-stretch .pal-happy { opacity: 1; }
+@keyframes pal-reach { 15% { transform: scale(.96, 1.06); } 40% { transform: rotate(-6deg) scale(.97, 1.05); } 65% { transform: rotate(6deg) scale(.97, 1.05); } 88% { transform: scale(1.04, .96); } }
+@keyframes pal-cheer-l { from { transform: rotate(4deg); } to { transform: rotate(-26deg); } }
+@keyframes pal-cheer-r { from { transform: rotate(-4deg); } to { transform: rotate(26deg); } }
+/* The note it gives */
+.pal-note { position: absolute; z-index: 5; left: 70px; top: 50%; width: max-content; max-width: min(240px, calc(100vw - 130px)); padding: 9px 13px 8px;
   border-radius: 16px; background: var(--inverse-surface); color: var(--inverse-on-surface); box-shadow: 0 6px 20px #0004;
   pointer-events: none; opacity: 0; transform: translateY(-50%) translateX(-6px) scale(.92); transform-origin: 0 50%; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.5, .5, 1); }
-.knot-note::before { content: ''; position: absolute; left: -7px; top: 50%; margin-top: -7px; border: 7px solid transparent; border-left: 0; border-right-color: var(--inverse-surface); }
-.knot-note.show { opacity: 1; transform: translateY(-50%); }
-.knot-note b { display: block; font-size: 14px; font-weight: 700; line-height: 1.3; }
-.knot-note small { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; opacity: .75; }
-@media (prefers-reduced-motion: reduce) { .knot svg *, .knot-note { animation: none !important; transition: none; } }
+.pal-note::before { content: ''; position: absolute; left: -7px; top: 50%; margin-top: -7px; border: 7px solid transparent; border-left: 0; border-right-color: var(--inverse-surface); }
+.pal-note.show { opacity: 1; transform: translateY(-50%); }
+.pal-note b { display: block; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.pal-note small { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; opacity: .75; }
+@media (prefers-reduced-motion: reduce) { .pal svg g, .pal-note { animation: none !important; transition: none; } }
 /* Today's bonus: one tile per kind of routine, lighting up through the day (no words, no numbers) */
 .quests { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
 .quest {

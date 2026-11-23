@@ -56,12 +56,12 @@ export const UI = {
   skip: "Salta",
   tapCalls: ["Tocca il forziere!", "Ancora!", "Un'ultima volta!"],
   tapKnot: "Sciogli il nodo!",
-  knotIntro: "Ciao, sono il tuo nodo! Mi sciolgo un po' a ogni allungamento che fai. Toccami quando vuoi.",
+  knotIntro: "Ciao, sono il tuo Fibbie! Faccio il tifo per ogni allungamento che fai. Toccami quando vuoi.",
   knotToGo: ({ x, n }) => `Ancora ${x} XP al livello ${n}`,
-  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  // Notes from your Fibbie on the home card (js/pal.js): nothing done today yet / one or two kinds / three or four
   knotNotes: [
     ["Grazie di passare a trovarmi!", "Ciao! Anche solo cinque minuti oggi mi farebbero benissimo.", "Che bello vederti. Sono pronto quando vuoi tu.", "Grazie di prenderti cura di noi. Ci muoviamo un po'?", "Basta un piccolo allungamento e sorrido. Proviamo?", "Hai aperto l'app: il più è fatto!", "Un allungamento tira l'altro!", "Oggi conquistiamo un forziere. Faccio il tifo per te!", "Qualche respiro lento, una routine e torno come nuovo.", "Grazie di essere ancora qui. Sciogliamoci insieme.", "Nuovo giorno, nuovo inizio. Scegli la routine che vuoi.", "Adoro quando passi di qui. Ci allunghiamo un po'?"],
-    ["Che bella sensazione. Grazie!", "Grazie! Sono già più sciolto. Proviamo un altro tipo di routine?", "Le mie spalle ti ringraziano!", "Ottimo! Un altro tipo di routine e il forziere di oggi migliora ancora.", "Stai andando alla grande, e lo sento.", "Grazie. Fibre sciolte, nodo felice!", "Bene! Un'altra casella aspetta di accendersi.", "Ogni allungamento conta. Grazie per ognuno!", "Respiro già meglio. Continuiamo?", "Così si fa! Ancora una?", "Grazie per l'allungamento. Ci sai proprio fare.", "Sei a metà di una giornata fantastica. Continua così!"],
+    ["Che bella sensazione. Grazie!", "Grazie! Sono già più sciolto. Proviamo un altro tipo di routine?", "Le mie spalle ti ringraziano!", "Ottimo! Un altro tipo di routine e il forziere di oggi migliora ancora.", "Stai andando alla grande, e lo sento.", "Grazie. Fibre sciolte, Fibbie felice!", "Bene! Un'altra casella aspetta di accendersi.", "Ogni allungamento conta. Grazie per ognuno!", "Respiro già meglio. Continuiamo?", "Così si fa! Ancora una?", "Grazie per l'allungamento. Ci sai proprio fare.", "Sei a metà di una giornata fantastica. Continua così!"],
     ["Che giornata! Grazie di cuore.", "Sei incredibile. Non mi sentivo così sciolto da secoli.", "Che impegno! Grazie di prenderti così cura di me.", "Oggi, roba da campioni. Grazie!", "Questa sì che è costanza. Complimenti!", "Il lavoro l'hai fatto tu, la differenza la sento io. Grazie!", "Ogni singola fibra ti dice grazie.", "Oggi hai dato il meglio di te. Fantastico!", "Giornata leggendaria! Riposa bene, te lo sei meritato.", "Non sapevo di potermi sentire così bene. Grazie a te!", "Complimenti! Il te di domani ti ringrazierà.", "Un'intera giornata a prenderti cura di te. Grazie."],
   ],
   levelsRebalanced: "Livelli ribilanciati: ora si sale più lentamente e ogni livello vale di più. Le tue fibre e i tuoi amici sono al sicuro.",

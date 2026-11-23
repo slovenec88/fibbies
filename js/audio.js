@@ -126,8 +126,6 @@ export const fx = {
     sweep(f * 0.55, f, 0, 0.07, 0.085);
     bell(f * 2, 0.035, 0.2, 0.028);
   },
-  // ...and a small rising chime when the day's routines open it up.
-  knotOpen() { if (this.on) { bell(784, 0, 0.5, 0.07); bell(1175, 0.09, 0.6, 0.06); bell(1568, 0.18, 0.8, 0.045); } },
   pop() { if (this.on) { noise(0, 0.25, 0.18, 3000, 600); bell(1800 + Math.random() * 900, 0.02, 0.4, 0.06); } },
   /** Looping chiptune treasure jingle while the numbers roll. */
   musicStart(tier = 0) {

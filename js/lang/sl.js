@@ -60,12 +60,12 @@ export const UI = {
   skip: 'Preskoči',
   tapCalls: ['Tapni skrinjo!', 'Še enkrat!', 'Še zadnjič!'],
   tapKnot: "Sprosti vozel!",
-  knotIntro: "Živjo, jaz sem tvoj vozel! Z vsakim tvojim raztezanjem se malo sprostim. Tapni me, kadar želiš.",
+  knotIntro: "Živjo, jaz sem tvoj Fibbie! Navijam za vsako tvoje raztezanje. Tapni me, kadar želiš.",
   knotToGo: ({ x, n }) => `Še ${x} XP do stopnje ${n}`,
-  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  // Notes from your Fibbie on the home card (js/pal.js): nothing done today yet / one or two kinds / three or four
   knotNotes: [
     ["Hvala, da me obiščeš!", "Živjo! Že pet minut bi mi danes res prijalo.", "Lepo, da si tu. Začneva, ko ti paše.", "Hvala, da skrbiš za naju. Se malo razgibava?", "Samo malo raztezanja in že se smejim. Poskusiva?", "Aplikacija je odprta, najtežje je za nama!", "Z vsakim raztezanjem gre naslednje lažje.", "Danes greva po skrinjo. Navijam zate!", "Nekaj počasnih vdihov, ena rutina, pa sem kot nov.", "Hvala, da se vračaš. Sprostiva se skupaj.", "Nov dan, nov začetek. Izberi rutino, ki ti paše.", "Vesel sem, ko se oglasiš. Čas za raztezanje?"],
-    ["Tole je res prijalo. Hvala!", "Hvala! Že sem bolj sproščen. Greva še na drugo vrsto rutine?", "Ramena so mi že lažja. Hvala ti!", "Odlično! Z novo vrsto rutine bo današnja skrinja še boljša.", "Pravi zagon imaš, to čutim!", "Hvala. Sproščena vlakna, vesel vozel!", "Lepo! Še ena ploščica čaka, da zasveti.", "Vsak razteg šteje. Hvala za vsakega.", "Že lažje diham. Greva naprej?", "Tako se to dela! Dodava še eno?", "Hvala za raztezanje. Res ti gre.", "Pol poti do odličnega dne. Kar tako naprej!"],
+    ["Tole je res prijalo. Hvala!", "Hvala! Že sem bolj sproščen. Greva še na drugo vrsto rutine?", "Ramena so mi že lažja. Hvala ti!", "Odlično! Z novo vrsto rutine bo današnja skrinja še boljša.", "Pravi zagon imaš, to čutim!", "Hvala. Sproščena vlakna, vesel Fibbie!", "Lepo! Še ena ploščica čaka, da zasveti.", "Vsak razteg šteje. Hvala za vsakega.", "Že lažje diham. Greva naprej?", "Tako se to dela! Dodava še eno?", "Hvala za raztezanje. Res ti gre.", "Pol poti do odličnega dne. Kar tako naprej!"],
     ["Kakšen dan! Iz srca hvala.", "Vau, kakšna predanost! Že dolgo nisem bil tako sproščen.", "Poglej, kako ti gre! Hvala, da tako lepo skrbiš zame.", "Danes je bilo šampionsko. Hvala!", "Tako je videti vztrajnost. Bravo!", "Ti delaš, jaz pa čutim razliko. Hvala!", "Vsako moje vlakno ti pravi hvala.", "Današnji dan je za v knjige. Odlično!", "Legendaren dan! Zdaj pa počitek, zaslužiš si ga.", "Nisem vedel, da se lahko tako dobro počutim. Hvala tebi!", "Bravo! Tvoje telo ti bo za to še hvaležno.", "Toliko skrbi zase v enem dnevu. Hvala ti!"],
   ],
   levelsRebalanced: 'Stopnje so prenovljene: napredovanje je zdaj počasnejše in vredno več. Tvoja vlakna in prijatelji so varni.',
