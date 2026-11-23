@@ -27,8 +27,8 @@ export const STRETCHES = {
   calf: {
     name: 'Wall Calf Stretch', target: 'Calves · Achilles', view: 'side', sided: true, limb: 'leg', period: 7,
     props: [{ wall: 188 }],
-    a: { h: [104, 112], t: -55, n: -50, hN: [184, 58], hF: [184, 66], fN: [70, 180], fF: [120, 180] },
-    b: { h: [110, 114], t: -50, n: -45, hN: [184, 58], hF: [184, 66], fN: [70, 180], fF: [120, 180] },
+    a: { h: [104, 112], t: -55, n: -50, hN: [184, 58], hF: [184, 66], fN: [70, 180], fF: [120, 180], ft: [0, 0] },
+    b: { h: [110, 114], t: -50, n: -45, hN: [184, 58], hF: [184, 66], fN: [70, 180], fF: [120, 180], ft: [0, 0] },
     cues: [
       'Hands on the wall, back leg straight, heel pressed down.',
       'Lean in slowly until the calf opens up.',
@@ -317,8 +317,8 @@ export const STRETCHES = {
 
   bridge: {
     name: 'Glute Bridge', target: 'Glutes · Hamstrings', view: 'side', period: 3.5, dynamic: true,
-    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
-    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
+    a: { h: [110, 170], t: 180, n: 180, hN: [124, 179], hF: [122, 179], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
+    b: { h: [114, 142], t: 152, n: 175, hN: [124, 179], hF: [122, 179], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
     cues: [
       'On your back, knees bent, feet flat.',
       'Squeeze your glutes and lift your hips, then lower slowly.',
@@ -518,8 +518,8 @@ export const STRETCHES = {
 
   superman: {
     name: 'Superman', target: 'Back · Glutes', view: 'side', period: 4, dynamic: true, strength: true,
-    a: { h: [80, 174], t: 0, n: 0, hN: [185, 175], hF: [181, 176], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
-    b: { h: [80, 173], t: -9, n: -14, hN: [182, 152], hF: [178, 154], fN: [6, 160], fF: [8, 162], ft: [180, 180], kb: [1, 1] },
+    a: { h: [84, 174], t: 0, n: 0, hN: [190, 175], hF: [189.5, 176], fN: [8.5, 176], fF: [9.5, 176], ft: [180, 180], kb: [-1, -1] },
+    b: { h: [84, 173], t: -9, n: -14, hN: [187.5, 151], hF: [187, 152], fN: [10, 158], fF: [11, 160], ft: [180, 180], kb: [-1, -1] },
     cues: [
       'Lie face down, arms reaching forward.',
       'Lift your arms, chest and legs a little off the floor.',
@@ -650,8 +650,8 @@ export const STRETCHES = {
   wallPushup: {
     name: 'Wall Push-Up', target: 'Chest · Shoulders · Arms', view: 'side', period: 3, dynamic: true, strength: true,
     props: [{ wall: 170 }],
-    a: { h: [111, 108], t: -72, n: -70, hN: [168, 84], hF: [168, 90], fN: [88, 180], fF: [84, 180] },
-    b: { h: [126, 114], t: -58, n: -54, hN: [168, 84], hF: [168, 90], fN: [88, 180], fF: [84, 180], ft: [40, 40] },
+    a: { h: [111, 108], t: -72, n: -70, hN: [168, 84], hF: [168, 90], fN: [88, 180], fF: [84, 180], ft: [0, 0] },
+    b: { h: [126, 114], t: -58, n: -54, hN: [168, 84], hF: [168, 90], fN: [86, 174], fF: [82, 174], ft: [40, 40] },
     cues: [
       'Hands on a wall at chest height, step your feet back.',
       'Bend your elbows to bring your chest to the wall, then push away.',
@@ -672,8 +672,8 @@ export const STRETCHES = {
 
   yRaise: {
     name: 'Prone Y Raise', target: 'Upper back · Shoulders', view: 'side', period: 3, dynamic: true, strength: true,
-    a: { h: [80, 174], t: 0, n: 0, hN: [185, 175], hF: [181, 176], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
-    b: { h: [80, 174], t: -4, n: -8, hN: [182, 152], hF: [178, 155], fN: [5, 175], fF: [7, 176], ft: [180, 180], kb: [1, 1] },
+    a: { h: [84, 174], t: 0, n: 0, hN: [190, 175], hF: [189.5, 176], fN: [8.5, 176], fF: [9.5, 176], ft: [180, 180], kb: [-1, -1] },
+    b: { h: [84, 174], t: -4, n: -8, hN: [186.5, 151.5], hF: [186, 152.5], fN: [8.5, 176], fF: [9.5, 176], ft: [180, 180], kb: [-1, -1] },
     cues: [
       'Lie face down, arms reaching forward in a Y, thumbs up.',
       'Squeeze your shoulder blades and lift your arms off the floor.',
@@ -694,8 +694,8 @@ export const STRETCHES = {
 
   singleLegBridge: {
     name: 'Single-Leg Bridge', target: 'Glutes · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
-    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [178, 140], ft: [0, null] },
-    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [182, 106], ft: [0, null] },
+    a: { h: [110, 170], t: 180, n: 180, hN: [124, 179], hF: [122, 179], fN: [140, 180], fF: [178, 140], ft: [0, null] },
+    b: { h: [114, 142], t: 152, n: 175, hN: [124, 179], hF: [122, 179], fN: [140, 180], fF: [182, 106], ft: [0, null] },
     cues: [
       'On your back, one foot flat, the other leg straight up off the floor.',
       'Push through your heel and lift your hips, then lower slowly.',

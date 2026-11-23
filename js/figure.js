@@ -113,7 +113,7 @@ function followThrough(s, p, theta) {
   const c = Math.cos(turn), sn = Math.sin(turn);
   for (const k of ['hN', 'hF']) {
     const A = s.a[k], B = s.b[k];
-    if (!A || !B || Math.hypot(B[0] - A[0], B[1] - A[1]) < 24) continue;
+    if (!A || !B || Math.hypot(B[0] - A[0], B[1] - A[1]) < 24 || (onFloor(A) && onFloor(B))) continue; // hands walking on the floor stay on it
     const r = [q[k][0] - sq[k][0], q[k][1] - sq[k][1]];
     p[k] = [sp[k][0] + r[0] * c - r[1] * sn, sp[k][1] + r[0] * sn + r[1] * c];
   }
