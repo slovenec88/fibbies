@@ -724,9 +724,9 @@ html:has(dialog[open]) { overflow: hidden; }
   border-radius: 16px; background: var(--inverse-surface); color: var(--inverse-on-surface); box-shadow: 0 6px 20px #0004;
   pointer-events: none; opacity: 0; transform: translateY(-50%) translateX(-6px) scale(.92); transform-origin: 0 50%; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.5, .5, 1); }
 .pal-note::before {
-  content: ''; position: absolute; left: -7px; top: calc(50% - 7px);
-  width: 10px; height: 14px; background: var(--inverse-surface);
-  clip-path: polygon(0 50%, 7px 0, 100% 0, 100% 100%, 7px 100%);
+  content: ''; position: absolute; left: -7px; top: calc(50% - 14px);
+  width: 14px; height: 28px; background: var(--inverse-surface);
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
 }
 .pal-note.show { opacity: 1; transform: translateY(-50%); }
 .pal-note b { display: block; font-size: 14px; font-weight: 700; line-height: 1.3; }
