@@ -91,6 +91,14 @@ const EN = {
   skip: 'Skip',
   tapCalls: ['Tap the chest!', 'Again!', 'One more!'],
   tapKnot: 'Loosen the knot!',
+  knotIntro: "Hi, I'm your knot! I loosen up a little with every stretch you do. Tap me any time.",
+  knotToGo: ({ x, n }) => `${x} XP to Level ${n}`,
+  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  knotNotes: [
+    ["Thanks for checking in on me!", "Hi! Even five minutes today would feel great.", "Glad you're here. Ready when you are.", "Thanks for taking care of us. Shall we move a little?", "One small stretch, one big smile. Want to try?", "You opened the app. That's the hardest part done!", "Every stretch makes the next one easier.", "Let's earn a chest today. I'm cheering for you!", "A few slow breaths, one routine, and I'm all yours.", "Thanks for coming back. Let's loosen up together.", "Today is a fresh start. Pick any routine you like.", "I love it when you stop by. Stretch time?"],
+    ["That felt so good. Thank you!", "Thanks! I'm looser already. One more kind?", "My shoulders noticed. Thank you!", "Nice work! Another kind makes today's chest even better.", "You're on a roll, and I can feel it.", "Thank you. Loose fibers, happy knot!", "Good one! Another tile is waiting to light up.", "Every hold counts. Thanks for each one.", "I'm breathing easier. Want to keep going?", "That's how it's done! Up for one more?", "Thanks for the stretch. You're good at this.", "Halfway to a great day. Keep it up!"],
+    ["What a day! Thank you, truly.", "You're amazing. I haven't felt this loose in ages.", "Look at you go! Thanks for taking such good care of me.", "Champion work today. Thank you!", "This is what consistency looks like. Bravo!", "You did the work, I feel the difference. Thank you!", "Every single fiber says thank you.", "Today you were at your best. Well done!", "Legendary day! Rest well, you've earned it.", "I didn't know I could feel this good. Thanks to you!", "Bravo! Your future self is cheering for you.", "A whole day of care. Thank you for it."],
+  ],
   levelsRebalanced: 'Levels rebalanced: leveling up is slower now and worth more. Your fibers and friends are safe.',
   // detail
   back: 'Back',

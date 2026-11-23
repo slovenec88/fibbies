@@ -57,6 +57,14 @@ export const UI = {
   skip: "Passer",
   tapCalls: ["Touche le coffre !", "Encore !", "Une dernière fois !"],
   tapKnot: "Desserre le nœud !",
+  knotIntro: "Salut, je suis ton nœud ! Je me détends un peu à chaque étirement que tu fais. Touche-moi quand tu veux.",
+  knotToGo: ({ x, n }) => `Encore ${x} XP avant le niveau ${n}`,
+  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  knotNotes: [
+    ["Merci de passer me voir !", "Salut ! Cinq minutes aujourd'hui, ça ferait déjà du bien.", "Content de te voir. Je suis prêt quand tu veux.", "Merci de prendre soin de nous. On bouge un peu ?", "Un petit étirement et j'ai le sourire. On essaie ?", "L'appli est ouverte. Le plus dur est fait !", "Chaque étirement rend le suivant plus facile.", "On va chercher un coffre aujourd'hui ? Je suis à fond avec toi !", "Quelques respirations lentes, une routine, et je suis comme neuf.", "Merci de revenir. On se détend ensemble ?", "Nouvelle journée, nouveau départ. Choisis la routine qui te plaît.", "J'adore quand tu passes. On s'étire ?"],
+    ["Ça m'a fait tellement de bien. Merci !", "Merci ! Je suis déjà plus souple. On tente un autre type de routine ?", "Mes épaules te disent merci !", "Bien joué ! Avec un autre type de routine, le coffre du jour sera encore mieux.", "Ça roule, je le sens jusqu'au bout des fibres !", "Merci. Fibres détendues, nœud heureux !", "Super ! Une autre case attend de s'allumer.", "Chaque étirement compte. Merci pour chacun !", "Je respire déjà mieux. On continue ?", "C'est comme ça qu'on fait ! On en refait une ?", "Merci pour l'étirement. Tu te débrouilles très bien.", "Déjà la moitié d'une super journée. Continue comme ça !"],
+    ["Quelle journée ! Merci, sincèrement.", "Tu es incroyable. Je n'ai pas été aussi détendu depuis une éternité.", "Chapeau ! Merci de prendre si bien soin de moi.", "Un travail de champion aujourd'hui. Merci !", "Ça, c'est de la régularité. Bravo !", "Tu as fait le travail, je sens la différence. Merci !", "Chacune de mes fibres te dit merci.", "Aujourd'hui, tu as donné le meilleur de toi. Génial !", "Journée légendaire ! Repose-toi bien, tu l'as bien mérité.", "Je ne savais pas qu'on pouvait se sentir aussi bien. Grâce à toi !", "Bravo ! Dans quelques années, tu te remercieras.", "Une journée entière à prendre soin de toi. Merci pour ça."],
+  ],
   levelsRebalanced: "Niveaux rééquilibrés : on monte plus lentement, mais chaque niveau vaut plus. Tes fibres et tes amis sont conservés.",
   back: "Retour",
   settings: "Paramètres",

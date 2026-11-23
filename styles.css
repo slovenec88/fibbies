@@ -680,7 +680,6 @@ html:has(dialog[open]) { overflow: hidden; }
 .pc-top { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; }
 .pc-head { display: flex; align-items: center; justify-content: space-between; height: 32px; margin: -4px -8px 2px 0; }
 .pc-head b { font-size: 17px; font-weight: 700; }
-.pc-icon { justify-self: center; filter: drop-shadow(0 0 10px #2fbf9860); }
 .pc-line { display: flex; align-items: baseline; justify-content: space-between; gap: 2px 8px; flex-wrap: wrap; }
 .pc-line b { font-size: 17px; font-weight: 700; }
 .pc-line small { color: var(--on-surface-variant); font-size: 12px; font-weight: 600; }
@@ -690,6 +689,39 @@ html:has(dialog[open]) { overflow: hidden; }
 .pc-streak { display: inline-flex; align-items: center; gap: 2px; height: 26px; padding: 0 9px 0 6px; margin-right: 4px; border-radius: 13px;
   font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; background: var(--tertiary-container); color: var(--on-tertiary-container); }
 .pc-streak .ms { font-size: 18px; }
+/* Your knot (js/knot.js): a tangle that opens into a bloom as XP grows, coloured by today's routines */
+.knot-wrap { position: relative; justify-self: center; width: 64px; height: 64px; }
+.knot { width: 64px; height: 64px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.knot:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.knot svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.knot svg * { transform-box: view-box; }
+.kn-loops { animation: kn-sway 9s ease-in-out infinite; }
+.kn-all { transform-origin: 0 40px; }
+.kf-str { opacity: 0; }
+.knot:active .kn-all { transform: scale(1.06, .94); }
+.stretching .kn-tie { animation: kn-breathe 2.2s cubic-bezier(.4, 0, .3, 1); }
+.stretching .kn-all { animation: kn-stretch 2.2s ease-in-out; }
+.stretching .kf-norm { animation: kn-face-off 2.2s steps(1); }
+.stretching .kf-str { animation: kn-face 2.2s steps(1); }
+@keyframes kn-sway { 50% { transform: rotate(6deg) scale(1.03); } }
+@keyframes kn-breathe { 35% { transform: scale(1.16) rotate(10deg); } 70% { transform: scale(.97) rotate(-3deg); } }
+@keyframes kn-stretch { 15% { transform: scale(.96, 1.06); } 40% { transform: rotate(-7deg) scale(.97, 1.05); } 65% { transform: rotate(7deg) scale(.97, 1.05); } 88% { transform: scale(1.04, .96); } }
+@keyframes kn-face { 0% { opacity: 0; } 10% { opacity: 1; } 86% { opacity: 0; } }
+@keyframes kn-face-off { 0% { opacity: 1; } 10% { opacity: 0; } 86% { opacity: 1; } }
+/* Level-up: the loops burst open and the knot ties itself anew */
+.kn-burst .kn-tie { animation: kn-retie 1.6s cubic-bezier(.3, .8, .4, 1); }
+.kn-burst .kn-all { animation: kn-hop 1.6s ease-out; }
+@keyframes kn-retie { 30% { transform: scale(1.9) rotate(80deg); opacity: 0; } 31% { transform: scale(.2) rotate(-120deg); opacity: 0; } 70% { transform: scale(1.12) rotate(8deg); opacity: 1; } }
+@keyframes kn-hop { 20% { transform: scale(1.12, .88); } 34% { transform: translateY(-14px) scale(.94, 1.08); } 50% { transform: none; } }
+/* The note it gives when tapped */
+.knot-note { position: absolute; z-index: 5; left: 70px; top: 50%; width: max-content; max-width: min(240px, calc(100vw - 130px)); padding: 9px 13px 8px;
+  border-radius: 16px; background: var(--inverse-surface); color: var(--inverse-on-surface); box-shadow: 0 6px 20px #0004;
+  pointer-events: none; opacity: 0; transform: translateY(-50%) translateX(-6px) scale(.92); transform-origin: 0 50%; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.5, .5, 1); }
+.knot-note::before { content: ''; position: absolute; left: -7px; top: 50%; margin-top: -7px; border: 7px solid transparent; border-left: 0; border-right-color: var(--inverse-surface); }
+.knot-note.show { opacity: 1; transform: translateY(-50%); }
+.knot-note b { display: block; font-size: 14px; font-weight: 700; line-height: 1.3; }
+.knot-note small { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; opacity: .75; }
+@media (prefers-reduced-motion: reduce) { .knot svg *, .knot-note { animation: none !important; transition: none; } }
 /* Today's bonus: one tile per kind of routine, lighting up through the day (no words, no numbers) */
 .quests { position: relative; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
 .quest {

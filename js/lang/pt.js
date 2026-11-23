@@ -56,6 +56,14 @@ export const UI = {
   skip: "Pular",
   tapCalls: ["Toque no baú!", "De novo!", "Mais uma vez!"],
   tapKnot: "Afrouxe o nó!",
+  knotIntro: "Oi, eu sou o seu nó! Fico um pouco mais solto a cada alongamento que você faz. Toque em mim quando quiser.",
+  knotToGo: ({ x, n }) => `Faltam ${x} XP para o nível ${n}`,
+  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  knotNotes: [
+    ["Obrigado por vir me ver!", "Oi! Só cinco minutos hoje já me fariam um bem danado.", "Que bom ver você aqui. Estou pronto quando você quiser.", "Obrigado por cuidar da gente. Vamos nos mexer um pouco?", "Um alonguinho já me faz sorrir. Bora tentar?", "Você abriu o app. A parte mais difícil já foi!", "Cada alongamento deixa o próximo mais fácil.", "Vamos ganhar um baú hoje. Estou torcendo por você!", "Algumas respirações lentas, uma rotina e fico novinho em folha.", "Obrigado por voltar. Vamos relaxar juntos?", "Dia novo, começo novo. Escolha a rotina que quiser.", "Adoro quando você aparece. Hora de alongar?"],
+    ["Que delícia! Obrigado.", "Obrigado! Já estou mais solto. Bora outro tipo de rotina?", "Meus ombros agradecem!", "Mandou bem! Com outro tipo de rotina, o baú de hoje fica ainda melhor.", "Você pegou o ritmo, e eu tô sentindo!", "Obrigado. Fibras soltas, nó feliz!", "Boa! Tem mais um quadrado esperando para acender.", "Cada postura conta. Obrigado por cada uma.", "Já respiro melhor. Vamos continuar?", "É assim que se faz! Mais uma?", "Obrigado pelo alongamento. Você manda bem nisso.", "Já é meio caminho para um dia incrível. Continue assim!"],
+    ["Que dia! Obrigado de verdade.", "Você é incrível. Fazia tempo que eu não ficava tão solto.", "Olha só você! Obrigado por cuidar tão bem de mim.", "Trabalho digno de pódio hoje. Obrigado!", "Constância é isso. Parabéns!", "Você fez o trabalho e eu sinto a diferença. Obrigado!", "Cada uma das minhas fibras agradece.", "Hoje você deu o seu melhor. Demais!", "Dia lendário! Descanse bem, você mereceu.", "Eu não sabia que dava para me sentir tão bem. Graças a você!", "Parabéns! Seu eu do futuro vai agradecer.", "Um dia inteiro cuidando de você. Obrigado por isso."],
+  ],
   levelsRebalanced: "Níveis rebalanceados: agora subir de nível é mais lento e vale mais. Suas fibras e amigos estão a salvo.",
   back: "Voltar",
   settings: "Configurações",

@@ -15,6 +15,7 @@ import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } fro
 import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
 import { exerciseGuide, localizeContent } from './localize.js';
 import { setupInstallPrompt } from './install.js';
+import { knotHTML, knotTap, knotGrowthCheck } from './knot.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 setupInstallPrompt();
@@ -262,7 +263,7 @@ function renderProgress() {
   const streakPill = st ? `<span class="pc-streak" role="img" aria-label="${esc(`${t('days', { n: st })}, ${t('thisWeek', { n: daysThisWeek() })}`)}"><span aria-hidden="true" class="ms filled">local_fire_department</span>${st}</span>` : '';
   $('#progress-card').innerHTML = `
     <div class="pc-top">
-      <img class="pc-icon" src="icons/icon.svg" width="52" height="52" alt="">
+      ${knotHTML(lp, order, dayKey())}
       <div class="pc-main">
         <div class="pc-head"><b>${t('level', { n: lp.level })}</b>${streakPill}
           <button class="icon-btn ripple" id="btn-settings" aria-label="${esc(t('settings'))}"><span aria-hidden="true" class="ms">tune</span></button></div>
@@ -274,6 +275,7 @@ function renderProgress() {
     <div class="quests" style="--n:${QUESTS.length}" role="group" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}${order.length ? `: ${order.map((c) => catOf(c).label).join(', ')}` : ''}`)}">
       ${QUESTS.map((q) => questTile(q, celebrating(done, q.cat) ? 0 : order.indexOf(q.cat) + 1)).join('')}
     </div>`;
+  if (knotGrowthCheck(dayKey(), order.length)) setTimeout(() => fx.knotOpen(), 500);
   celebrateBonus(done);
 }
 
@@ -693,8 +695,18 @@ $('#chips-strength').addEventListener('click', (e) => {
   const c = e.target.closest('[data-focus]');
   if (c) setFocus(c.dataset.focus === activeFocus ? null : c.dataset.focus);
 });
+let knotTaps = 0; // each tap on the knot plays the next note
 // A bonus tile takes you down to that kind of routine, already filtered.
 $('#progress-card').addEventListener('click', (e) => {
+  const k = e.target.closest('.knot');
+  if (k) {
+    const kinds = [...todaysCats(log, dayKey())].filter((c) => QUESTS.some((q) => q.cat === c)).length;
+    unlockAudio();
+    fx.knotTap(knotTaps++);
+    haptics.buzz(8);
+    knotTap(k.parentElement, levelProgress(loadProfile().xp), kinds);
+    return;
+  }
   const q = e.target.closest('.quest[data-cat]');
   if (!q) return;
   const strength = q.dataset.cat === 'strength';

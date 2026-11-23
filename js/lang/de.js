@@ -56,6 +56,14 @@ export const UI = {
   skip: "Überspringen",
   tapCalls: ["Tippe auf die Truhe!", "Nochmal!", "Noch einmal!"],
   tapKnot: "Lös den Knoten!",
+  knotIntro: "Hi, ich bin dein Knoten! Mit jeder Dehnung werde ich ein bisschen lockerer. Tipp mich an, wann immer du willst.",
+  knotToGo: ({ x, n }) => `Noch ${x} XP bis Level ${n}`,
+  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  knotNotes: [
+    ["Danke, dass du nach mir schaust!", "Hi! Schon fünf Minuten würden mir heute richtig guttun.", "Schön, dass du da bist. Wir starten, wann du magst.", "Danke, dass du dich um uns kümmerst. Bewegen wir uns ein bisschen?", "Nur ein bisschen dehnen, und ich strahle. Probieren wir's?", "Die App ist offen. Das Schwerste ist geschafft!", "Mit jeder Dehnung wird die nächste leichter.", "Holen wir uns heute eine Truhe? Ich drück dir die Daumen!", "Ein paar ruhige Atemzüge, eine Routine, und ich bin wie neu.", "Danke, dass du wiederkommst. Komm, wir lockern uns zusammen.", "Neuer Tag, neues Glück. Such dir eine Routine aus.", "Ich freu mich immer, wenn du vorbeischaust. Zeit zum Dehnen?"],
+    ["Das hat so gutgetan. Danke!", "Danke! Schon lockerer. Lust auf eine andere Art Routine?", "Meine Schultern haben's gemerkt. Danke!", "Gut gemacht! Mit einer neuen Art Routine wird die Truhe heute noch besser.", "Du bist richtig in Fahrt, das spür ich!", "Danke. Lockere Fasern, glücklicher Knoten!", "Schön! Noch eine Kachel will heute leuchten.", "Jede Dehnung zählt. Danke für jede einzelne!", "Ich atme schon freier. Machen wir weiter?", "So wird's gemacht! Noch eine?", "Danke fürs Dehnen. Du hast den Dreh echt raus.", "Halbzeit für einen richtig guten Tag. Weiter so!"],
+    ["Was für ein Tag! Von Herzen danke.", "Du bist großartig. So locker war ich ewig nicht.", "Respekt! Danke, dass du so gut für mich sorgst.", "Heute eine echte Meisterleistung. Danke!", "So sieht Dranbleiben aus. Bravo!", "Du hast die Arbeit gemacht, ich spüre den Unterschied. Danke!", "Jede einzelne Faser sagt danke.", "Heute warst du in Bestform. Klasse!", "Legendärer Tag! Ruh dich gut aus, du hast es dir verdient.", "Ich wusste nicht, dass ich mich so gut fühlen kann. Dank dir!", "Bravo! Dein zukünftiges Ich wird dir danken.", "So viel Gutes für dich an einem Tag. Danke dafür!"],
+  ],
   levelsRebalanced: "Level neu ausbalanciert: Aufsteigen dauert jetzt länger und lohnt sich mehr. Deine Fasern und Freunde bleiben erhalten.",
   back: "Zurück",
   settings: "Einstellungen",

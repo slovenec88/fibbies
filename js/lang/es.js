@@ -56,6 +56,14 @@ export const UI = {
   skip: "Saltar",
   tapCalls: ["¡Toca el cofre!", "¡Otra vez!", "¡Una más!"],
   tapKnot: "¡Afloja el nudo!",
+  knotIntro: "¡Hola, soy tu nudo! Me suelto un poco con cada estiramiento que haces. Tócame cuando quieras.",
+  knotToGo: ({ x, n }) => `${x} XP para el nivel ${n}`,
+  // Notes from the knot on the home card: nothing done today yet / one or two kinds / three or four
+  knotNotes: [
+    ["¡Gracias por venir a verme!", "¡Hola! Con cinco minutos hoy ya me sentiría genial.", "Qué bien que estés aquí. Cuando quieras, empezamos.", "Gracias por cuidarnos. ¿Nos movemos un poco?", "Un poquito de estiramiento y ya sonrío. ¿Probamos?", "¡Ya abriste la app! Lo más difícil ya está.", "Con cada estiramiento, el siguiente cuesta menos.", "¿Conseguimos un cofre hoy? ¡Cuentas conmigo!", "Unas respiraciones lentas, una rutina y quedo como nuevo.", "Gracias por volver. ¿Estiramos juntos?", "Día nuevo, empezamos de cero. Elige la rutina que quieras.", "Me encanta cuando pasas por aquí. ¿Hora de estirar?"],
+    ["¡Qué alivio! Muchas gracias.", "¡Gracias! Ya estoy más suelto. ¿Probamos otro tipo de rutina?", "Mis hombros te lo agradecen. ¡Gracias!", "¡Buen trabajo! Con otro tipo de rutina, el cofre de hoy mejora.", "¡Vas con todo y se nota!", "Gracias. Fibras sueltas, nudo feliz.", "¡Bien! Hay otra casilla esperando a encenderse.", "Cada postura cuenta. Gracias por cada una.", "Ya respiro mejor. ¿Seguimos?", "¡Así se hace! ¿Una más?", "Gracias por estirar. Se te da muy bien.", "Ya vas por la mitad de un gran día. ¡Sigue así!"],
+    ["¡Qué día! Gracias de verdad.", "¡Eres increíble! Hace siglos que no estaba tan suelto.", "¡Qué manera de cuidarme! Gracias de corazón.", "¡Hoy estuviste de campeonato! Gracias.", "Eso es constancia, y de la buena. ¡Bravo!", "Tú hiciste el trabajo y yo noto la diferencia. ¡Gracias!", "Cada una de mis fibras te da las gracias.", "Hoy diste lo mejor de ti. ¡Genial!", "¡Día legendario! Descansa bien, te lo has ganado.", "No sabía que podía sentirme tan bien. ¡Gracias a ti!", "¡Bravo! Tu yo del futuro te lo agradecerá.", "Hoy te has cuidado un montón. Gracias por eso."],
+  ],
   levelsRebalanced: "Niveles reajustados: ahora se sube más despacio y cada nivel vale más. Tus fibras y amigos están a salvo.",
   back: "Atrás",
   settings: "Ajustes",
