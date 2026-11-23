@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   fdroid:
     runs-on: ubuntu-24.04
@@ -16,6 +20,12 @@ jobs:
           persist-credentials: false
       - name: Build in F-Droid's buildserver image
         run: |
+          report_failure() {
+            while IFS= read -r line; do
+              echo "::error::${line//%/%25}"
+            done < <(tail -n 12 "${RUNNER_TEMP}/fdroid-build.log")
+          }
+          trap report_failure ERR
           docker run --rm --entrypoint /bin/bash \
             -v "$PWD/fdroid-check/metadata:/input:ro" \
             registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie -ec '
@@ -32,4 +42,29 @@ jobs:
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
-            '
+            ' 2>&1 | tee "${RUNNER_TEMP}/fdroid-build.log"
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Rebuild the APK with the recipe commands
+        run: |
+          trap 'tail -n 10 "$RUNNER_TEMP/linux-build.log" | while IFS= read -r line; do echo "::error::${line//%/%25}"; done' ERR
+          {
+            export JAVA_HOME="$JAVA_HOME_21_X64"
+            export PATH="$JAVA_HOME/bin:$PATH"
+            curl --fail --location --output "$RUNNER_TEMP/node.tar.xz" https://nodejs.org/dist/v22.23.5/node-v22.23.5-linux-x64.tar.xz
+            echo "cdeb8670a0c81f51b4dc4ac61919f9b1ad917b304bf8221eb939570663d240f8  $RUNNER_TEMP/node.tar.xz" | sha256sum -c -
+            mkdir "$RUNNER_TEMP/node"
+            tar -xJf "$RUNNER_TEMP/node.tar.xz" --strip-components=1 -C "$RUNNER_TEMP/node"
+            export PATH="$RUNNER_TEMP/node/bin:$PATH"
+            npm ci --ignore-scripts
+            npm test
+            CI=1 npm run sync
+            bash android/gradlew -p android --no-daemon :app:assembleRelease
+            test -s android/app/build/outputs/apk/release/app-release-unsigned.apk
+          } > "$RUNNER_TEMP/linux-build.log" 2>&1
+          cat "$RUNNER_TEMP/linux-build.log"
