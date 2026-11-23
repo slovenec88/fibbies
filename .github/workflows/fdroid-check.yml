@@ -21,15 +21,17 @@ jobs:
       - name: Build in F-Droid's buildserver image
         run: |
           report_failure() {
-            while IFS= read -r line; do
-              echo "::error::${line//%/%25}"
-            done < <(tail -n 12 "${RUNNER_TEMP}/fdroid-build.log")
+            details=$(tail -n 30 "${RUNNER_TEMP}/fdroid-build.log")
+            details=${details//%/%25}
+            echo "::error::${details//$'\n'/%0A}"
           }
           trap report_failure ERR
-          docker run --rm --entrypoint /bin/bash \
+          image=registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
+          docker pull "$image" > "${RUNNER_TEMP}/fdroid-build.log" 2>&1
+          docker run --rm --user root --entrypoint /bin/bash \
             -v "$PWD/fdroid-check/metadata:/input:ro" \
-            registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie -ec '
-              git clone --depth 1 https://gitlab.com/fdroid/fdroidserver.git /opt/fdroidserver-source
+            "$image" -exc '
+              git clone --depth 1 https://github.com/f-droid/fdroidserver.git /opt/fdroidserver-source
               mkdir -p /home/vagrant/test-build/metadata
               cp /input/*.yml /home/vagrant/test-build/metadata/
               chown -R vagrant /home/vagrant/test-build
