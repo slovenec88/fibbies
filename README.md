@@ -10,7 +10,7 @@ Follow short guided routines to warm up, stretch, or build strength. Open chests
 
 **[Try Fibbies in your browser](https://fibbies.juringari.com/)** · [Android APK](https://github.com/slovenec88/fibbies/releases/latest) · [Project page](https://juringari.com/fibbies/)
 
-<img src="docs/screenshots/home.png" width="210" alt="The green Fibbie mascot shares a welcome quote above the quick-start routines">
+<img src="docs/screenshots/home-welcome.png" width="210" alt="The green Fibbie mascot shares a welcome quote above the quick-start routines">
 <img src="docs/screenshots/stretch.png" width="210" alt="Top 5 Strength session showing an animated bodyweight squat and a countdown">
 
 </div>
