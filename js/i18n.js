@@ -188,6 +188,7 @@ const EN = {
   'focus.legs': "Legs",
   'focus.upper': "Arms & shoulders",
   'focus.core': "Core",
+  'focus.feet': "Feet",
   // settings
   'voiceSection': 'Voice',
   voiceGuidance: 'Voice guidance',

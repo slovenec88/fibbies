@@ -189,6 +189,10 @@ export class Figure {
     if (top) el('rect', { x: 10, y: 22, width: 186, height: 168, rx: 26, class: 'fig-mat' }, g);
     for (const pr of props) {
       if (pr.wall) el('line', { x1: pr.wall, y1: 14, x2: pr.wall, y2: 181, class: 'fig-wall' }, g);
+      // a step [x0, x1, top], a chair seat [x0, x1, height] with a back at x0, a towel [x0, x1] on the floor
+      if (pr.step) { const [x0, x1, y] = pr.step; el('rect', { x: x0, y, width: x1 - x0, height: 182 - y, rx: 3, class: 'fig-step' }, g); }
+      if (pr.chair) { const [x0, x1, y] = pr.chair; el('path', { d: `M${x0} ${y - 44}V182M${x0} ${y}H${x1}V182`, class: 'fig-chair' }, g); }
+      if (pr.towel) { const [x0, x1] = pr.towel; el('rect', { x: x0, y: 177, width: x1 - x0, height: 5, rx: 2.5, class: 'fig-towel' }, g); }
     }
     if (!top) {
       this.shadow = el('ellipse', { cx: 100, cy: 182, rx: 52, ry: 5, class: 'fig-shadow' }, g);

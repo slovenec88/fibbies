@@ -19,7 +19,7 @@ Follow short guided routines to warm up, wind down, or build strength. Keep a st
 
 ### Meet the routines
 
-Start with one of today’s picks or browse stretching and bodyweight strength routines. Try the 2-Minute Reset at your desk, warm up before a run, or work on your back, legs, arms, or core. Open a routine to see its moves and timings before you start.
+Start with one of today’s picks or browse stretching and bodyweight strength routines. Try the 2-Minute Reset at your desk, warm up before a run, or work on your back, legs, arms, core, or feet. Open a routine to see its moves and timings before you start.
 
 ### Follow the stretch
 

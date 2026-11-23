@@ -561,6 +561,70 @@ export const STRETCHES = {
     ],
   },
 
+  // ---- Feet: the small muscles under the arch, often forgotten. Strong feet steady the ankle, knee and hip above them. ----
+  bigToeLift: {
+    name: 'Big Toe Lifts', target: 'Feet · Arches · Toes', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [104, 156], hF: [96, 156], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [104, 156], hF: [96, 156], fN: [104, 180], fF: [98, 180], ft: [-26, -26] },
+    cues: [
+      'Stand tall, feet flat, weight even on both feet.',
+      'Lift only your big toes. Keep the other four pressed down.',
+      'Lower slowly. Hard at first? Do it sitting, and hold the small toes down with a finger.',
+    ],
+  },
+  smallToeLift: {
+    name: 'Small Toe Lifts', target: 'Feet · Toes', view: 'side', period: 3, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [104, 156], hF: [96, 156], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [100, 104], t: -90, n: -90, hN: [104, 156], hF: [96, 156], fN: [104, 180], fF: [98, 180], ft: [-20, -20] },
+    cues: [
+      'Now the other way: press your big toes into the floor.',
+      'Lift the four small toes, as high as they will go.',
+      'Spread them wide before you set them down.',
+    ],
+  },
+  shortFoot: {
+    name: 'Short Foot', target: 'Arches · Feet', view: 'side', period: 5, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [104, 156], hF: [96, 156], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [100, 103], t: -90, n: -90, hN: [104, 155], hF: [96, 155], fN: [104, 179], fF: [98, 179], ft: [10, 10] },
+    cues: [
+      'Feet flat, toes long and relaxed.',
+      'Pull the ball of your foot toward your heel so the arch lifts. Toes stay flat, don’t curl them.',
+      'Hold for five, then relax. Small and slow.',
+    ],
+  },
+  towelScrunch: {
+    name: 'Towel Scrunches', target: 'Feet · Toes · Arches', view: 'side', period: 2, dynamic: true, strength: true,
+    props: [{ chair: [56, 92, 146] }, { towel: [104, 160] }],
+    a: { h: [78, 142], t: -88, n: -86, hN: [104, 138], hF: [100, 139], fN: [116, 180], fF: [110, 180], ft: [-8, -8] },
+    b: { h: [78, 142], t: -88, n: -86, hN: [104, 138], hF: [100, 139], fN: [116, 180], fF: [110, 180], ft: [10, 10] },
+    cues: [
+      'Sit with a towel flat under your feet, heels on the floor.',
+      'Grip the towel with your toes and pull it toward you, bit by bit.',
+      'At the end, spread it out again and go on. Keep your heels still.',
+    ],
+  },
+  stepCalfRaise: {
+    name: 'Step Calf Raises', target: 'Calves · Arches · Achilles', view: 'side', period: 4, dynamic: true, strength: true,
+    props: [{ step: [100, 140, 168] }, { wall: 146 }],
+    a: { h: [94, 99], t: -88, n: -88, hN: [143, 66], hF: [143, 72], fN: [95, 173], fF: [91, 173], ft: [-30, -30] },
+    b: { h: [98, 84], t: -90, n: -90, hN: [143, 52], hF: [143, 58], fN: [98, 159], fF: [94, 159], ft: [58, 58] },
+    cues: [
+      'Balls of your feet on a stair edge, a hand on the rail. A rolled towel under your toes makes it even better.',
+      'Rise all the way up onto your toes.',
+      'Then lower slowly until your heels drop below the step.',
+    ],
+  },
+  singleLegBalance: {
+    name: 'Single-Leg Balance', target: 'Feet · Ankles · Balance', view: 'side', sided: true, limb: 'leg', period: 5, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [118, 112], hF: [84, 112], fN: [102, 180], fF: [108, 150], ft: [0, 20] },
+    b: { h: [101, 104], t: -89, n: -88, hN: [119, 113], hF: [85, 111], fN: [102, 180], fF: [109, 151], ft: [0, 20] },
+    cues: [
+      'Stand on one foot, the knee soft. Feel your whole foot grip the floor.',
+      'Keep the arch lifted and your hips level.',
+      'Easy? Close your eyes, or stand on a cushion. Stay near a wall or chair.',
+    ],
+  },
+
   slowCalf: {
     name: 'Slow Calf Lowers', target: 'Calves · Achilles', view: 'side', sided: true, limb: 'leg', period: 4, dynamic: true, strength: true,
     props: [{ wall: 150 }],
@@ -679,6 +743,7 @@ export const FOCUS = [
   { id: 'legs', icon: 'directions_run' },
   { id: 'upper', icon: 'fitness_center' },
   { id: 'core', icon: 'adjust' },
+  { id: 'feet', icon: 'footprint' },
 ];
 
 // items: [stretchId, seconds per side]
@@ -822,6 +887,16 @@ export const ROUTINES = [
     id: 'core-basics', hero: 'deadBug', title: 'Core Basics', cat: 'strength', focus: 'core', icon: 'adjust',
     blurb: 'A steady core without sit-ups: the slow, safe moves physios teach first.',
     items: [['catcow', 30], ['hipCircles', 30], ['deadBug', 35], ['reverseCrunch', 40], ['birdDog', 35], ['superman', 35], ['plank', 40], ['shoulderTaps', 35], ['bridge', 40], ['child', 40]],
+  },
+  {
+    id: 'happy-feet', hero: 'towelScrunch', title: 'Happy Feet', cat: 'strength', focus: 'feet', icon: 'footprint',
+    blurb: 'Five minutes for the small muscles under your arches: toe lifts, arch lifts, towel scrunches and calf raises. Strong feet steady everything above them. Barefoot, with a towel.',
+    items: [['bigToeLift', 40], ['smallToeLift', 40], ['shortFoot', 45], ['towelScrunch', 60], ['calfRaises', 45]],
+  },
+  {
+    id: 'strong-feet', hero: 'stepCalfRaise', title: 'Strong Feet & Arches', cat: 'strength', focus: 'feet', icon: 'directions_walk',
+    blurb: 'Ten minutes of foot strength, then balance: toes, arches, towel scrunches, calf raises on a step and standing on one foot. Barefoot, with a towel and a stair.',
+    items: [['calfRaises', 40], ['bigToeLift', 45], ['smallToeLift', 45], ['shortFoot', 50], ['towelScrunch', 60], ['stepCalfRaise', 50], ['singleLegBalance', 40], ['slowCalf', 35], ['towelScrunch', 45], ['calf', 30]],
   },
   // The long ones (about 15 minutes at the recommended length) come last, so every list ends with them.
   {
