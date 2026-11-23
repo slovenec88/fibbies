@@ -14,9 +14,9 @@ Repo: https://github.com/slovenec88/fibbies.git
 Binaries: https://github.com/slovenec88/fibbies/releases/download/v%v/Fibbies-v%v.apk
 
 Builds:
-  - versionName: 1.3.3
-    versionCode: 13
-    commit: fc13a0ef2c8dca70db7b85663356142065de1191
+  - versionName: 1.3.4
+    versionCode: 14
+    commit: 01919a419e8ab7e061d6c60d477c8077eaff65a1
     subdir: android/app
     sudo:
       - apt-get update
@@ -37,5 +37,5 @@ Builds:
 AllowedAPKSigningKeys: 7c4f96744a4c27242b8af1cc51609499b681dffe70f36cf86c867ae3acaee7f0
 AutoUpdateMode: Version
 UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+$
-CurrentVersion: 1.3.3
-CurrentVersionCode: 13
+CurrentVersion: 1.3.4
+CurrentVersionCode: 14

@@ -28,13 +28,15 @@ jobs:
           }
           trap report_failure ERR
           input="$RUNNER_TEMP/fdroid-input"
-          mkdir -p "$input"
+          output="$RUNNER_TEMP/fdroid-output"
+          mkdir -p "$input" "$output"
           cp fdroid-check/metadata/*.yml "$input/"
           git clone --bare --no-hardlinks . "$input/fibbies.git"
           image=registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
           docker pull "$image" > "${RUNNER_TEMP}/fdroid-build.log" 2>&1
           docker run --rm --user root --entrypoint /bin/bash \
             -v "$input:/input:ro" \
+            -v "$output:/output" \
             "$image" -exc '
               git clone --depth 1 https://github.com/f-droid/fdroidserver.git /opt/fdroidserver-source
               mkdir -p /home/vagrant/test-build/metadata
@@ -55,9 +57,17 @@ jobs:
               sudo --set-home --user vagrant git config --global --add safe.directory /input/fibbies.git
               sudo --set-home --user vagrant git config --global url.file:///input/fibbies.git.insteadOf https://github.com/slovenec88/fibbies.git
               sdkmanager "platforms;android-36" "build-tools;35.0.0"
-              sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
-              env HOME=/home/vagrant fdroid scanner --verbose --exit-code tmp/io.github.slovenec88.fibbies_13.apk
+              sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:14
+              env HOME=/home/vagrant fdroid scanner --verbose --exit-code tmp/io.github.slovenec88.fibbies_14.apk
+              cp tmp/io.github.slovenec88.fibbies_14.apk /output/Fibbies-v1.3.4-unsigned.apk
             ' 2>&1 | tee "${RUNNER_TEMP}/fdroid-build.log"
+          echo "::notice::F-Droid unsigned SHA-256 $(sha256sum "$output/Fibbies-v1.3.4-unsigned.apk" | cut -d ' ' -f 1)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: fibbies-1.3.4-fdroid-unsigned
+          path: ${{ runner.temp }}/fdroid-output/Fibbies-v1.3.4-unsigned.apk
+          if-no-files-found: error
+          retention-days: 3
   linux:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -83,3 +93,4 @@ jobs:
             test -s android/app/build/outputs/apk/release/app-release-unsigned.apk
           } > "$RUNNER_TEMP/linux-build.log" 2>&1
           cat "$RUNNER_TEMP/linux-build.log"
+          echo "::notice::Linux unsigned SHA-256 $(sha256sum android/app/build/outputs/apk/release/app-release-unsigned.apk | cut -d ' ' -f 1)"
