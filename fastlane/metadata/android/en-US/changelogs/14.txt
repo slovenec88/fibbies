@@ -1,0 +1,1 @@
+Prepared the Android build for F-Droid and updated the store listing in all seven languages.
