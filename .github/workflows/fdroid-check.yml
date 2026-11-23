@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Build in F-Droid's buildserver image
         run: |
           report_failure() {
@@ -26,10 +27,14 @@ jobs:
             echo "::error::${details//$'\n'/%0A}"
           }
           trap report_failure ERR
+          input="$RUNNER_TEMP/fdroid-input"
+          mkdir -p "$input"
+          cp fdroid-check/metadata/*.yml "$input/"
+          git bundle create "$input/fibbies.bundle" HEAD
           image=registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
           docker pull "$image" > "${RUNNER_TEMP}/fdroid-build.log" 2>&1
           docker run --rm --user root --entrypoint /bin/bash \
-            -v "$PWD/fdroid-check/metadata:/input:ro" \
+            -v "$input:/input:ro" \
             "$image" -exc '
               git clone --depth 1 https://github.com/f-droid/fdroidserver.git /opt/fdroidserver-source
               mkdir -p /home/vagrant/test-build/metadata
@@ -46,8 +51,11 @@ jobs:
               unset CI
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
+              sed -i "/^Binaries:/d" metadata/io.github.slovenec88.fibbies.yml
+              sudo --user vagrant git config --global url.file:///input/fibbies.bundle.insteadOf https://github.com/slovenec88/fibbies.git
               sdkmanager "platforms;android-36" "build-tools;35.0.0"
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
+              env HOME=/home/vagrant fdroid scanner --verbose --exit-code tmp/io.github.slovenec88.fibbies_13.apk
             ' 2>&1 | tee "${RUNNER_TEMP}/fdroid-build.log"
   linux:
     runs-on: ubuntu-24.04

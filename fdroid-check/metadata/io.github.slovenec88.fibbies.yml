@@ -22,7 +22,7 @@ Builds:
       - apt-get update
       - apt-get install -y openjdk-21-jdk-headless
       - update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
-      - curl --fail --location --output /tmp/node.tar.xz https://nodejs.org/dist/v22.23.5/node-v22.23.5-linux-x64.tar.xz
+      - curl --fail --silent --show-error --max-time 60 --location --output /tmp/node.tar.xz https://nodejs.org/dist/v22.23.5/node-v22.23.5-linux-x64.tar.xz
       - echo 'cdeb8670a0c81f51b4dc4ac61919f9b1ad917b304bf8221eb939570663d240f8  /tmp/node.tar.xz' | sha256sum -c -
       - tar -xJf /tmp/node.tar.xz --strip-components=1 -C /usr/local
     gradle:
