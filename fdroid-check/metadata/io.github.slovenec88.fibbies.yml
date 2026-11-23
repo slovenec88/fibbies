@@ -1,0 +1,41 @@
+Categories:
+  - Sports & Health
+License: AGPL-3.0-only
+AuthorName: Davor Val Vega
+WebSite: https://juringari.com/fibbies/
+SourceCode: https://github.com/slovenec88/fibbies
+IssueTracker: https://github.com/slovenec88/fibbies/issues
+Changelog: https://github.com/slovenec88/fibbies/releases
+
+AutoName: Fibbies
+
+RepoType: git
+Repo: https://github.com/slovenec88/fibbies.git
+Binaries: https://github.com/slovenec88/fibbies/releases/download/v%v/Fibbies-v%v.apk
+
+Builds:
+  - versionName: 1.3.3
+    versionCode: 13
+    commit: fc13a0ef2c8dca70db7b85663356142065de1191
+    subdir: android/app
+    sudo:
+      - apt-get update
+      - apt-get install -y openjdk-21-jdk-headless
+      - update-alternatives --set java /usr/lib/jvm/java-21-openjdk-amd64/bin/java
+      - curl --fail --location --output /tmp/node.tar.xz https://nodejs.org/dist/v22.23.5/node-v22.23.5-linux-x64.tar.xz
+      - echo 'cdeb8670a0c81f51b4dc4ac61919f9b1ad917b304bf8221eb939570663d240f8  /tmp/node.tar.xz' | sha256sum -c -
+      - tar -xJf /tmp/node.tar.xz --strip-components=1 -C /usr/local
+    gradle:
+      - yes
+    prebuild:
+      - cd ../..
+      - npm ci --ignore-scripts
+      - CI=1 npm run sync
+    scandelete:
+      - node_modules/
+
+AllowedAPKSigningKeys: 7c4f96744a4c27242b8af1cc51609499b681dffe70f36cf86c867ae3acaee7f0
+AutoUpdateMode: Version
+UpdateCheckMode: Tags ^v[0-9]+\.[0-9]+\.[0-9]+$
+CurrentVersion: 1.3.3
+CurrentVersionCode: 13

@@ -1,0 +1,35 @@
+name: F-Droid recipe check
+on:
+  push:
+    branches: [fdroid-recipe-check]
+
+permissions:
+  contents: read
+
+jobs:
+  fdroid:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Build in F-Droid's buildserver image
+        run: |
+          docker run --rm --entrypoint /bin/bash \
+            -v "$PWD/fdroid-check/metadata:/input:ro" \
+            registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie -ec '
+              git clone --depth 1 https://gitlab.com/fdroid/fdroidserver.git /opt/fdroidserver-source
+              mkdir -p /home/vagrant/test-build/metadata
+              cp /input/*.yml /home/vagrant/test-build/metadata/
+              chown -R vagrant /home/vagrant/test-build
+              cd /home/vagrant/test-build
+              export ANDROID_HOME=/opt/android-sdk
+              export ANDROID_SDK_ROOT=/opt/android-sdk
+              export PATH=/opt/fdroidserver-source:/usr/local/bin:/usr/bin:/bin:$PATH
+              export PYTHONPATH=/opt/fdroidserver-source
+              unset CI
+              sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
+              sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
+              sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
+            '
