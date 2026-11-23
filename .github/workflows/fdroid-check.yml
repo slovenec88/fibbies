@@ -30,7 +30,7 @@ jobs:
           input="$RUNNER_TEMP/fdroid-input"
           mkdir -p "$input"
           cp fdroid-check/metadata/*.yml "$input/"
-          git bundle create "$input/fibbies.bundle" HEAD
+          git clone --bare --no-hardlinks . "$input/fibbies.git"
           image=registry.gitlab.com/fdroid/fdroidserver:buildserver-trixie@sha256:1ea8bef1820bff06c2974e31b4fc4c79c364cd24231b86e71fa4b926797e0dac
           docker pull "$image" > "${RUNNER_TEMP}/fdroid-build.log" 2>&1
           docker run --rm --user root --entrypoint /bin/bash \
@@ -52,7 +52,8 @@ jobs:
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid readmeta
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid lint io.github.slovenec88.fibbies
               sed -i "/^Binaries:/d" metadata/io.github.slovenec88.fibbies.yml
-              sudo --user vagrant git config --global url.file:///input/fibbies.bundle.insteadOf https://github.com/slovenec88/fibbies.git
+              sudo --set-home --user vagrant git config --global --add safe.directory /input/fibbies.git
+              sudo --set-home --user vagrant git config --global url.file:///input/fibbies.git.insteadOf https://github.com/slovenec88/fibbies.git
               sdkmanager "platforms;android-36" "build-tools;35.0.0"
               sudo --preserve-env --user vagrant env HOME=/home/vagrant PATH="$PATH" PYTHONPATH="$PYTHONPATH" fdroid build --verbose --test --on-server --no-tarball io.github.slovenec88.fibbies:13
               env HOME=/home/vagrant fdroid scanner --verbose --exit-code tmp/io.github.slovenec88.fibbies_13.apk
