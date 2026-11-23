@@ -15,7 +15,7 @@ import { t, LANGS, getLang, setLang, onLangChange, translateDom, numLocale } fro
 import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, readBackupCode, replaceProgress, xpOf } from './storage.js';
 import { exerciseGuide, localizeContent } from './localize.js';
 import { setupInstallPrompt } from './install.js';
-import { palHTML, palTap, palContext } from './pal.js';
+import { palHTML, palTap, palContext, palWelcome } from './pal.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 setupInstallPrompt();
@@ -275,7 +275,7 @@ function renderProgress() {
     <div class="quests" style="--n:${QUESTS.length}" role="group" aria-label="${esc(`${t('todayBonus')} ×${fmtX(dailyBonus(done))}${order.length ? `: ${order.map((c) => catOf(c).label).join(', ')}` : ''}`)}">
       ${QUESTS.map((q) => questTile(q, celebrating(done, q.cat) ? 0 : order.indexOf(q.cat) + 1)).join('')}
     </div>`;
-  palContext(lp, order.length);
+  palContext(order.length);
   celebrateBonus(done);
 }
 
@@ -704,7 +704,7 @@ $('#progress-card').addEventListener('click', (e) => {
     unlockAudio();
     fx.knotTap(palTaps++);
     haptics.buzz(8);
-    palTap(k.parentElement, levelProgress(loadProfile().xp), kinds);
+    palTap(k.parentElement, kinds);
     return;
   }
   const q = e.target.closest('.quest[data-cat]');
@@ -1302,6 +1302,7 @@ function route() {
     if (pendingReload && !banked && safeToReload()) { location.reload(); return; }
     renderHome();
     show('home');
+    setTimeout(maybeShowSafety, 700);
   }
 }
 
@@ -1396,11 +1397,13 @@ $('#dlg-safety-ok').onclick = () => dlgSafety.close();
 const SAFETY_KEY = 'fibbies.safety-seen';
 dlgSafety.addEventListener('close', () => {
   try { localStorage.setItem(SAFETY_KEY, '1'); } catch { /* ignore */ }
+  palWelcome();
 });
 function maybeShowSafety() {
   let seen = false;
   try { seen = !!localStorage.getItem(SAFETY_KEY); } catch { /* ignore */ }
   if (!seen && currentView === 'home' && !document.querySelector('dialog[open]')) openSafety();
+  else palWelcome();
 }
 
 // Number dialogs in the order they open, so Back can close the one on top.
@@ -1496,11 +1499,10 @@ native.hideSplash();
 try {
   if (sessionStorage.getItem('fibbies.restored-backup')) { sessionStorage.removeItem('fibbies.restored-backup'); setTimeout(() => snackbar(t('backupDone')), 600); }
 } catch { /* ignore */ }
-setTimeout(maybeShowSafety, 700);
 // Left over from older versions: the cloud save, and saved filters (they now start empty each launch).
 try { for (const k of ['fibbies.cloud', 'limber.cat', 'limber.focus']) localStorage.removeItem(k); } catch { /* ignore */ }
 document.addEventListener('visibilitychange', () => {
-  if (!document.hidden) { refreshIfNewDay(); return; }
+  if (!document.hidden) { refreshIfNewDay(); maybeShowSafety(); return; }
   if (session && !session.finished && !session.paused) { session.pause(); setPausedUI(true); wakeLock.off(); }
   if (pendingReload && safeToReload()) location.reload(); // apply a waiting update while nobody is looking
 });

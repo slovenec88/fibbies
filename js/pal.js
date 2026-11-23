@@ -3,7 +3,7 @@
 // A tap gets a stretch, a soft sound (played by the caller) and a note: thanks and encouragement
 // early in the day, praise and thanks once you've done a lot.
 // (The knot that used to live here waits on the maybe-someday/knot branch.)
-import { t } from './i18n.js';
+import { getLang, t } from './i18n.js';
 import { fmtBig } from './rewards.js';
 import { esc } from './critter.js';
 
@@ -52,7 +52,8 @@ function moment(svg, cls, ms) {
 // Its little life: blinks every few seconds, a smile now and then, a stretch every so often, and once
 // in a while a note on its own. Only while the home screen is in view.
 let alive = false;
-let ctx = null; // what the last tap knew: level progress and kinds done today, for notes it says on its own
+let kindsToday = null;
+let welcomed = false;
 function startLife() {
   if (alive) return;
   alive = true;
@@ -63,34 +64,38 @@ function startLife() {
   every(2500, 6000, (svg) => { moment(svg, 'pal-blink', 180); if (Math.random() < 0.2) setTimeout(() => moment(svg, 'pal-blink', 180), 260); });
   every(9000, 16000, (svg) => moment(svg, 'pal-smile', 1800));
   every(11000, 18000, (svg) => moment(svg, 'pal-stretch', 2200));
-  every(40000, 75000, (svg) => { if (ctx && !reduceMotion() && !document.querySelector('dialog[open]')) say(svg.closest('.pal-wrap'), ctx.lp, ctx.kinds, false); });
+  every(40000, 75000, (svg) => { if (kindsToday !== null && !reduceMotion() && !document.querySelector('dialog[open]')) say(svg.closest('.pal-wrap'), false); });
 }
 
 /** Remembers what its notes need, so it can speak up on its own too. Call on every draw. */
-export function palContext(lp, kinds) { ctx = { lp, kinds }; }
+export function palContext(kinds) { kindsToday = kinds; }
 
 // A note: which ones depend on how many kinds of routine you've done today: none yet (thanks +
 // encouragement), one or two (encouragement + thanks), three or four (praise + thanks). The very
 // first tap introduces it.
-const next = {};
+let lastQuote;
 let hideT = 0;
-function say(wrap, lp, kindsToday, tapped) {
+function say(wrap, tapped, greeting = false) {
   if (!wrap) return;
+  welcomed = true;
   const svg = wrap.querySelector('svg');
   moment(svg, 'pal-stretch', 2200);
   moment(svg, 'pal-smile', 1800);
   let msg;
   let met = true;
   try { met = !!localStorage.getItem('fibbies.pal-met'); if (tapped) localStorage.setItem('fibbies.pal-met', '1'); } catch { /* ignore */ }
+  const key = 'fibbies.pal-last.' + getLang();
+  try { lastQuote = localStorage.getItem(key) ?? lastQuote; } catch { /* storage can be blocked */ }
   if (!met && tapped) msg = t('knotIntro');
   else {
-    // About two in five times a calm thought (zen, gratitude, a line from a teacher), otherwise a
-    // note that fits the day so far. Each list goes round in turn, from a random start.
-    const tier = Math.random() < 0.4 ? 'calm' : kindsToday === 0 ? 0 : kindsToday <= 2 ? 1 : 2;
-    const notes = tier === 'calm' ? t('palCalm') : t('knotNotes')[tier];
-    next[tier] ??= Math.floor(Math.random() * notes.length);
-    msg = notes[next[tier]++ % notes.length];
+    // The welcome is always a calm thought. Later notes can also reflect today's routines.
+    const tier = kindsToday === 0 ? 0 : kindsToday <= 2 ? 1 : 2;
+    const notes = greeting || Math.random() < 0.4 ? t('palCalm') : t('knotNotes')[tier];
+    const choices = notes.filter(line => line !== lastQuote);
+    msg = choices[Math.floor(Math.random() * choices.length)];
   }
+  lastQuote = msg;
+  try { localStorage.setItem(key, msg); } catch { /* keep the in-page value */ }
   // Just the kind words (the XP is right beside it already); a quote's teacher goes on a line of its own.
   const [text, who] = msg.split(' — ');
   const note = wrap.querySelector('.pal-note');
@@ -103,7 +108,12 @@ function say(wrap, lp, kindsToday, tapped) {
 }
 
 /** A tap: it stretches, smiles and says something. */
-export function palTap(wrap, lp, kindsToday) {
-  ctx = { lp, kinds: kindsToday };
-  say(wrap, lp, kindsToday, true);
+export function palTap(wrap, kinds) {
+  palContext(kinds);
+  say(wrap, true);
+}
+
+export function palWelcome() {
+  if (welcomed || document.hidden || document.querySelector('dialog[open]')) return;
+  say(current()?.closest('.pal-wrap'), false, true);
 }
