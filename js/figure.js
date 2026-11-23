@@ -66,11 +66,13 @@ function pose(s, t) {
   // Running in place (one foot up, then the other): the lifted foot lands in the first half and the
   // other only leaves the floor in the second, instead of both floating halfway through each step.
   if (steps(s)) {
-    for (const k of ['fN', 'fF']) {
+    ['fN', 'fF'].forEach((k, i) => {
       // Each foot eases onto and off the floor, so the step has a soft contact instead of a snap.
+      // Its angle follows the same timing, so a foot standing on the floor never turns.
       const u = onFloor(s.a[k]) ? 1 - Math.cos((Math.max(0, t * 2 - 1) * Math.PI) / 2) : Math.sin((Math.min(1, t * 2) * Math.PI) / 2);
       p[k] = lerp(s.a[k], s.b[k], u);
-    }
+      if (s.a.ft && s.b.ft) { p.ft = [...p.ft]; p.ft[i] = lerp(s.a.ft[i], s.b.ft[i], u); }
+    });
   }
   const sa = shoulders(s.a, s.view), sb = shoulders(s.b, s.view), sp = shoulders(p, s.view);
   for (const k of ['hN', 'hF']) {
@@ -148,7 +150,7 @@ function solve(p, view) {
   const [kN, aN] = ik(hpN, p.fN, LEN.th, LEN.sh, kb[0]);
   const [kF, aF] = ik(hpF, p.fF, LEN.th, LEN.sh, kb[1]);
   const footAng = (k, a, i) => {
-    if (p.ft) return p.ft[i];
+    if (p.ft && p.ft[i] != null) return p.ft[i]; // null: follow the shin
     if (front) return i === 0 ? 0 : 180;
     return (Math.atan2(a[1] - k[1], a[0] - k[0]) * 180) / Math.PI - 90;
   };

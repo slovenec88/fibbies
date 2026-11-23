@@ -413,7 +413,7 @@ export const CONTENT = {
       'Roke na bokih, stopala široko. Z boki riši velike, počasne kroge.',
       'Smer zamenjaj, kadar želiš.',
       'Sproščena kolena in ramena.']],
-    buttKicks: ['Zametavanje goleni', 'Kvadricepsi · Ogrevanje', [
+    buttKicks: ['Brcanje v zadnjico', 'Kvadricepsi · Ogrevanje', [
       'Teci na mestu in pete brcaj proti zadnjici.',
       'Hitri, lahki koraki. Ostani na blazinicah stopal.',
       'Delaj z rokami in ne pozabi dihati.']],

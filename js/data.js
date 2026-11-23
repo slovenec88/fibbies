@@ -126,8 +126,8 @@ export const STRETCHES = {
 
   downdog: {
     name: 'Downward Dog', target: 'Calves · Hamstrings · Shoulders', view: 'side', period: 4,
-    a: { h: [92, 112], t: 25, n: 70, hN: [168, 180], hF: [164, 180], fN: [60, 180], fF: [64, 180] },
-    b: { h: [90, 110], t: 27, n: 72, hN: [168, 180], hF: [164, 180], fN: [62, 172], fF: [64, 180], ft: [50, 25] },
+    a: { h: [92, 112], t: 25, n: 70, hN: [168, 180], hF: [164, 180], fN: [60, 180], fF: [64, 180], ft: [0, 0] },
+    b: { h: [90, 110], t: 27, n: 72, hN: [168, 180], hF: [164, 180], fN: [62, 172], fF: [64, 180], ft: [50, 0] },
     cues: [
       'Hands and feet down. Lift your hips up and back.',
       'Pedal your feet, pressing one heel down, then the other.',
@@ -250,8 +250,8 @@ export const STRETCHES = {
 
   lungeReach: {
     name: 'Reverse Lunge + Reach', target: 'Hip flexors · Glutes', view: 'side', period: 5, dynamic: true,
-    a: { h: [104, 104], t: -90, n: -92, hN: [110, 0], hF: [104, 0], fN: [108, 180], fF: [102, 180] },
-    b: { h: [98, 142], t: -92, n: -94, hN: [102, 40], hF: [96, 40], fN: [36, 180], fF: [136, 180], ft: [160, 0] },
+    a: { h: [128, 104], t: -90, n: -92, hN: [134, 0], hF: [128, 0], fN: [132, 180], fF: [128, 180], ft: [0, 0] },
+    b: { h: [98, 142], t: -92, n: -94, hN: [102, 40], hF: [96, 40], fN: [36, 171], fF: [136, 180], ft: [70, 0] },
     cues: [
       'Step back into a lunge and reach both arms overhead.',
       'Drive through your front heel to stand back up.',
@@ -317,8 +317,8 @@ export const STRETCHES = {
 
   bridge: {
     name: 'Glute Bridge', target: 'Glutes · Hamstrings', view: 'side', period: 3.5, dynamic: true,
-    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180] },
-    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180] },
+    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
+    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [138, 180], fF: [140, 180], ft: [0, 0] },
     cues: [
       'On your back, knees bent, feet flat.',
       'Squeeze your glutes and lift your hips, then lower slowly.',
@@ -328,8 +328,8 @@ export const STRETCHES = {
 
   inchworm: {
     name: 'Inchworm', target: 'Hamstrings · Core · Shoulders', view: 'side', period: 7, dynamic: true,
-    a: { h: [90, 102], t: 58, n: 82, hN: [132, 180], hF: [128, 180], fN: [100, 180], fF: [96, 180] },
-    b: { h: [94, 150], t: -14, n: -10, hN: [146, 180], hF: [142, 180], fN: [22, 180], fF: [24, 180], ft: [70, 70] },
+    a: { h: [40, 102], t: 58, n: 82, hN: [82, 180], hF: [78, 180], fN: [50, 180], fF: [46, 180], ft: [0, 0] },
+    b: { h: [120, 150], t: -14, n: -10, hN: [172, 180], hF: [168, 180], fN: [48, 171], fF: [50, 171], ft: [70, 70] },
     cues: [
       'Fold forward and walk your hands out to a plank.',
       'Hold for a breath, then walk your feet toward your hands.',
@@ -340,8 +340,8 @@ export const STRETCHES = {
   soleus: {
     name: 'Bent-Knee Calf Stretch', target: 'Soleus · Achilles', view: 'side', sided: true, limb: 'leg', period: 7,
     props: [{ wall: 188 }],
-    a: { h: [100, 118], t: -54, n: -48, hN: [184, 62], hF: [184, 70], fN: [74, 180], fF: [120, 180] },
-    b: { h: [102, 125], t: -52, n: -46, hN: [184, 62], hF: [184, 70], fN: [74, 180], fF: [120, 180] },
+    a: { h: [102, 110], t: -54, n: -48, hN: [184, 62], hF: [184, 70], fN: [88, 180], fF: [124, 180], ft: [0, 0] },
+    b: { h: [104, 116], t: -52, n: -46, hN: [184, 62], hF: [184, 70], fN: [88, 180], fF: [124, 180], ft: [0, 0] },
     cues: [
       'Hands on the wall. Step one foot back and bend that back knee.',
       'Keep the back heel down and sink your hips. You will feel it low in the calf.',
@@ -362,8 +362,8 @@ export const STRETCHES = {
 
   figureFour: {
     name: 'Lying Figure Four', target: 'Glutes · Piriformis', view: 'side', sided: true, limb: 'leg', period: 8,
-    a: { h: [104, 172], t: 186, n: 184, hN: [110, 150], hF: [112, 152], fN: [124, 142], fF: [138, 180], kb: [-1, -1] },
-    b: { h: [104, 172], t: 188, n: 186, hN: [104, 140], hF: [106, 142], fN: [116, 128], fF: [128, 158], kb: [-1, -1] },
+    a: { h: [104, 172], t: 186, n: 184, hN: [110, 150], hF: [112, 152], fN: [124, 142], fF: [138, 180], ft: [null, 0], kb: [-1, -1] },
+    b: { h: [104, 172], t: 188, n: 186, hN: [104, 140], hF: [106, 142], fN: [116, 128], fF: [128, 158], ft: [null, -10], kb: [-1, -1] },
     cues: [
       'On your back, cross one ankle over the opposite knee.',
       'Draw the bottom leg toward you until you feel the outer hip open.',
@@ -440,8 +440,8 @@ export const STRETCHES = {
 
   hipFlexorStand: {
     name: 'Standing Hip Flexor Stretch', target: 'Hip flexors · Quads', view: 'side', sided: true, limb: 'leg', period: 8, work: true,
-    a: { h: [98, 112], t: -90, n: -90, hN: [106, 110], hF: [102, 108], fN: [132, 180], fF: [62, 180], ft: [0, 40] },
-    b: { h: [104, 116], t: -94, n: -94, hN: [110, 112], hF: [106, 110], fN: [132, 180], fF: [62, 180], ft: [0, 40] },
+    a: { h: [98, 112], t: -90, n: -90, hN: [106, 110], hF: [102, 108], fN: [132, 180], fF: [62, 174], ft: [0, 40] },
+    b: { h: [104, 116], t: -94, n: -94, hN: [110, 112], hF: [106, 110], fN: [132, 180], fF: [62, 174], ft: [0, 40] },
     cues: [
       'Step one foot back into a long stance, back heel lifted.',
       'Tuck your tailbone under and gently push your hips forward.',
@@ -485,8 +485,8 @@ export const STRETCHES = {
 
   pushup: {
     name: 'Push-Up', target: 'Chest · Arms · Core', view: 'side', period: 3, dynamic: true, strength: true,
-    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70], eb: [-1, -1] },
-    b: { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70], eb: [-1, -1] },
+    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [-1, -1] },
+    b: { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [-1, -1] },
     cues: [
       'Hands under your shoulders, body in one straight line.',
       'Lower your chest toward the floor, then press back up.',
@@ -496,8 +496,8 @@ export const STRETCHES = {
 
   plank: {
     name: 'Forearm Plank', target: 'Core · Shoulders', view: 'side', period: 6, strength: true,
-    a: { h: [98, 163], t: -12, n: -8, hN: [175, 179], hF: [171, 179], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
-    b: { h: [98, 161], t: -13, n: -9, hN: [175, 179], hF: [171, 179], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    a: { h: [98, 163], t: -12, n: -8, hN: [175, 179], hF: [171, 179], fN: [24, 171], fF: [26, 171], ft: [70, 70] },
+    b: { h: [98, 161], t: -13, n: -9, hN: [175, 179], hF: [171, 179], fN: [24, 171], fF: [26, 171], ft: [70, 70] },
     cues: [
       'Forearms down, elbows under your shoulders, body long and straight.',
       'Squeeze your glutes and pull your belly button in.',
@@ -661,8 +661,8 @@ export const STRETCHES = {
 
   shoulderTaps: {
     name: 'Plank Shoulder Taps', target: 'Shoulders · Core', view: 'side', period: 2, dynamic: true, strength: true,
-    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
-    b: { h: [93, 147], t: -24, n: -20, hN: [136, 132], hF: [138, 180], fN: [24, 178], fF: [26, 178], ft: [70, 70] },
+    a: { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70] },
+    b: { h: [93, 147], t: -24, n: -20, hN: [136, 132], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70] },
     cues: [
       'High plank, hands under your shoulders, feet a little apart.',
       'Lift one hand to tap the opposite shoulder, then switch.',
@@ -694,8 +694,8 @@ export const STRETCHES = {
 
   singleLegBridge: {
     name: 'Single-Leg Bridge', target: 'Glutes · Hamstrings', view: 'side', sided: true, limb: 'leg', period: 3.5, dynamic: true, strength: true,
-    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [178, 140] },
-    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [182, 106] },
+    a: { h: [110, 170], t: 180, n: 180, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [178, 140], ft: [0, null] },
+    b: { h: [114, 142], t: 152, n: 175, hN: [90, 178], hF: [88, 178], fN: [140, 180], fF: [182, 106], ft: [0, null] },
     cues: [
       'On your back, one foot flat, the other leg straight up off the floor.',
       'Push through your heel and lift your hips, then lower slowly.',
