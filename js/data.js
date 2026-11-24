@@ -726,7 +726,7 @@ export const STRETCHES = {
   },
   // HIIT: short, hard intervals with real rests (the routines set the rests).
   jumpingJacks: {
-    name: 'Jumping Jacks', target: 'Full body · Cardio', view: 'front', period: 1, dynamic: true, strength: true,
+    name: 'Jumping Jacks', target: 'Full body · Cardio', view: 'front', period: 1, hop: 8, hopHips: true, dynamic: true, strength: true,
     a: { h: [100, 104], t: -90, n: -90, hN: [118, 104], hF: [82, 104], fN: [106, 180], fF: [94, 180], eb: [-1, 1] },
     b: { h: [100, 108], t: -90, n: -90, hN: [142, 10], hF: [58, 10], fN: [124, 180], fF: [76, 180], eb: [-1, 1] },
     cues: [
@@ -756,9 +756,9 @@ export const STRETCHES = {
     ],
   },
   burpee: {
-    name: 'Burpees', target: 'Full body · Cardio', view: 'side', period: 2.6, dynamic: true, strength: true,
-    a: { h: [94, 146], t: -24, n: -16, hN: [140, 180], hF: [136, 180], fN: [104, 180], fF: [100, 180], ft: [0, 0], eb: [1, 1] },
-    b: { h: [93, 147], t: -24, n: -20, hN: [140, 180], hF: [136, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+    name: 'Burpees', target: 'Full body · Cardio', view: 'side', period: 2.6, hop: 16, dynamic: true, strength: true,
+    a: { h: [88, 146], t: -22, n: -16, hN: [138, 180], hF: [134, 180], fN: [104, 177], fF: [100, 177], ft: [25, 25], eb: [1, 1] },
+    b: { h: [93, 147], t: -24, n: -20, hN: [138, 180], hF: [134, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
     cues: [
       'Squat down and put your hands on the floor.',
       'Jump your feet back to a plank, jump them in again, then stand up and jump.',

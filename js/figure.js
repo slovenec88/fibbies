@@ -74,6 +74,13 @@ function pose(s, t) {
       if (s.a.ft && s.b.ft) { p.ft = [...p.ft]; p.ft[i] = lerp(s.a.ft[i], s.b.ft[i], u); }
     });
   }
+  // A jump between two poses on the floor: the feet leave the floor on the way, in an arc `hop` high,
+  // instead of sliding along it. With `hopHips` the whole body goes up (jumping jacks, legs stay long);
+  // without, only the legs (a burpee's jump back, hands on the floor).
+  if (s.hop) {
+    const up = s.hop * Math.sin(Math.PI * t);
+    for (const k of s.hopHips ? ['h', 'fN', 'fF'] : ['fN', 'fF']) p[k] = [p[k][0], p[k][1] - up];
+  }
   const sa = shoulders(s.a, s.view), sb = shoulders(s.b, s.view), sp = shoulders(p, s.view);
   for (const k of ['hN', 'hF']) {
     const A = s.a[k], B = s.b[k];
@@ -150,9 +157,14 @@ function solve(p, view) {
   const [kN, aN] = ik(hpN, p.fN, LEN.th, LEN.sh, kb[0]);
   const [kF, aF] = ik(hpF, p.fF, LEN.th, LEN.sh, kb[1]);
   const footAng = (k, a, i) => {
-    if (p.ft && p.ft[i] != null) return p.ft[i]; // null: follow the shin
-    if (front) return i === 0 ? 0 : 180;
-    return (Math.atan2(a[1] - k[1], a[0] - k[0]) * 180) / Math.PI - 90;
+    if (front) return p.ft && p.ft[i] != null ? p.ft[i] : i === 0 ? 0 : 180;
+    const neutral = (Math.atan2(a[1] - k[1], a[0] - k[0]) * 180) / Math.PI - 90;
+    if (!p.ft || p.ft[i] == null) return neutral; // null: follow the shin
+    // A foot in the air (mid-jump, a knee pulled in) can't bend past what an ankle can: toes up to
+    // about 35°, pointed to about 115°. A planted foot keeps its angle, flat on the floor.
+    if (a[1] >= 176) return p.ft[i];
+    const rel = ((p.ft[i] - neutral + 540) % 360) - 180;
+    return neutral + Math.min(115, Math.max(-35, rel));
   };
   const fl = view === 'top' ? 0 : front ? 6 : LEN.foot;
   const tN = add(aN, dir(footAng(kN, aN, 0), fl));
