@@ -127,6 +127,20 @@ function followThrough(s, p, theta) {
   if (p.n != null && q.n != null) p.n = p.t + (q.n - q.t);
 }
 
+/**
+ * A move in several steps (`seq`, a list of key poses that loops, like a burpee): the two key poses
+ * `time` falls between, as a two-pose stretch, and `theta` 0..PI through that step, so each step
+ * eases out of one pose and into the next. `hops[i]` lifts the feet (or `hopsHips[i]` the whole
+ * body) on the way out of pose i.
+ */
+function segment(s, time) {
+  const n = s.seq.length;
+  const u = ((((time / (s.period || 6)) % 1) + 1) % 1) * n;
+  const i = Math.min(n - 1, Math.floor(u));
+  const hop = s.hops?.[i] || 0;
+  return { st: { ...s, a: s.seq[i], b: s.seq[(i + 1) % n], hop, hopHips: !!s.hopsHips?.[i] }, theta: Math.PI * (u - i) };
+}
+
 const fmt = (p) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
 
 function solve(p, view) {
@@ -241,8 +255,9 @@ export class Figure {
   fit(pad = 12) {
     const s = this.stretch;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-    for (const t of [0, 0.5, 1]) {
-      const j = solve(pose(s, t), s.view);
+    const at = s.seq ? s.seq.flatMap((_, i) => [[{ ...s, a: s.seq[i], b: s.seq[(i + 1) % s.seq.length] }, 0.5], [{ ...s, a: s.seq[i], b: s.seq[i] }, 0]]) : [0, 0.5, 1].map((t) => [s, t]);
+    for (const [st, t] of at) {
+      const j = solve(pose(st, t), s.view);
       for (const [k, p] of Object.entries(j)) {
         if (k === 'ctrl') continue;
         const r = k === 'head' ? 11 : 5;
@@ -262,6 +277,12 @@ export class Figure {
   /** phase: seconds of animation time */
   animate(time) {
     const s = this.stretch;
+    if (s.seq) {
+      const { st, theta } = segment(s, time);
+      this.draw((1 - Math.cos(theta)) / 2, theta, st);
+      this.breathe(time, theta);
+      return;
+    }
     const period = s.period || 6;
     const theta = (time / period) * Math.PI * 2;
     const t = (1 - Math.cos(theta)) / 2;
@@ -281,10 +302,10 @@ export class Figure {
     this.body.setAttribute('transform', `translate(${x} 182) scale(${(1 - b * 0.6).toFixed(4)} ${(1 + b).toFixed(4)}) translate(-${x} -182)`);
   }
 
-  draw(t, theta = 0) {
-    const s = this.stretch;
+  draw(t, theta = 0, s = this.stretch.seq ? segment(this.stretch, 0).st : this.stretch) {
     const p = pose(s, t);
-    if (s.dynamic && s.view !== 'top') followThrough(s, p, theta);
+    // Key poses in a sequence already stop at each step, so their limbs don't trail behind.
+    if (s.dynamic && s.view !== 'top' && !s.seq) followThrough(s, p, theta);
     if (s.orbit) {
       const { parts, r, mirrorF } = s.orbit;
       for (const part of parts) {

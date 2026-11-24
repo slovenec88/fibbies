@@ -129,6 +129,7 @@ export const UI = {
   getReady: "Prepare-se",
   switchSides: "Troque de lado",
   upNext: "A seguir",
+  restBadge: "Descanso",
   keepMoving: "Continue se movendo",
   hold: "Segure",
   firstUp: "Primeiro",
@@ -140,6 +141,7 @@ export const UI = {
   "say.prep": ({ name }) => `Prepare-se. Primeiro: ${name}.`,
   "say.switch": ({ side }) => `Troque de lado. ${side}.`,
   "say.next": ({ name }) => `A seguir: ${name}.`,
+  "say.rest": ({ s }) => `Descanso, ${s} ${pl(s, 'segundo', 'segundos')}.`,
   "say.half": "Você está na metade.",
   "say.done": "Ótimo trabalho. Rotina concluída.",
   "say.voiceOn": "Guia por voz ativado.",
@@ -371,7 +373,7 @@ export const CONTENT = {
       "Quadril baixo e nivelado. Difícil demais? Vá mais devagar, dando passos."]],
     burpee: ["Burpees", "Corpo inteiro · Cardio", [
       "Agache e apoie as mãos no chão.",
-      "Salte com os pés para trás até a prancha, traga-os de volta, levante-se e salte.",
+      "Salte com os pés para trás até a prancha e faça uma flexão, com o peito no chão. Traga os pés de volta num salto e salte para cima.",
       "Mais leve: leve os pés para trás e para a frente um de cada vez, sem saltar."]],
     squatJump: ["Agachamento com salto", "Pernas · Glúteos · Explosão", [
       "Desça no agachamento, braços para trás.",
@@ -673,7 +675,7 @@ export const GUIDES = {
   jumpingJacks: "Pés juntos e braços para baixo. Salte abrindo os pés enquanto os braços sobem acima da cabeça e volte. Aterrisse suave na ponta dos pés.",
   stepJacks: "O polichinelo silencioso: leve um pé para o lado enquanto os dois braços sobem, volte ao centro e repita do outro lado. Com energia, mas sem saltar.",
   mountainClimbers: "Da prancha alta, com as mãos embaixo dos ombros, leve um joelho ao peito e troque de perna rápido, como se corresse no lugar. O quadril fica baixo.",
-  burpee: "Agache e apoie as mãos, salte ou leve os pés para trás até a prancha, traga-os de volta, levante-se e salte com os braços para cima.",
+  burpee: "Agache e apoie as mãos, salte ou leve os pés para trás até a prancha e desça o peito ao chão numa flexão. Empurre para cima, traga os pés de volta e salte com os braços para cima.",
   squatJump: "Desça no agachamento com os braços para trás, jogue-os para cima e salte o mais alto que puder. Aterrisse suave com os joelhos dobrados e emende o próximo.",
   skaters: "Salte de lado de um pé para o outro, com a perna livre passando por trás e os braços cruzando, como um patinador de velocidade. Aterrisse suave com o joelho dobrado.",
   punches: "Joelhos soltos, um pé um pouco à frente, punhos junto ao queixo. Com o core firme, soque para a frente, esquerda e direita, o mais rápido que puder.",

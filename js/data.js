@@ -327,9 +327,17 @@ export const STRETCHES = {
   },
 
   inchworm: {
-    name: 'Inchworm', target: 'Hamstrings · Core · Shoulders', view: 'side', period: 7, dynamic: true,
-    a: { h: [40, 102], t: 58, n: 82, hN: [82, 180], hF: [78, 180], fN: [50, 180], fF: [46, 180], ft: [0, 0] },
-    b: { h: [120, 150], t: -14, n: -10, hN: [172, 180], hF: [168, 180], fN: [48, 171], fF: [50, 171], ft: [70, 70] },
+    name: 'Inchworm', target: 'Hamstrings · Core · Shoulders', view: 'side', period: 8.4, dynamic: true,
+    // Fold, walk the hands out to a plank, walk the feet in to the hands, stand up, hop back to the start.
+    seq: [
+      { h: [26, 104], t: -90, n: -90, hN: [34, 104], hF: [30, 105], fN: [30, 180], fF: [24, 180], ft: [0, 0] },
+      { h: [16, 100], t: 50, n: 72, hN: [56, 180], hF: [52, 180], fN: [30, 180], fF: [24, 180], ft: [0, 0] },
+      { h: [99, 147], t: -24, n: -20, hN: [148, 180], hF: [144, 180], fN: [30, 171], fF: [32, 171], ft: [70, 70], eb: [1, 1] },
+      { h: [108, 100], t: 50, n: 72, hN: [148, 180], hF: [144, 180], fN: [122, 180], fF: [116, 180], ft: [0, 0] },
+      { h: [118, 104], t: -90, n: -90, hN: [126, 104], hF: [122, 105], fN: [122, 180], fF: [116, 180], ft: [0, 0] },
+    ],
+    hops: [0, 0, 4, 0, 14],
+    hopsHips: [0, 0, 0, 0, 1],
     cues: [
       'Fold forward and walk your hands out to a plank.',
       'Hold for a breath, then walk your feet toward your hands.',
@@ -756,19 +764,32 @@ export const STRETCHES = {
     ],
   },
   burpee: {
-    name: 'Burpees', target: 'Full body · Cardio', view: 'side', period: 2.6, hop: 16, dynamic: true, strength: true,
-    a: { h: [88, 146], t: -22, n: -16, hN: [138, 180], hF: [134, 180], fN: [104, 177], fF: [100, 177], ft: [25, 25], eb: [1, 1] },
-    b: { h: [93, 147], t: -24, n: -20, hN: [138, 180], hF: [134, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+    name: 'Burpees', target: 'Full body · Cardio', view: 'side', period: 3.6, dynamic: true, strength: true,
+    // Plank, chest down to the floor and up, feet jump in, jump up with arms overhead, land in a squat, feet jump back.
+    seq: [
+      { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+      { h: [99, 167], t: -8, n: -6, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+      { h: [93, 147], t: -24, n: -20, hN: [142, 180], hF: [138, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+      { h: [88, 146], t: -22, n: -16, hN: [142, 180], hF: [138, 180], fN: [104, 177], fF: [100, 177], ft: [25, 25], eb: [1, 1] },
+      { h: [100, 74], t: -90, n: -90, hN: [110, -28], hF: [104, -26], fN: [104, 150], fF: [98, 150], ft: [50, 50], eb: [1, 1] },
+      { h: [86, 144], t: -24, n: -18, hN: [142, 180], hF: [138, 180], fN: [104, 177], fF: [100, 177], ft: [25, 25], eb: [1, 1] },
+    ],
+    hops: [0, 0, 8, 0, 0, 8],
     cues: [
       'Squat down and put your hands on the floor.',
-      'Jump your feet back to a plank, jump them in again, then stand up and jump.',
+      'Jump your feet back to a plank and do a push-up, chest to the floor. Jump your feet in, then jump up.',
       'Gentler: step back and forward one foot at a time, and skip the jump.',
     ],
   },
   squatJump: {
-    name: 'Squat Jumps', target: 'Legs · Glutes · Power', view: 'side', period: 1.6, dynamic: true, strength: true,
-    a: { h: [80, 140], t: -58, n: -70, hN: [96, 140], hF: [92, 142], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
-    b: { h: [100, 97], t: -90, n: -90, hN: [110, -6], hF: [104, -4], fN: [104, 172], fF: [98, 172], ft: [50, 50] },
+    name: 'Squat Jumps', target: 'Legs · Glutes · Power', view: 'side', period: 2.2, dynamic: true, strength: true,
+    // Squat with the arms back, push off onto the toes, up into the air, land in a squat with the arms in front.
+    seq: [
+      { h: [80, 140], t: -58, n: -70, hN: [96, 140], hF: [92, 142], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+      { h: [100, 100], t: -90, n: -90, hN: [114, 0], hF: [108, 2], fN: [104, 176], fF: [98, 176], ft: [40, 40] },
+      { h: [100, 64], t: -90, n: -90, hN: [110, -38], hF: [104, -36], fN: [104, 140], fF: [98, 140], ft: [55, 55] },
+      { h: [82, 136], t: -60, n: -72, hN: [140, 112], hF: [136, 114], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    ],
     cues: [
       'Squat down, arms back.',
       'Swing your arms up and jump as high as you can.',
@@ -1080,6 +1101,8 @@ export const ROUTINES = [
 // Every routine takes its section's colour, so a section reads as one.
 for (const r of ROUTINES) r.hue = CATEGORIES.find((c) => c.id === r.cat).hue;
 /** A HIIT block as timeline items: [id, work, rest after]. */
+// Moves in several steps keep `a` and `b` (the first two key poses) for code that looks at two ends.
+for (const st of Object.values(STRETCHES)) if (st.seq) { st.a = st.seq[0]; st.b = st.seq[1]; }
 export const blockItems = ({ moves, work, rest, rounds, roundRest = rest, blockRest = roundRest }) =>
   Array.from({ length: rounds }, (_, r) => moves.map((id, i) => [id, work, i < moves.length - 1 ? rest : r < rounds - 1 ? roundRest : blockRest])).flat();
 for (const r of ROUTINES) if (r.blocks) r.items = [...r.warm, ...r.blocks.flatMap(blockItems), ...r.cool];
@@ -1121,7 +1144,8 @@ export function buildTimeline(routine, scale = 1) {
     const nx = moves[i + 1];
     if (nx) {
       const sw = nx.id === m.id;
-      steps.push({ kind: 'rest', secs: sw ? SWITCH_SECS : m.rest ?? REST_SECS, next: nx, switchSides: sw });
+      // `breather`: a real rest between HIIT intervals, announced as a rest, not just a pause before the next move.
+      steps.push({ kind: 'rest', secs: sw ? SWITCH_SECS : m.rest ?? REST_SECS, next: nx, switchSides: sw, breather: !sw && m.rest != null });
     }
   });
   return { steps, moves };

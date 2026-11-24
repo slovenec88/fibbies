@@ -57,7 +57,7 @@ export const GUIDES = {
   jumpingJacks: "Start with your feet together and arms down. Jump your feet wide as your arms swing up overhead, then jump back in. Land softly on the balls of your feet.",
   stepJacks: "The quiet jumping jack: step one foot out to the side as both arms sweep overhead, step back in, then do the other side. Brisk, with no jumping.",
   mountainClimbers: "From a high plank with your hands under your shoulders, drive one knee toward your chest, then switch legs quickly, as if running on the spot. Keep your hips low.",
-  burpee: "Squat and put your hands on the floor, jump or step your feet back to a plank, bring them in again, then stand up and jump with your arms overhead.",
+  burpee: "Squat and put your hands on the floor, jump or step your feet back to a plank and lower your chest to the floor in a push-up. Push up, bring your feet in again, then jump with your arms overhead.",
   squatJump: "Squat with your arms back, then swing them up and jump as high as you can. Land softly with bent knees and go straight into the next squat.",
   skaters: "Leap sideways from one foot to the other, letting the free foot swing behind you and your arms swing across, like a speed skater. Land softly on a bent knee.",
   punches: "Stand with soft knees, one foot a little forward, fists by your chin. Punch straight ahead, left and right, as fast as you can while bracing your core.",

@@ -873,7 +873,7 @@ function renderStep(s) {
   stageAnim.time = 0;
   const badge = $('#pl-badge');
   if (st.kind === 'prep') badge.textContent = t('getReady');
-  else if (st.kind === 'rest') badge.textContent = t(st.switchSides ? 'switchSides' : 'upNext');
+  else if (st.kind === 'rest') badge.textContent = st.breather ? `${t('restBadge')} · ${st.secs}${t('sec')}` : t(st.switchSides ? 'switchSides' : 'upNext');
   else badge.textContent = t(stretch.dynamic ? 'keepMoving' : 'hold');
   const side = $('#pl-side');
   if (move.side) {

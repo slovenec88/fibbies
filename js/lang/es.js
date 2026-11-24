@@ -129,6 +129,7 @@ export const UI = {
   getReady: "Prepárate",
   switchSides: "Cambia de lado",
   upNext: "A continuación",
+  restBadge: "Descanso",
   keepMoving: "Sigue moviéndote",
   hold: "Mantén",
   firstUp: "Primero",
@@ -140,6 +141,7 @@ export const UI = {
   "say.prep": ({ name }) => `Prepárate. Primero: ${name}.`,
   "say.switch": ({ side }) => `Cambia de lado. ${side}.`,
   "say.next": ({ name }) => `Siguiente: ${name}.`,
+  "say.rest": ({ s }) => `Descanso, ${s} ${pl(s, 'segundo', 'segundos')}.`,
   "say.half": "Ya vas por la mitad.",
   "say.done": "Buen trabajo. Rutina completada.",
   "say.voiceOn": "Guía por voz activada.",
@@ -371,7 +373,7 @@ export const CONTENT = {
       "Cadera baja y nivelada. ¿Muy difícil? Más despacio, dando pasos."]],
     burpee: ["Burpees", "Cuerpo entero · Cardio", [
       "Agáchate y apoya las manos en el suelo.",
-      "Salta con los pies atrás hasta la plancha, vuelve a recogerlos, ponte de pie y salta.",
+      "Salta con los pies atrás hasta la plancha y haz una flexión, con el pecho al suelo. Recoge los pies de un salto y salta hacia arriba.",
       "Más suave: lleva los pies atrás y adelante de uno en uno, sin saltar."]],
     squatJump: ["Sentadillas con salto", "Piernas · Glúteos · Potencia", [
       "Baja en sentadilla, brazos atrás.",
@@ -673,7 +675,7 @@ export const GUIDES = {
   jumpingJacks: "Empieza con los pies juntos y los brazos abajo. Salta abriendo las piernas mientras subes los brazos por encima de la cabeza y vuelve a cerrar. Aterriza suave sobre la parte delantera del pie.",
   stepJacks: "El salto de tijera silencioso: lleva un pie a un lado mientras subes los dos brazos, vuelve al centro y repite al otro lado. Con brío, pero sin saltar.",
   mountainClimbers: "Desde una plancha alta con las manos bajo los hombros, lleva una rodilla al pecho y cambia de pierna rápido, como si corrieras en el sitio. La cadera se queda baja.",
-  burpee: "Agáchate y apoya las manos, salta o lleva los pies atrás hasta la plancha, recógelos de nuevo, ponte de pie y salta con los brazos arriba.",
+  burpee: "Agáchate y apoya las manos, salta o lleva los pies atrás hasta la plancha y baja el pecho al suelo en una flexión. Empuja hacia arriba, recoge los pies y salta con los brazos arriba.",
   squatJump: "Baja en sentadilla con los brazos atrás, lánzalos arriba y salta lo más alto que puedas. Aterriza suave con las rodillas flexionadas y enlaza con la siguiente.",
   skaters: "Salta de lado de un pie al otro, con la pierna libre por detrás y los brazos cruzando, como un patinador de velocidad. Aterriza suave con la rodilla flexionada.",
   punches: "Rodillas sueltas, un pie un poco adelantado y los puños junto a la barbilla. Con el core firme, golpea al frente, izquierda y derecha, lo más rápido que puedas.",

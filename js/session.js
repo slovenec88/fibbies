@@ -105,7 +105,8 @@ export class Session {
         sfx.switchSides();
         voiceGuide.say(t('say.switch', { side: sideLabel(m) }));
       } else {
-        voiceGuide.say(t('say.next', { name: moveName(m) }));
+        if (st.breather) voiceGuide.say(t('say.rest', { s: st.secs }));
+        voiceGuide.say(t('say.next', { name: moveName(m) }), { interrupt: !st.breather });
       }
       haptics.buzz([40, 60, 40]);
     } else {

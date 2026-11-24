@@ -130,6 +130,7 @@ export const UI = {
   getReady: "Prépare-toi",
   switchSides: "Change de côté",
   upNext: "Ensuite",
+  restBadge: "Repos",
   keepMoving: "Continue de bouger",
   hold: "Maintiens",
   firstUp: "D'abord",
@@ -141,6 +142,7 @@ export const UI = {
   "say.prep": ({ name }) => `Prépare-toi. D'abord : ${name}.`,
   "say.switch": ({ side }) => `Change de côté. ${side}.`,
   "say.next": ({ name }) => `Ensuite : ${name}.`,
+  "say.rest": ({ s }) => `Repos, ${s} ${pl(s, 'seconde', 'secondes')}.`,
   "say.half": "Tu es à mi-chemin.",
   "say.done": "Bravo. Routine terminée.",
   "say.voiceOn": "Guidage vocal activé.",
@@ -372,7 +374,7 @@ export const CONTENT = {
       "Bassin bas et droit. Trop dur ? Ralentis et pose les pieds au lieu de sauter."]],
     burpee: ["Burpees", "Corps entier · Cardio", [
       "Accroupis-toi et pose les mains au sol.",
-      "Saute les pieds en arrière en planche, ramène-les, puis relève-toi et saute.",
+      "Saute les pieds en arrière en planche et fais une pompe, poitrine au sol. Ramène les pieds d’un saut, puis saute vers le haut.",
       "Plus doux : recule et avance les pieds un par un, sans saut."]],
     squatJump: ["Squats sautés", "Jambes · Fessiers · Explosivité", [
       "Descends en squat, bras en arrière.",
@@ -674,7 +676,7 @@ export const GUIDES = {
   jumpingJacks: "Pieds joints, bras le long du corps. Saute en écartant les pieds pendant que les bras montent au-dessus de la tête, puis reviens. Atterris en douceur sur l’avant des pieds.",
   stepJacks: "Le jumping jack silencieux : pose un pied sur le côté pendant que les deux bras montent, reviens, puis change de côté. Dynamique, mais sans saut.",
   mountainClimbers: "En planche haute, mains sous les épaules, ramène un genou vers la poitrine puis change vite de jambe, comme si tu courais sur place. Le bassin reste bas.",
-  burpee: "Accroupis-toi, mains au sol, saute ou recule les pieds jusqu’en planche, ramène-les, puis relève-toi et saute, bras au-dessus de la tête.",
+  burpee: "Accroupis-toi, mains au sol, saute ou recule les pieds jusqu’en planche et descends la poitrine au sol en pompe. Remonte, ramène les pieds, puis saute, bras au-dessus de la tête.",
   squatJump: "Descends en squat, bras en arrière, puis lance-les vers le haut et saute le plus haut possible. Atterris en douceur, genoux fléchis, et enchaîne.",
   skaters: "Bondis de côté d’un pied sur l’autre, la jambe libre passe derrière et les bras se croisent, comme un patineur de vitesse. Atterris en douceur, genou fléchi.",
   punches: "Genoux souples, un pied un peu devant, poings près du menton. Ventre gainé, frappe droit devant, gauche et droite, le plus vite possible.",

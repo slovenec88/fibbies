@@ -133,6 +133,7 @@ export const UI = {
   getReady: 'Pripravi se',
   switchSides: 'Zamenjaj stran',
   upNext: 'Sledi',
+  restBadge: 'Počitek',
   keepMoving: 'Kar naprej',
   hold: 'Zadrži',
   firstUp: 'Najprej',
@@ -144,6 +145,7 @@ export const UI = {
   'say.prep': ({ name }) => `Pripravi se. Najprej: ${name}.`,
   'say.switch': ({ side }) => `Zamenjaj stran. ${side}.`,
   'say.next': ({ name }) => `Naslednja: ${name}.`,
+  'say.rest': ({ s }) => `Počitek, ${s} ${sl(s, 'sekunda', 'sekundi', 'sekunde', 'sekund')}.`,
   'say.half': 'Na pol poti.',
   'say.done': 'Odlično. Rutina je končana.',
   'say.voiceOn': 'Glasovno vodenje je vklopljeno.',
@@ -375,7 +377,7 @@ export const CONTENT = {
       "Boki ostanejo nizko in v ravnini. Pretežko? Upočasni in noge prestavljaj."]],
     burpee: ["Burpiji", "Celo telo · Kondicija", [
       "Počepni in položi dlani na tla.",
-      "Skoči z nogami nazaj v desko, nato spet naprej, vstani in poskoči.",
+      "Skoči z nogami nazaj v desko in naredi sklec, s prsmi do tal. Z nogami skoči naprej, nato poskoči v zrak.",
       "Lažje: noge prestavljaj eno za drugo in izpusti skok."]],
     squatJump: ["Skoki iz počepa", "Noge · Zadnjica · Eksplozivnost", [
       "Počepni, roki nazaj.",
@@ -677,7 +679,7 @@ export const GUIDES = {
   jumpingJacks: "Začni s stopali skupaj in rokama ob telesu. Skoči v razkorak, roki zamahneta nad glavo, nato skoči nazaj. Mehko pristani na blazinicah stopal.",
   stepJacks: "Tihi poskoki: z eno nogo stopi vstran, obe roki zamahneta nad glavo, stopi nazaj in ponovi na drugo stran. Živahno, a brez skakanja.",
   mountainClimbers: "Iz visoke deske z dlanmi pod rameni potegni eno koleno proti prsim, nato hitro zamenjaj nogi, kot pri teku na mestu. Boki ostanejo nizko.",
-  burpee: "Počepni in položi dlani na tla, z nogami skoči ali stopi nazaj v desko, jih spet pritegni, nato vstani in poskoči z rokama nad glavo.",
+  burpee: "Počepni in položi dlani na tla, z nogami skoči ali stopi nazaj v desko in s sklecem spusti prsi do tal. Odrini se, noge spet pritegni k dlanem in poskoči z rokama nad glavo.",
   squatJump: "Počepni z rokama nazaj, nato z njima zamahni gor in skoči čim višje. Mehko pristani s pokrčenimi koleni in takoj nadaljuj v naslednji počep.",
   skaters: "Odskakuj vstran z noge na nogo, prosta noga zaniha zadaj, roki pa čez telo, kot pri hitrostnem drsalcu. Mehko pristani na pokrčenem kolenu.",
   punches: "Kolena mehka, ena noga malo naprej, pesti ob bradi. Z napetim trupom udarjaj naravnost naprej, levo in desno, čim hitreje.",

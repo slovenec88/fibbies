@@ -1,7 +1,7 @@
 // Every line the voice guide can say in one language, built with the same texts and formulas the
 // app uses when it speaks. scripts/record-voice.mjs records these; the app then plays the recording
 // of any line it finds (see voice-clips.js) and uses the device voice for anything else.
-import { STRETCHES } from './data.js';
+import { STRETCHES, ROUTINES, buildTimeline } from './data.js';
 import { t, setLang, getLang } from './i18n.js';
 import { localizeContent } from './localize.js';
 import { TIERS } from './rewards.js';
@@ -24,6 +24,8 @@ export function spokenLines(lang) {
   }
   for (const side of [...sides.leg, ...sides.side]) lines.add(t('say.switch', { side }));
   for (const line of t('hiitCheer')) lines.add(line); // session.js cheer()
+  // session.js announce(): the rests between HIIT intervals (rests don't change with the length setting)
+  for (const r of ROUTINES) for (const st of buildTimeline(r).steps) if (st.breather) lines.add(t('say.rest', { s: st.secs }));
   for (const k of ['say.half', 'say.done', 'say.voiceOn', 'say.newFriendAny', 'say.copyAny', 'say.levelUpAny', 'say.ranAwayAny', 'say.evolvedAny']) lines.add(t(k));
   // reward-screen.js: the chest name (English uses the short tier name)
   for (const tier of TIERS) lines.add(t('say.chest', { name: lang === 'en' ? tier.name : tier.label }));

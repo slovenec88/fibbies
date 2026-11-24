@@ -129,6 +129,7 @@ export const UI = {
   getReady: "Preparati",
   switchSides: "Cambia lato",
   upNext: "Prossimo",
+  restBadge: "Recupero",
   keepMoving: "Continua a muoverti",
   hold: "Tieni",
   firstUp: "Si comincia con",
@@ -140,6 +141,7 @@ export const UI = {
   "say.prep": ({ name }) => `Preparati. Si comincia con: ${name}.`,
   "say.switch": ({ side }) => `Cambia lato. ${side}.`,
   "say.next": ({ name }) => `Prossimo: ${name}.`,
+  "say.rest": ({ s }) => `Recupero, ${s} ${pl(s, 'secondo', 'secondi')}.`,
   "say.half": "Sei a metà.",
   "say.done": "Ottimo lavoro. Routine completata.",
   "say.voiceOn": "Guida vocale attivata.",
@@ -371,7 +373,7 @@ export const CONTENT = {
       "Bacino basso e in linea. Troppo difficile? Rallenta e appoggia i piedi invece di saltare."]],
     burpee: ["Burpee", "Tutto il corpo · Cardio", [
       "Accovacciati e appoggia le mani a terra.",
-      "Salta indietro con i piedi in plank, riportali avanti, poi alzati e salta.",
+      "Salta indietro con i piedi in plank e fai un piegamento, petto a terra. Riporta i piedi avanti con un salto, poi salta in alto.",
       "Più dolce: porta i piedi indietro e avanti uno alla volta, senza salto."]],
     squatJump: ["Squat jump", "Gambe · Glutei · Esplosività", [
       "Scendi in squat, braccia indietro.",
@@ -673,7 +675,7 @@ export const GUIDES = {
   jumpingJacks: "Piedi uniti, braccia lungo i fianchi. Salta aprendo i piedi mentre le braccia salgono sopra la testa, poi torna. Atterra morbido sugli avampiedi.",
   stepJacks: "Il jumping jack silenzioso: porta un piede di lato mentre entrambe le braccia salgono, torna al centro e ripeti dall’altra parte. Energico, ma senza salti.",
   mountainClimbers: "Da un plank alto con le mani sotto le spalle, porta un ginocchio al petto e cambia gamba rapidamente, come se corressi sul posto. Il bacino resta basso.",
-  burpee: "Accovacciati e appoggia le mani, salta o porta i piedi indietro fino al plank, riportali avanti, poi alzati e salta con le braccia in alto.",
+  burpee: "Accovacciati e appoggia le mani, salta o porta i piedi indietro fino al plank e scendi col petto a terra in un piegamento. Spingi su, riporta i piedi avanti, poi salta con le braccia in alto.",
   squatJump: "Scendi in squat con le braccia indietro, slanciale in alto e salta più in alto che puoi. Atterra morbido con le ginocchia piegate e prosegui subito.",
   skaters: "Balza di lato da un piede all’altro, con la gamba libera che passa dietro e le braccia che si incrociano, come un pattinatore di velocità. Atterra morbido a ginocchio piegato.",
   punches: "Ginocchia morbide, un piede un po’ avanti, pugni vicino al mento. Con l’addome attivo, tira pugni dritti davanti, sinistro e destro, più veloce che puoi.",
