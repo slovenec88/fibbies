@@ -88,6 +88,12 @@ await test('a restore that fails half way leaves the old progress untouched', ()
     assert.deepEqual([run('before', []), run('after', ['before']), run('evening', ['before', 'after']), run('strength', ['before', 'after', 'evening'])].map((r) => [r.chest, r.tier]),
       [[true, 0], [true, 1], [true, 2], [true, 3]]);
   });
+  await test('chests: more than 18 minutes always opens a legendary chest', async () => {
+    const long = (cat, prior, secs) => computeReward({ routine: { cat, items: [] }, holdSecs: 300, ratio: 1, secs, skips: 0, scale: 1, priorToday: new Set(prior), firstToday: false, streak: 1, profile: prof() }, () => 0.99);
+    const all = ['before', 'after', 'evening', 'strength'];
+    for (const r of [long('before', [], 18 * 60 + 1), long('quick', [], 1200), long('strength', all, 1500)]) assert.deepEqual([r.chest, r.tier, r.ranAway], [true, 3, false]);
+    assert.deepEqual([long('before', [], 18 * 60).tier, long('quick', [], 18 * 60).chest], [0, false]);
+  });
   await test('chests: a kind already done today, or a Quick routine, gives fibers but no chest', async () => {
     for (const r of [run('before', ['before']), run('quick', []), run('before', ['before', 'after', 'evening', 'strength'])]) {
       assert.equal(r.chest, false); assert.equal(r.fibbie, null); assert.ok(r.total > 0);

@@ -83,12 +83,15 @@ export function todaysCats(log, day) {
 // Chance a Fibbie runs off, by chest tier (wooden, rare, epic, legendary). Never twice in a row,
 // so a wooden chest really loses about 1 in 4.
 const RUN_AWAY = [0.35, 0.25, 0.12, 0];
+/** More than this many seconds of real work opens a legendary chest. */
+export const LONG_SECS = 18 * 60;
 const round2 = (x) => Math.round(x * 100) / 100;
 
 /**
  * @param o.routine     finished routine
  * @param o.holdSecs    planned seconds of stretching (sum of holds)
  * @param o.ratio       0..1 how much of the session was actually done
+ * @param o.secs        seconds actually spent in the session
  * @param o.skips       number of skipped stretches
  * @param o.scale       session-length setting
  * @param o.priorToday  Set of categories already done today (before this session)
@@ -97,7 +100,7 @@ const round2 = (x) => Math.round(x * 100) / 100;
  * @param o.profile     current profile (not mutated)
  */
 export function computeReward(o, rand = Math.random) {
-  const { routine, holdSecs, ratio, skips, scale, priorToday, firstToday, streak, profile } = o;
+  const { routine, holdSecs, ratio, skips, scale, priorToday, firstToday, streak, profile, secs = 0 } = o;
   const base = Math.max(1000, Math.round((holdSecs * FIBERS_PER_SEC * ratio) / 10) * 10);
   const perfect = skips === 0 && ratio >= 0.95;
   const daily = dailyBonus(priorToday);
@@ -121,9 +124,11 @@ export function computeReward(o, rand = Math.random) {
   // Chests come with today's bonus: the first new kind of routine today opens a wooden chest, the
   // next one a rare, then epic, then legendary. A kind already done today, or a routine that is
   // no kind at all (Quick), still earns fibers and XP but no chest; after all four, none until tomorrow.
+  // A session of more than 18 minutes always opens a legendary chest, whatever else happened today.
   const isKind = QUESTS.some((q) => q.cat === routine.cat);
-  const chest = isKind && !priorToday.has(routine.cat);
-  const tier = Math.min(3, QUESTS.filter((q) => priorToday.has(q.cat)).length);
+  const long = secs > LONG_SECS;
+  const chest = long || (isKind && !priorToday.has(routine.cat));
+  const tier = long ? 3 : Math.min(3, QUESTS.filter((q) => priorToday.has(q.cat)).length);
   const fib = chest ? fibbie(dropFibbie(tier, profile, rand), 1) : null;
   // Shy Fibbies run off: most often from a wooden chest, less from rare and epic, never from a
   // legendary. Someone's first two Fibbies always stay, and none run off twice in a row.

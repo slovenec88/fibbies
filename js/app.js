@@ -3,7 +3,7 @@ import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
 import { Session } from './session.js';
-import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS, dailyBonus } from './rewards.js';
+import { loadProfile, saveProfile, computeReward, applyReward, todaysCats, counts, levelProgress, fmtBig, QUESTS, dailyBonus, LONG_SECS } from './rewards.js';
 import { fibbie, groups, parseKey, keyOf, countOf, mergeFibbies, discovered, MAX_STAGE, FIBBIES } from './fibbies.js';
 import { FLEX_TESTS, WEEK_DAYS, loadFlex, saveFlex, scoreOf, levelOf, cleanAnswer, imbalances, daysSinceLast, fmtDay, flexChartSVG, chartPoints } from './flex.js';
 import { critterSVG, chestSVG, esc, stars } from './critter.js';
@@ -1023,10 +1023,10 @@ function finish(s) {
   log = log.slice(-HISTORY_MAX);
   writeJSON('limber.history', log);
   const profile = loadProfile();
-  const reward = ratio < 0.5 ? null : computeReward({
+  const reward = ratio < 0.5 && secs <= LONG_SECS ? null : computeReward({
     routine: s.routine,
     holdSecs: s.moves.reduce((acc, m) => acc + m.secs, 0),
-    ratio, skips: s.skips, scale: s.scale, priorToday, firstToday,
+    ratio, secs, skips: s.skips, scale: s.scale, priorToday, firstToday,
     streak: streak(), profile,
   });
   if (reward) {
