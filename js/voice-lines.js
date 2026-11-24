@@ -23,6 +23,7 @@ export function spokenLines(lang) {
     for (const cue of s.cues || []) lines.add(cue);
   }
   for (const side of [...sides.leg, ...sides.side]) lines.add(t('say.switch', { side }));
+  for (const line of t('hiitCheer')) lines.add(line); // session.js cheer()
   for (const k of ['say.half', 'say.done', 'say.voiceOn', 'say.newFriendAny', 'say.copyAny', 'say.levelUpAny', 'say.ranAwayAny', 'say.evolvedAny']) lines.add(t(k));
   // reward-screen.js: the chest name (English uses the short tier name)
   for (const tier of TIERS) lines.add(t('say.chest', { name: lang === 'en' ? tier.name : tier.label }));

@@ -724,6 +724,77 @@ export const STRETCHES = {
       'Lower slowly without swinging. Small and controlled is perfect.',
     ],
   },
+  // HIIT: short, hard intervals with real rests (the routines set the rests).
+  jumpingJacks: {
+    name: 'Jumping Jacks', target: 'Full body · Cardio', view: 'front', period: 1, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [118, 104], hF: [82, 104], fN: [106, 180], fF: [94, 180], eb: [-1, 1] },
+    b: { h: [100, 108], t: -90, n: -90, hN: [142, 10], hF: [58, 10], fN: [124, 180], fF: [76, 180], eb: [-1, 1] },
+    cues: [
+      'Jump your feet wide as your arms swing up overhead.',
+      'Jump back in, arms down. Land softly on the balls of your feet.',
+      'Find a steady rhythm. Too much? Step out one foot at a time.',
+    ],
+  },
+  stepJacks: {
+    name: 'Step Jacks', target: 'Full body · Cardio · No jumping', view: 'front', period: 1.6, dynamic: true, strength: true,
+    a: { h: [100, 104], t: -90, n: -90, hN: [118, 104], hF: [82, 104], fN: [106, 180], fF: [94, 180], eb: [-1, 1] },
+    b: { h: [106, 106], t: -90, n: -90, hN: [148, 10], hF: [64, 10], fN: [130, 180], fF: [94, 180], eb: [-1, 1] },
+    cues: [
+      'Step one foot out to the side as both arms sweep up overhead.',
+      'Step back in, arms down, then the other side.',
+      'No jumping, so it stays quiet. Move briskly and keep breathing.',
+    ],
+  },
+  mountainClimbers: {
+    name: 'Mountain Climbers', target: 'Core · Shoulders · Cardio', view: 'side', period: 0.9, dynamic: true, strength: true,
+    a: { h: [94, 143], t: -22, n: -18, hN: [142, 180], hF: [138, 180], fN: [94, 166], fF: [26, 171], ft: [40, 70], eb: [1, 1] },
+    b: { h: [94, 143], t: -22, n: -18, hN: [142, 180], hF: [138, 180], fN: [26, 171], fF: [94, 166], ft: [70, 40], eb: [1, 1] },
+    cues: [
+      'High plank, hands under your shoulders.',
+      'Drive one knee toward your chest, then switch legs, fast.',
+      'Keep your hips low and level. Too hard? Slow down, step them in.',
+    ],
+  },
+  burpee: {
+    name: 'Burpees', target: 'Full body · Cardio', view: 'side', period: 2.6, dynamic: true, strength: true,
+    a: { h: [94, 146], t: -24, n: -16, hN: [140, 180], hF: [136, 180], fN: [104, 180], fF: [100, 180], ft: [0, 0], eb: [1, 1] },
+    b: { h: [93, 147], t: -24, n: -20, hN: [140, 180], hF: [136, 180], fN: [24, 171], fF: [26, 171], ft: [70, 70], eb: [1, 1] },
+    cues: [
+      'Squat down and put your hands on the floor.',
+      'Jump your feet back to a plank, jump them in again, then stand up and jump.',
+      'Gentler: step back and forward one foot at a time, and skip the jump.',
+    ],
+  },
+  squatJump: {
+    name: 'Squat Jumps', target: 'Legs · Glutes · Power', view: 'side', period: 1.6, dynamic: true, strength: true,
+    a: { h: [80, 140], t: -58, n: -70, hN: [96, 140], hF: [92, 142], fN: [104, 180], fF: [98, 180], ft: [0, 0] },
+    b: { h: [100, 97], t: -90, n: -90, hN: [110, -6], hF: [104, -4], fN: [104, 172], fF: [98, 172], ft: [50, 50] },
+    cues: [
+      'Squat down, arms back.',
+      'Swing your arms up and jump as high as you can.',
+      'Land softly with bent knees, straight into the next squat. No jumping? Rise onto your toes instead.',
+    ],
+  },
+  skaters: {
+    name: 'Skaters', target: 'Legs · Glutes · Balance', view: 'front', period: 1.4, dynamic: true, strength: true,
+    a: { h: [116, 112], t: -84, n: -86, hN: [96, 112], hF: [70, 84], fN: [124, 180], fF: [102, 168] },
+    b: { h: [84, 112], t: -96, n: -94, hN: [130, 84], hF: [104, 112], fN: [98, 168], fF: [76, 180] },
+    cues: [
+      'Leap sideways onto one foot, the other foot swinging behind it.',
+      'Land softly with a bent knee, then bound to the other side.',
+      'Swing your arms across like a speed skater. Smaller steps are fine.',
+    ],
+  },
+  punches: {
+    name: 'Speed Punches', target: 'Shoulders · Arms · Cardio', view: 'side', period: 0.7, dynamic: true, strength: true,
+    a: { h: [100, 105], t: -86, n: -88, hN: [154, 58], hF: [118, 66], fN: [116, 180], fF: [84, 180], ft: [0, 0] },
+    b: { h: [100, 105], t: -86, n: -88, hN: [120, 66], hF: [152, 60], fN: [116, 180], fF: [84, 180], ft: [0, 0] },
+    cues: [
+      'Stand with soft knees, one foot a little forward, fists up by your chin.',
+      'Punch straight ahead, left and right, as fast as you can.',
+      'Brace your core and stay light on your feet.',
+    ],
+  },
 };
 
 export const CATEGORIES = [
@@ -744,9 +815,10 @@ export const FOCUS = [
   { id: 'upper', icon: 'fitness_center' },
   { id: 'core', icon: 'adjust' },
   { id: 'feet', icon: 'footprint' },
+  { id: 'hiit', icon: 'sprint' },
 ];
 
-// items: [stretchId, seconds per side]
+// items: [stretchId, seconds per side, rest after (optional)]
 export const ROUTINES = [
   {
     id: 'top5-after', hero: 'quad', title: 'Top 5 After Workout', cat: 'after', icon: 'workspace_premium', top: true,
@@ -979,9 +1051,38 @@ export const ROUTINES = [
     blurb: 'Slow, steady moves that teach your core to hold you still, with single-leg bridges and side lunges for balance. About fifteen minutes.',
     items: [['catcow', 45], ['hipCircles', 30], ['birdDog', 35], ['deadBug', 35], ['bridge', 50], ['shoulderTaps', 35], ['plank', 50], ['singleLegBridge', 30], ['sideLunge', 30], ['birdDog', 35], ['deadBug', 35], ['superman', 35], ['reverseCrunch', 40], ['plank', 50], ['child', 50]],
   },
+  // HIIT (20 to 25 minutes): a warm-up, a few moves done in rounds with real rests, and a short cooldown.
+  // A block: `rounds` times through `moves`, `work` seconds on and `rest` off, `roundRest` between rounds
+  // and `blockRest` after the block (both default to the one before).
+  {
+    id: 'hiit-starter', hero: 'stepJacks', title: 'HIIT Starter', cat: 'strength', focus: 'hiit', icon: 'directions_walk', hiit: true,
+    blurb: 'Your first HIIT, with no jumping, so it is quiet enough for a flat. Four moves, three rounds: 40 seconds of work, 30 seconds of rest. Go hard enough that talking gets tricky. About twenty minutes.',
+    warm: [['armCircles', 30], ['hipCircles', 30], ['stepJacks', 45], ['inchworm', 45]],
+    blocks: [{ moves: ['stepJacks', 'airSquat', 'punches', 'mountainClimbers'], work: 40, rest: 30, rounds: 3, roundRest: 60 }],
+    cool: [['fold', 30], ['quad', 25], ['child', 45]],
+  },
+  {
+    id: 'hiit-classic', hero: 'squatJump', title: 'HIIT 45/15', cat: 'strength', focus: 'hiit', icon: 'local_fire_department', hiit: true,
+    blurb: 'The classic: 45 seconds hard, 15 seconds rest. Three rounds of squat jumps, push-ups, mountain climbers, skaters and burpees, the moves home HIIT studies use most. Just over twenty minutes.',
+    warm: [['armCircles', 30], ['hipCircles', 30], ['jumpingJacks', 45], ['airSquat', 30], ['inchworm', 45]],
+    blocks: [{ moves: ['squatJump', 'pushup', 'mountainClimbers', 'skaters', 'burpee'], work: 45, rest: 15, rounds: 3, roundRest: 60 }],
+    cool: [['fold', 30], ['quad', 25], ['child', 45]],
+  },
+  {
+    id: 'hiit-tabata', hero: 'burpee', title: 'Tabata Burn', cat: 'strength', focus: 'hiit', icon: 'bolt', hiit: true,
+    blurb: 'Four Tabata blocks: two moves take turns, 20 seconds all out and 10 seconds rest, four rounds, then a minute to breathe. Legs, cardio, push and the whole body. Short but tough. About twenty-five minutes.',
+    warm: [['armCircles', 30], ['hipCircles', 30], ['jumpingJacks', 45], ['inchworm', 45]],
+    blocks: [['squatJump', 'mountainClimbers'], ['jumpingJacks', 'pushup'], ['skaters', 'punches'], ['burpee', 'highKnees']]
+      .map((moves) => ({ moves, work: 20, rest: 10, rounds: 4, blockRest: 60 })),
+    cool: [['fold', 30], ['quad', 25], ['child', 45]],
+  },
 ];
 // Every routine takes its section's colour, so a section reads as one.
 for (const r of ROUTINES) r.hue = CATEGORIES.find((c) => c.id === r.cat).hue;
+/** A HIIT block as timeline items: [id, work, rest after]. */
+export const blockItems = ({ moves, work, rest, rounds, roundRest = rest, blockRest = roundRest }) =>
+  Array.from({ length: rounds }, (_, r) => moves.map((id, i) => [id, work, i < moves.length - 1 ? rest : r < rounds - 1 ? roundRest : blockRest])).flat();
+for (const r of ROUTINES) if (r.blocks) r.items = [...r.warm, ...r.blocks.flatMap(blockItems), ...r.cool];
 
 export const PREP_SECS = 8;
 export const SWITCH_SECS = 4;
@@ -998,16 +1099,20 @@ export function holdSecs(stretch, secs, scale = 1, inStrength = false) {
   return Math.max(10, Math.round(secs * (Number(scale) || 1)));
 }
 
+/** HIIT keeps its intervals short: "Max" works a little longer, not half again as long. */
+export const routineScale = (routine, scale) => (routine.hiit && scale === 'flex' ? 1.25 : scale);
+
 export function buildTimeline(routine, scale = 1) {
   const moves = [];
-  routine.items.forEach(([id, secs]) => {
+  scale = routineScale(routine, scale);
+  routine.items.forEach(([id, secs, rest]) => {
     const s = STRETCHES[id];
     const dur = holdSecs(s, secs, scale, routine.cat === 'strength');
     if (s.sided) {
       moves.push({ id, stretch: s, side: 'L', secs: dur });
-      moves.push({ id, stretch: s, side: 'R', secs: dur });
+      moves.push({ id, stretch: s, side: 'R', secs: dur, rest });
     } else {
-      moves.push({ id, stretch: s, side: null, secs: dur });
+      moves.push({ id, stretch: s, side: null, secs: dur, rest });
     }
   });
   const steps = [{ kind: 'prep', secs: PREP_SECS, next: moves[0] }];
@@ -1016,7 +1121,7 @@ export function buildTimeline(routine, scale = 1) {
     const nx = moves[i + 1];
     if (nx) {
       const sw = nx.id === m.id;
-      steps.push({ kind: 'rest', secs: sw ? SWITCH_SECS : REST_SECS, next: nx, switchSides: sw });
+      steps.push({ kind: 'rest', secs: sw ? SWITCH_SECS : m.rest ?? REST_SECS, next: nx, switchSides: sw });
     }
   });
   return { steps, moves };

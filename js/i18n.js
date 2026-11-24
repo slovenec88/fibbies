@@ -122,6 +122,24 @@ const EN = {
     "In the beginner's mind there are many possibilities. — Shunryu Suzuki",
     "What grows slowly grows strong roots.",
   ],
+  // Said now and then halfway through a HIIT interval: encouragement and thanks, written for this language
+  hiitCheer: [
+    "You've got this!",
+    "Strong work. Keep it up!",
+    "Every rep counts.",
+    "Thank you for showing up for yourself today.",
+    "Breathe. You're doing great.",
+    "Almost there. Stay with it!",
+    "Your heart is getting stronger right now.",
+    "This effort is something to be proud of.",
+    "Hard today, easier tomorrow.",
+    "One last push. You can do it!",
+    "Thank your body. It's working hard for you.",
+    "Feel that energy? That's all you.",
+    "No rush, no pressure. Just your best right now.",
+    "Stay light, stay strong.",
+    "Be grateful for legs that can jump and a heart that can race.",
+  ],
   levelsRebalanced: 'Levels rebalanced: leveling up is slower now and worth more. Your fibers and friends are safe.',
   // detail
   back: 'Back',
@@ -133,6 +151,8 @@ const EN = {
   startMin: ({ m }) => `Start · ${m} min`,
   eachSide: 'each side',
   moving: 'moving',
+  restAfter: ({ s }) => `+${s} s rest`,
+  rounds: ({ n }) => `${n} ${en(n, 'round', 'rounds')}`,
   holdShort: 'hold',
   // player
   endSession: 'End session',
@@ -220,6 +240,7 @@ const EN = {
   'focus.upper': "Arms & shoulders",
   'focus.core': "Core",
   'focus.feet': "Feet",
+  'focus.hiit': "HIIT",
   // settings
   'voiceSection': 'Voice',
   voiceGuidance: 'Voice guidance',

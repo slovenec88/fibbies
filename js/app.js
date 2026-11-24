@@ -1,4 +1,4 @@
-import { STRETCHES, CATEGORIES, FOCUS, ROUTINES, routineSeconds, buildTimeline, sideLabel, holdSecs } from './data.js';
+import { STRETCHES, CATEGORIES, FOCUS, ROUTINES, routineSeconds, buildTimeline, sideLabel, holdSecs, routineScale } from './data.js';
 import { Figure } from './figure.js';
 import { unlockAudio, sfx, fx, voiceGuide, haptics } from './audio.js';
 import { wakeLock } from './wakelock.js';
@@ -68,7 +68,9 @@ darkScheme.addEventListener?.('change', () => requestAnimationFrame(updateThemeC
 const catOf = (id) => CATEGORIES.find((c) => c.id === id);
 const routineById = (id) => ROUTINES.find((r) => r.id === id);
 /** "5 stretches", or "5 exercises" for a strength routine. */
-const movesText = (r, n = r.items.length) => t(r.cat === 'strength' ? 'exercises' : 'stretches', { n });
+// HIIT repeats its moves round after round: count the different exercises, not the intervals.
+const moveCount = (r) => (r.hiit ? new Set(r.items.map(([id]) => id)).size : r.items.length);
+const movesText = (r, n = moveCount(r)) => t(r.cat === 'strength' ? 'exercises' : 'stretches', { n });
 const minutes = (r) => Math.max(1, Math.round(routineSeconds(r, settings.scale) / 60));
 const fmtTime = (s) => {
   s = Math.max(0, Math.ceil(s));
@@ -746,7 +748,7 @@ function renderDetail(r) {
         <span class="stat-pill"><span aria-hidden="true" class="ms">schedule</span>${fmtTime(total)}</span>
         <span class="stat-pill"><span aria-hidden="true" class="ms">format_list_bulleted</span>${movesText(r)}</span>
         ${moves.some((m) => m.side) ? `<span class="stat-pill"><span aria-hidden="true" class="ms">swap_horiz</span>${t('bothSides')}</span>` : ''}
-        ${settings.scale === 'flex' ? `<span class="stat-pill"><span aria-hidden="true" class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
+        ${settings.scale === 'flex' && !r.hiit ? `<span class="stat-pill"><span aria-hidden="true" class="ms">self_improvement</span>${t('flexHolds')}</span>` : ''}
       </div>
       <div class="detail-fig"></div>
     </div>
@@ -759,9 +761,9 @@ function renderDetail(r) {
   v.querySelector('.detail-fig').appendChild(df.svg);
   animate(df, { paused: () => movePreview.open });
   const ml = v.querySelector('.move-list');
-  for (const [id, secs] of r.items) {
+  const addRow = ([id, secs, rest]) => {
     const s = STRETCHES[id];
-    const d = holdSecs(s, secs, settings.scale, r.cat === 'strength');
+    const d = holdSecs(s, secs, routineScale(r, settings.scale), r.cat === 'strength');
     const row = document.createElement('button');
     row.type = 'button';
     row.className = 'move-row ripple';
@@ -769,12 +771,24 @@ function renderDetail(r) {
     row.innerHTML = `
       <span class="mr-thumb"></span>
       <span><span class="mr-name">${esc(s.name)}</span><span class="mr-target">${esc(s.target)}</span></span>
-      <span class="mr-time">${d}${t('sec')}<small>${t(s.sided ? 'eachSide' : s.dynamic ? 'moving' : 'holdShort')}</small></span>
+      <span class="mr-time">${d}${t('sec')}<small>${rest ? t('restAfter', { s: rest }) : t(s.sided ? 'eachSide' : s.dynamic ? 'moving' : 'holdShort')}</small></span>
       <span class="ms mr-more" aria-hidden="true">chevron_right</span>`;
     row.querySelector('.mr-thumb').appendChild(staticFig(s, 0.5));
     row.onclick = () => openMovePreview(id, r.hue);
     ml.appendChild(row);
-  }
+  };
+  if (r.blocks) {
+    // HIIT: each block once, under how many rounds it goes, the way a circuit is written down.
+    r.warm.forEach(addRow);
+    for (const b of r.blocks) {
+      const h = document.createElement('div');
+      h.className = 'mr-rounds';
+      h.innerHTML = `<span aria-hidden="true" class="ms">repeat</span>${esc(t('rounds', { n: b.rounds }))}`;
+      ml.appendChild(h);
+      b.moves.forEach((id) => addRow([id, b.work, b.rest]));
+    }
+    r.cool.forEach(addRow);
+  } else r.items.forEach(addRow);
   $('#dt-back').onclick = () => back();
   $('#dt-settings').onclick = openSettings;
   $('#dt-start').onclick = () => startRoutine(r.id);
@@ -1019,7 +1033,7 @@ function finish(s) {
     applyReward(profile, reward);
     saveProfile(profile);
   }
-  lastResult = { routine: s.routine, secs, moves: s.routine.items.length, reward, shown: false };
+  lastResult = { routine: s.routine, secs, moves: moveCount(s.routine), reward, shown: false };
   wakeLock.off();
   clearTimeout(doneTimer);
   doneTimer = setTimeout(() => {

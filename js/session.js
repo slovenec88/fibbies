@@ -1,11 +1,13 @@
 // Timer engine. Time-based (not tick-counting) so it stays accurate when throttled.
-import { buildTimeline, sideLabel } from './data.js';
+import { buildTimeline, sideLabel, routineScale } from './data.js';
 import { sfx, voiceGuide, haptics } from './audio.js';
 import { t } from './i18n.js';
 
 const moveName = (m) => `${m.stretch.name}${m.side ? ', ' + sideLabel(m) : ''}`;
 
 const now = () => performance.now();
+// In HIIT, about one interval in three gets encouragement or thanks at halfway instead of a form cue.
+const CHEER_CHANCE = 0.35;
 
 export class Session {
   constructor(routine, { scale = 1, onStep, onTick, onDone } = {}) {
@@ -27,7 +29,7 @@ export class Session {
     this.timer = null;
     this.activeMs = 0; // real time spent un-paused
     this.skips = 0;
-    this.scale = scale;
+    this.scale = routineScale(routine, scale); // what was actually done: rewards count "Max" HIIT as Long
   }
 
   get step() { return this.steps[this.i]; }
@@ -149,9 +151,16 @@ export class Session {
       this.halfDone = true;
       sfx.half();
       const cues = st.move.stretch.cues;
-      voiceGuide.say(cues[1] || t('say.half'), { interrupt: false });
+      voiceGuide.say((st.move.rest != null && Math.random() < CHEER_CHANCE && this.cheer()) || cues[1] || t('say.half'), { interrupt: false });
     }
     this.onTick?.(this);
+  }
+
+  /** A kind word for halfway through a HIIT interval, never the same one twice in a row. */
+  cheer() {
+    const lines = t('hiitCheer').filter((l) => l !== this.lastCheer);
+    this.lastCheer = lines[Math.floor(Math.random() * lines.length)];
+    return this.lastCheer;
   }
 
   next() {

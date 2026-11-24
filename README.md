@@ -19,7 +19,7 @@ Follow short guided routines to warm up, stretch, or build strength. Open chests
 
 ### Meet the routines
 
-Take a 2-Minute Reset at your desk, warm up before a run, or try a strength routine for your feet and arches. Tap any exercise in a routine to see how it moves and read a short guide in your language before you start.
+Take a 2-Minute Reset at your desk, warm up before a run, try a strength routine for your feet and arches, or get your heart racing with a 20-minute HIIT, no equipment needed. Tap any exercise in a routine to see how it moves and read a short guide in your language before you start.
 
 ### Follow the stretch
 
