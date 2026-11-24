@@ -1,5 +1,18 @@
 # Ideas / TODO
 
+## Restructure the other routines (planned for 2026-11-25)
+
+The HIITs now follow what the research and popular programmes use: a few moves done in rounds, longer intervals, and the list shows each circuit once with "3 rounds". Most other routines are still long lists of many short items (for example Posture Workout: 19 items of 30–45 s). Go through every section and restructure it for:
+
+- **Health benefit:** evidence-based doses.
+  - Static stretches: about 30–60 s per muscle group (ACSM), ideally repeated, instead of many 20 s holds.
+  - Strength: 2–3 sets of a few key moves, with rests, instead of one long chain.
+  - Warm-ups stay dynamic.
+- **Attractiveness:** fewer, longer items, grouped as rounds or sets where moves repeat (reuse the HIIT `blocks` format and the "N rounds" header in the detail list). Clear names and blurbs.
+- **Ease:** obvious moves, little getting up and down from the floor, few transitions.
+
+Then check every routine's length against its section (Quick ≤ 4 min, long ones ~15 min), update the blurbs in all 7 languages, record the voice, and run the anatomy bench and the tests.
+
 ## Native app + Garmin sync (idea, not started)
 
 Consider shipping Fibbies as a native Android/iOS app so it can pair with a Garmin watch later.
