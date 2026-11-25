@@ -1,0 +1,1 @@
+Las rutinas Top 5 ahora se llaman simplemente Top, porque algunas tienen más de cinco ejercicios.
