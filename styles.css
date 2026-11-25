@@ -928,6 +928,10 @@ html:has(dialog[open]) { overflow: hidden; }
 .reward.opening:not(.opened) .rw-chest svg { animation: rattle .07s linear infinite; scale: 1.18; transition: scale .9s cubic-bezier(.5,0,.9,.4); }
 
 .rw-flash { position: fixed; inset: 0; z-index: 9; background: #fff; opacity: 0; pointer-events: none; }
+/* Legendary: the whole background brightens as the chest opens (js animates the opacity). */
+.rw-bright { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(120% 80% at 50% 38%, #fff6d0 0, color-mix(in oklch, var(--tc) 75%, #fff) 30%, color-mix(in oklch, var(--tc2) 45%, transparent) 70%, transparent),
+    rgba(255, 226, 170, .3); }
 
 .rw-pillar {
   position: absolute; left: 50%; top: 45%; width: 64%; height: 220vh; translate: -50% -50%; z-index: -1;
@@ -1049,7 +1053,8 @@ html.native, html.native body { overscroll-behavior: none; }
 .rw-skip:active { border-radius: 12px; }
 .rw-dots { display: inline-flex; gap: 5px; margin-left: 8px; }
 .rw-dots i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.28); transition: background .2s, transform .2s; }
-.reward[data-hits="1"] .rw-dots i:nth-child(-n+1), .reward[data-hits="2"] .rw-dots i:nth-child(-n+2), .reward[data-hits="3"] .rw-dots i { background: #ffd60a; transform: scale(1.2); }
+.reward[data-hits="1"] .rw-dots i:nth-child(-n+1), .reward[data-hits="2"] .rw-dots i:nth-child(-n+2),
+.reward[data-hits="3"] .rw-dots i:nth-child(-n+3), .reward[data-hits="4"] .rw-dots i { background: #ffd60a; transform: scale(1.2); }
 .reward.ready:not(.opening) .rw-chest.hit svg { animation: chest-hit .38s cubic-bezier(.3,1.8,.5,1); }
 @keyframes chest-hit { 0% { transform: scale(1); } 30% { transform: scale(1.14, .88) rotate(-4deg); } 60% { transform: scale(.94, 1.08) rotate(3deg); } 100% { transform: scale(1); } }
 .chest-cracks path { opacity: 0; transition: opacity .2s; }
@@ -1057,6 +1062,8 @@ html.native, html.native body { overscroll-behavior: none; }
 .reward[data-hits="1"]:not(.opened) .chest-lid { transform: translate(0, -3px) rotate(-2deg); }
 .reward[data-hits="2"]:not(.opened) .chest-lid, .reward[data-hits="3"]:not(.opened) .chest-lid { transform: translate(-1px, -7px) rotate(-5deg); }
 .reward[data-hits="2"]:not(.opened) .chest-glow, .reward[data-hits="3"]:not(.opened) .chest-glow { opacity: .95; }
+/* Legendary takes a fourth tap: after the third the lid strains a little further open. */
+.reward[data-tier="3"][data-hits="3"]:not(.opening) .chest-lid { transform: translate(-2px, -10px) rotate(-8deg); }
 .rw-card-text .stars { font-size: 14px; margin-top: 2px; }
 .rw-card-text small.rw-merge { opacity: 1; color: #ffd60a; font-weight: 700; }
 
