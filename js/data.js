@@ -842,13 +842,13 @@ export const FOCUS = [
 // items: [stretchId, seconds per side, rest after (optional)]
 export const ROUTINES = [
   {
-    id: 'top5-after', hero: 'quad', title: 'Top 5 After Workout', cat: 'after', icon: 'workspace_premium', top: true,
+    id: 'top5-after', hero: 'quad', title: 'Top After Workout', cat: 'after', icon: 'workspace_premium', top: true,
     blurb: 'The five most effective, simplest stretches after exercise, as ranked from physical therapist and coaching advice. Hold each about 30 seconds while your muscles are still warm.',
     items: [['quad', 30], ['calf', 30], ['lunge', 30], ['fold', 40], ['pigeon', 35]],
   },
   {
     id: 'post-run-reset', hero: 'lunge', title: 'Post-Workout Reset', cat: 'after', icon: 'fitness_center',
-    blurb: 'The full cooldown: the Top 5, then the deep calf, down dog and a calm finish.',
+    blurb: 'The full cooldown: the Top stretches, then the deep calf, down dog and a calm finish.',
     items: [['quad', 30], ['calf', 30], ['lunge', 35], ['fold', 40], ['pigeon', 40], ['soleus', 30], ['downdog', 30], ['child', 40]],
   },
   {
@@ -867,13 +867,13 @@ export const ROUTINES = [
     items: [['catcow', 40], ['child', 45], ['cobra', 25], ['kneeToChest', 30], ['figureFour', 30], ['twist', 35]],
   },
   {
-    id: 'top5-before', hero: 'swingFront', title: 'Top 5 Before Workout', cat: 'before', icon: 'workspace_premium', top: true,
+    id: 'top5-before', hero: 'swingFront', title: 'Top Before Workout', cat: 'before', icon: 'workspace_premium', top: true,
     blurb: 'Moving stretches only. Research shows long static holds right before exercise can slightly reduce power and speed, while dynamic moves warm you up without that cost.',
     items: [['swingFront', 30], ['lungeReach', 60], ['swingSide', 30], ['highKnees', 45], ['buttKicks', 45]],
   },
   {
     id: 'dynamic-warmup', hero: 'highKnees', title: 'Dynamic Warm-Up', cat: 'before', icon: 'bolt',
-    blurb: 'The Top 5 warm-up, plus hips, calves and a full-body inchworm. Do this right before you head out the door.',
+    blurb: 'The Top warm-up, plus hips, calves and a full-body inchworm. Do this right before you head out the door.',
     items: [['swingFront', 20], ['lungeReach', 40], ['swingSide', 20], ['highKnees', 30], ['buttKicks', 30], ['worlds', 30], ['hipCircles', 30], ['calfRaises', 30], ['inchworm', 40]],
   },
   {
@@ -892,13 +892,13 @@ export const ROUTINES = [
     items: [['armCircles', 30], ['catcow', 40], ['worlds', 25], ['inchworm', 40], ['standingTwist', 30]],
   },
   {
-    id: 'top5-evening', hero: 'child', title: 'Top 5 Evening', cat: 'evening', icon: 'workspace_premium', top: true,
+    id: 'top5-evening', hero: 'child', title: 'Top Evening', cat: 'evening', icon: 'workspace_premium', top: true,
     blurb: 'The five gentlest, most effective wind-down stretches. All on the floor, all easy. Do them half an hour before bed.',
     items: [['child', 50], ['lyingHam', 40], ['twist', 40], ['kneeToChest', 35], ['catcow', 45]],
   },
   {
     id: 'evening-unwind', hero: 'pigeon', title: 'Evening Unwind', cat: 'evening', icon: 'bedtime',
-    blurb: 'Ten slow minutes on the floor: the Top 5 evening stretches, then glutes, hips and tired legs.',
+    blurb: 'Ten slow minutes on the floor: the Top evening stretches, then glutes, hips and tired legs.',
     items: [['child', 45], ['lyingHam', 35], ['twist', 35], ['kneeToChest', 30], ['catcow', 40], ['figureFour', 35], ['butterfly', 40], ['legsUpWall', 50]],
   },
   {
@@ -917,7 +917,7 @@ export const ROUTINES = [
     items: [['kneeToChest', 35], ['catcow', 45], ['child', 50], ['twist', 40], ['bridge', 30], ['legsUpWall', 50]],
   },
   {
-    id: 'five-minute-fix', hero: 'calf', title: 'Top 5 Quick Fix', cat: 'quick', icon: 'workspace_premium', top: true,
+    id: 'five-minute-fix', hero: 'calf', title: 'Top Quick Fix', cat: 'quick', icon: 'workspace_premium', top: true,
     blurb: 'Short on time? The five stretches with the biggest payoff, in under four minutes.',
     items: [['lunge', 20], ['calf', 20], ['quad', 20], ['downdog', 25], ['worlds', 20]],
   },
@@ -942,7 +942,7 @@ export const ROUTINES = [
     items: [['neckTilt', 15], ['shoulderCross', 15], ['wristStretch', 12], ['chestOpener', 15], ['hipFlexorStand', 15], ['hamstringStand', 15], ['backBend', 12]],
   },
   {
-    id: 'top5-strength', hero: 'airSquat', title: 'Top 5 Strength', cat: 'strength', focus: 'full', icon: 'workspace_premium', top: true,
+    id: 'top5-strength', hero: 'airSquat', title: 'Top Strength', cat: 'strength', focus: 'full', icon: 'workspace_premium', top: true,
     blurb: 'Five simple moves that build the most useful strength: legs, push, hips, back and core. A short warm-up first and a calm stretch to finish. No equipment, about eight minutes. Move at a pace you can control.',
     items: [['armCircles', 35], ['hipCircles', 35], ['catcow', 35], ['airSquat', 50], ['pushup', 45], ['bridge', 50], ['birdDog', 35], ['plank', 50], ['child', 45]],
   },

@@ -235,7 +235,7 @@ function daysThisWeek() {
   return n;
 }
 
-// One tap to start: the Top 5 routine of each kind (the same kinds as today's bonus tiles).
+// One tap to start: the Top routine of each kind (the same kinds as today's bonus tiles).
 function renderQuickStarts() {
   const box = $('#quick-starts');
   box.innerHTML = '';
@@ -645,7 +645,7 @@ function routineCard(r) {
   b.dataset.hue = '';
   b.style.setProperty('--h', r.hue);
   b.dataset.open = r.id;
-  const tag = r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top 5</span>'
+  const tag = r.top ? '<span class="top-badge"><span aria-hidden="true" class="ms filled">workspace_premium</span>Top</span>'
     : `<span class="rc-cat">${esc(r.focus ? t(`focus.${r.focus}`) : catOf(r.cat).label)}</span>`;
   b.innerHTML = `
     <div class="rc-thumb"></div>
@@ -658,7 +658,7 @@ function routineCard(r) {
   return b;
 }
 function renderList() {
-  // The Top 5s already have their quick starts above, so today's picks come from the rest.
+  // The Top routines already have their quick starts above, so today's picks come from the rest.
   const stretching = ROUTINES.filter((r) => r.cat !== 'strength');
   const strength = ROUTINES.filter((r) => r.cat === 'strength');
   // Today's picks favour kinds that still give a chest today (not Quick, not done yet).

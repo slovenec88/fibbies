@@ -11,7 +11,7 @@ Follow short guided routines to warm up, stretch, or build strength. Open chests
 **[Try Fibbies in your browser](https://fibbies.juringari.com/)** · [Android APK](https://github.com/slovenec88/fibbies/releases/latest) · [Project page](https://juringari.com/fibbies/)
 
 <img src="docs/screenshots/home-welcome.png" width="210" alt="The green Fibbie mascot shares a welcome quote above the quick-start routines">
-<img src="docs/screenshots/stretch.png" width="210" alt="Top 5 Strength session showing an animated bodyweight squat and a countdown">
+<img src="docs/screenshots/stretch.png" width="210" alt="Top Strength session showing an animated bodyweight squat and a countdown">
 
 </div>
 
@@ -26,7 +26,7 @@ Take a 2-Minute Reset at your desk, warm up before a run, try a strength routine
 [An animated figure](docs/screenshots/guided-session.png) shows each move and a timer keeps you on pace. Spoken cues tell you when to start, switch sides, or move on. You can pause or skip ahead, and **Session length** in Settings adjusts both stretches and strength exercises.
 
 <div align="center">
-<img src="docs/screenshots/routine.png" width="200" alt="Top 5 Strength routine with the exercise list and durations">
+<img src="docs/screenshots/routine.png" width="200" alt="Top Strength routine with the exercise list and durations">
 <img src="docs/screenshots/exercise-preview.png" width="200" alt="Arm Circles preview with an illustrated figure and a short guide">
 </div>
 

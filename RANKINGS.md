@@ -1,6 +1,6 @@
 # Top 10 stretches, by section
 
-Each list ranks stretches by **effectiveness weighed against simplicity**. Much of the research and coaching advice behind it comes from running, the most studied sport for stretching, but the picks suit any workout. Simple means no equipment, easy to learn and safe to do alone. Stretches that more expert sources agree on rank higher. In the app, each section's top 5 make up its **Top 5** routine.
+Each list ranks stretches by **effectiveness weighed against simplicity**. Much of the research and coaching advice behind it comes from running, the most studied sport for stretching, but the picks suit any workout. Simple means no equipment, easy to learn and safe to do alone. Stretches that more expert sources agree on rank higher. In the app, each section's top 5 make up its **Top** routine.
 
 ## How the ranking was made
 
