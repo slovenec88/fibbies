@@ -267,6 +267,7 @@ export const UI = {
   about: 'O aplikaciji',
   sourceCode: 'Izvorna koda',
   sourceCodeSub: 'Prosta in odprtokodna (AGPL-3.0), avtor Davor Val Vega',
+  appVersion: ({ v }) => `Različica ${v}`,
   backupTitle: "Varnostna koda",
   backupPaste: "Sem prilepi varnostno kodo",
   backupInvalid: "To ni videti kot varnostna koda Fibbies.",

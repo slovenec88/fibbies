@@ -263,6 +263,7 @@ export const UI = {
   about: "Acerca de",
   sourceCode: "Código fuente",
   sourceCodeSub: "Libre y de código abierto (AGPL-3.0), por Davor Val Vega",
+  appVersion: ({ v }) => `Versión ${v}`,
   backupTitle: "Código de copia",
   backupPaste: "Pega aquí tu código de copia",
   backupInvalid: "Eso no parece un código de copia de Fibbies.",

@@ -263,6 +263,7 @@ export const UI = {
   about: "Über",
   sourceCode: "Quellcode",
   sourceCodeSub: "Freie Open-Source-Software (AGPL-3.0), von Davor Val Vega",
+  appVersion: ({ v }) => `Version ${v}`,
   backupTitle: "Sicherungscode",
   backupPaste: "Sicherungscode hier einfügen",
   backupInvalid: "Das sieht nicht nach einem Fibbies-Sicherungscode aus.",

@@ -16,6 +16,7 @@ import { readJSON, writeJSON, onSaveFail, requestPersistence, makeBackupCode, re
 import { exerciseGuide, localizeContent } from './localize.js';
 import { setupInstallPrompt } from './install.js';
 import { palHTML, palTap, palContext, palWelcome } from './pal.js';
+import { APP_VERSION } from './version.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 setupInstallPrompt();
@@ -1196,6 +1197,7 @@ function openSettings() {
   setScaleNote();
   $('#set-lang').innerHTML = LANGS.map((l) => `<button class="m3-item ripple" data-v="${l.id}" role="radio" lang="${l.id}" aria-checked="${l.id === settings.lang}"><span class="li-text"><b>${l.label}</b></span><span class="m3-radio" aria-hidden="true"></span></button>`).join('');
   checkVoice();
+  $('#app-version').textContent = t('appVersion', { v: APP_VERSION });
   sheet.showModal();
 }
 function setScaleNote() {

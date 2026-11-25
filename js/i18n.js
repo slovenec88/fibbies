@@ -307,6 +307,7 @@ const EN = {
   about: 'About',
   sourceCode: 'Source code',
   sourceCodeSub: 'Free and open source (AGPL-3.0), by Davor Val Vega',
+  appVersion: ({ v }) => `Version ${v}`,
   backupTitle: "Backup code",
   backupPaste: "Paste your backup code here",
   backupInvalid: "That doesn't look like a Fibbies backup code.",

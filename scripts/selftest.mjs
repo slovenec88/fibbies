@@ -146,5 +146,13 @@ await test('voice: recorded languages have every spoken line', async () => {
   assert.equal(summary, '', `run: node scripts/record-voice.mjs ${Object.keys(missing).join(' ')}`);
 });
 
+await test('version: Settings shows the same version as package.json and the Android build', async () => {
+  const { readFileSync } = await import('node:fs');
+  const { APP_VERSION } = await import(new URL('version.js', root));
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', root), 'utf8')).version;
+  const gradle = readFileSync(new URL('../android/app/build.gradle', root), 'utf8').match(/versionName "([^"]+)"/)[1];
+  assert.deepEqual([APP_VERSION, APP_VERSION], [pkg, gradle]);
+});
+
 console.log(failed ? `\n${failed} failed` : '\nall passed');
 process.exit(failed ? 1 : 0);

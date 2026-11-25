@@ -1296,6 +1296,7 @@ a.m3-item { text-decoration: none; }
 #set-lang .m3-item { min-height: 56px; }
 .settings-sheet .lang-note { margin: 10px 16px 0; }
 .settings-sheet .sheet-done { margin-top: 28px; }
+.settings-sheet .app-version { margin: 16px 0 4px; text-align: center; font-size: 12px; color: var(--on-surface-variant); }
 
 /* ---------- Headings (same Atkinson face as the body) ---------- */
 .detail-hero h1, .col-head h2, .qs-text b, .sheet-title, .dialog h2, .fs-name,
