@@ -379,12 +379,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.musicStart(rw.tier);
 
     // Let the burst play out in the middle, then glide up to make room for the payout.
-    // Legendary stays in the middle 2 s longer, with more bursts going off around it.
-    const settle = lv(1000, 1200, 1400) + (legendary ? 2000 : 0);
+    // Legendary stays in the middle 3 s longer, with more bursts going off around it.
+    const settle = lv(1000, 1200, 1400) + (legendary ? 3000 : 0);
     const id = setTimeout(() => { timers.delete(id); if (alive) brighten(1, settle - 400); }, 400);
     timers.add(id);
     if (legendary) {
-      for (const at of [900, 1400, 1900, 2400, 2900]) {
+      for (const at of [900, 1400, 1900, 2400, 2900, 3400, 3900]) {
         const bid = setTimeout(() => {
           timers.delete(bid);
           if (!alive || fast) return;
