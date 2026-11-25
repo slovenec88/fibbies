@@ -311,7 +311,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         hits++;
         wrap.dataset.hits = String(hits);
         fx.knotTap(hits - 1); // the same "bloop" as tapping your Fibbie, a note higher each tap
-        brighten(hits * 0.1, 300); // legendary: every tap lights the screen up a little more
+        brighten(hits * 0.15, 300); // legendary: every tap lights the screen up a little more
         if (!reduce) core.animate([{ opacity: 0 }, { opacity: 0.25 + hits * 0.15, offset: 0.2 }, { opacity: 0 }], { duration: 500 });
         if (hits >= TAPS) { done(); return; }
         chest.classList.remove('hit');
@@ -336,12 +336,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
     // Light swirls in and gets sucked into the chest: longer and denser for better chests.
     const chargeMs = lv(950, 1150, 1400);
-    brighten(0.5, chargeMs);
+    brighten(0.75, chargeMs);
     { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, lv(18, 45, 90), chargeMs); }
     await sleep(chargeMs);
     if (!alive) return;
     flash();
-    brighten(0.65, 400);
+    brighten(0.9, 400);
     // The chest bursts open where it stands, in the middle of the screen; it moves up afterwards.
     wrap.classList.add('opened', 'party');
     fx.boom();
@@ -380,7 +380,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
 
     // Let the burst play out in the middle, then glide up to make room for the payout.
     const settle = lv(1000, 1200, 1400);
-    const id = setTimeout(() => { timers.delete(id); if (alive) brighten(0.85, settle - 400); }, 400);
+    const id = setTimeout(() => { timers.delete(id); if (alive) brighten(1, settle - 400); }, 400);
     timers.add(id);
     await sleep(settle);
     if (!alive) return;
