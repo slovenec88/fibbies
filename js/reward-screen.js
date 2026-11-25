@@ -160,16 +160,15 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
 
   // Flash, shake and bump run as Web Animations on one element each: toggling classes on the
   // screen made the browser re-style everything under it on every hit.
-  // Legendary: the whole screen gets brighter and brighter, step by step, from the charge to the loot,
-  // the way the screen floods with light as a big chest opens in Vampire Survivors.
+  // Legendary: the whole screen gets brighter and brighter from the charge through the burst, the way
+  // the screen floods with light as a big chest opens in Vampire Survivors, and darkens back once
+  // the chest has glided up for the payout. Going dark again always runs, even after Skip.
   let brightNow = 0;
   function brighten(to, ms) {
-    if (!legendary || reduce || fast || to <= brightNow) return;
+    if (!legendary || reduce || to === brightNow || (fast && to > brightNow)) return;
     $('.rw-bright').animate([{ opacity: brightNow }, { opacity: to }], { duration: ms, easing: 'ease-in-out', fill: 'forwards' });
     brightNow = to;
   }
-  // Each multiplier makes it a little brighter still.
-  const brightStep = () => brighten(Math.min(0.65, brightNow + 0.07), 500);
 
   function flash(strong = true) {
     if (reduce || fast) return;
@@ -336,12 +335,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
     // Light swirls in and gets sucked into the chest: longer and denser for better chests.
     const chargeMs = lv(950, 1150, 1400);
-    brighten(0.22, chargeMs);
+    brighten(0.25, chargeMs);
     { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, lv(18, 45, 90), chargeMs); }
     await sleep(chargeMs);
     if (!alive) return;
     flash();
-    brighten(0.38, 400);
+    brighten(0.45, 400);
     // The chest bursts open where it stands, in the middle of the screen; it moves up afterwards.
     wrap.classList.add('opened', 'party');
     fx.boom();
@@ -379,13 +378,16 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.musicStart(rw.tier);
 
     // Let the burst play out in the middle, then glide up to make room for the payout.
-    await sleep(lv(1000, 1200, 1400));
+    const settle = lv(1000, 1200, 1400);
+    const id = setTimeout(() => { timers.delete(id); if (alive) brighten(0.8, settle - 400); }, 400);
+    timers.add(id);
+    await sleep(settle);
     if (!alive) return;
     moveUp();
     await sleep(380);
     if (!alive) return;
+    brighten(0, 900); // the chest is up: the screen goes back to how it was
     wrap.classList.add('show-count');
-    brighten(0.45, 1500);
     await countTo(0, rw.base, 1500);
     if (!alive) return;
 
@@ -400,7 +402,6 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       pill.className = `rw-mult${m.hot ? ' hot' : ''}`;
       pill.innerHTML = `<span aria-hidden="true" class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${fmtX(m.x)}</b>`;
       ml.appendChild(pill);
-      brightStep();
       fx.slam(m.hot);
       haptics.buzz(m.hot ? [40, 30, 80] : 60);
       shake(m.hot ? P + 1 : P);
@@ -422,7 +423,6 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(200);
     if (!alive) return;
     big.parentElement.classList.add('final');
-    brighten(0.7, 900);
     musicWanted = false;
     fx.musicStop();
     fx.fanfare();
@@ -471,7 +471,6 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         </div>
       </div>`;
     wrap.classList.add('show-loot');
-    brighten(0.85, 1200);
     fx.boing();
     haptics.buzz(50);
     { const l = centerOf(loot.querySelector('.rw-critter') || loot); vfx.burst(l.x, l.y, 10 + P * 6, ['heart', 'star', 'spark'], 0.6); }
