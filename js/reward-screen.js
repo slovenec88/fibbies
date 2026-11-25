@@ -9,7 +9,8 @@ let numFmt = null; // one formatter per show (creating one every frame is slow)
 const fmt = (n) => (numFmt || (numFmt = new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 0 }))).format(Math.round(n));
 const fmtX = (x) => new Intl.NumberFormat(numLocale(), { maximumFractionDigits: 2 }).format(x); // ×1,25 in most languages
 
-const TAPS = 3; // taps to break the chest open
+// Taps to break the chest open: legendary holds out for one more.
+const tapsFor = (tier) => (tier === 3 ? 4 : 3);
 
 // Chest colours (the same as --tc / --tc2 in styles.css) and how big the show gets:
 // each tier a clear step up: a gentle wooden show, then rare, epic, and legendary at full force.
@@ -32,8 +33,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     waits.set(id, res);
   });
 
+  const TAPS = tapsFor(rw.tier);
+  // The three tap calls ("Tap!", "Again!", "One more!") spread over however many taps it takes.
+  const tapCall = (hits) => t('tapCalls')[TAPS === 4 ? [0, 1, 1, 2][hits] : hits] || '';
   root.innerHTML = `
     <div class="reward" data-tier="${rw.tier}">
+      <div class="rw-bright" aria-hidden="true"></div>
       <div class="rw-light" aria-hidden="true"><div class="rw-beams"></div></div>
       <div class="rw-flash" aria-hidden="true"></div>
       <div class="rw-banner" aria-hidden="true"></div>
@@ -41,7 +46,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       <div class="rw-inner">
         <div class="rw-tier">${TIERS[rw.tier].label}</div>
         <button class="rw-chest" aria-label="${t('openChest')}"><span class="rw-pillar" aria-hidden="true"></span>${chestSVG(rw.tier)}</button>
-        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${t('tapCalls')[0]}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
+        <div class="rw-tap"><span aria-hidden="true" class="ms filled">touch_app</span><span class="rw-tap-txt">${tapCall(0)}</span><span class="rw-dots" aria-hidden="true">${'<i></i>'.repeat(TAPS)}</span></div>
         <div class="rw-count">
           <div class="rw-label">${t('fibersLabel')}</div>
           <div class="rw-big-wrap"><div class="rw-big">0</div></div>
@@ -144,11 +149,13 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     releaseTaps?.();
     fx.musicStop();
     clearInterval(ambient);
+    clearTimeout(snaps);
     for (const id of timers) clearTimeout(id);
     vfx.stop();
   }
 
   let ambient = null;
+  let snaps = null;
   const PRAISE = t('praise');
 
   // Flash, shake and bump run as Web Animations on one element each: toggling classes on the
@@ -267,33 +274,49 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     wrap.classList.remove('dropping'); // otherwise the drop animation replays when the halo stops
     wrap.classList.add('ready');
 
-    // 2. the chest waits for a few taps: it jolts, cracks and the lid lifts a little each time
+    // 2. the chest waits for a few taps: it jolts, cracks and the lid lifts a little each time.
+    // A legendary chest can hardly hold itself together: rubber bands keep bursting above it,
+    // quicker with every tap, until the last tap breaks it open.
+    let hits = 0;
+    const snapLoop = () => {
+      if (!alive || fast) return;
+      if (!document.hidden) {
+        const c = $('.rw-chest').getBoundingClientRect();
+        const top = Math.max(0, wrap.getBoundingClientRect().top) + 40;
+        const bottom = Math.max(top + 40, c.top - 30);
+        const w = Math.min(innerWidth, 520);
+        const x = innerWidth / 2 + (Math.random() - 0.5) * w * 0.75;
+        vfx.snap(x, top + Math.random() * (bottom - top), 34 + Math.random() * 22);
+      }
+      snaps = setTimeout(snapLoop, Math.max(260, 620 - hits * 110) + Math.random() * 260);
+    };
+    if (legendary && !reduce) snapLoop();
     await new Promise((res) => {
       const chest = $('.rw-chest');
-      let hits = 0;
       const done = () => { chest.removeEventListener('click', onTap); releaseTaps = null; res(); };
       releaseTaps = done;
       if (skipped) { done(); return; }
       function onTap() {
         hits++;
         wrap.dataset.hits = String(hits);
+        fx.knotTap(hits - 1); // the same "bloop" as tapping your Fibbie, a note higher each tap
         if (!reduce) core.animate([{ opacity: 0 }, { opacity: 0.25 + hits * 0.15, offset: 0.2 }, { opacity: 0 }], { duration: 500 });
         if (hits >= TAPS) { done(); return; }
         chest.classList.remove('hit');
         void chest.offsetWidth;
         chest.classList.add('hit');
         chest.addEventListener('animationend', () => chest.classList.remove('hit'), { once: true });
-        fx.rattle();
-        fx.pop();
         haptics.buzz(30 + hits * 25);
         const c = centerOf(chest);
         vfx.burst(c.x, c.y, 5 + hits * 4 * P, ['spark', 'star', 'band'], 0.7);
         if (P >= 1.5) vfx.ring(c.x, c.y, { color: tc, speed: 500, width: 6, life: 0.35 });
         shake(1);
-        $('.rw-tap-txt').textContent = t('tapCalls')[hits] || '';
+        $('.rw-tap-txt').textContent = tapCall(hits);
       }
       chest.addEventListener('click', onTap);
     });
+    clearTimeout(snaps);
+    vfx.snapFade();
     if (!alive) return;
 
     // 3. charge up... then BOOM
@@ -302,6 +325,17 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
     // Light swirls in and gets sucked into the chest: longer and denser for better chests.
     const chargeMs = lv(950, 1150, 1400);
+    if (legendary && !reduce && !fast) {
+      // The whole screen lights up as it charges, blazes at the burst and stays bright for the payout.
+      const total = chargeMs + 2600;
+      $('.rw-bright').animate([
+        { opacity: 0, easing: 'cubic-bezier(.5,0,.9,.5)' },
+        { opacity: 0.6, offset: chargeMs / total, easing: 'ease-out' },
+        { opacity: 1, offset: (chargeMs + 120) / total, easing: 'ease-in-out' },
+        { opacity: 0.85, offset: (chargeMs + 1300) / total, easing: 'ease-in-out' },
+        { opacity: 0.32 },
+      ], { duration: total, fill: 'forwards' });
+    }
     { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, lv(18, 45, 90), chargeMs); }
     await sleep(chargeMs);
     if (!alive) return;
