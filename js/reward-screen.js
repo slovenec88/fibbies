@@ -82,7 +82,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const legendary = rw.tier === 3;
   const fxAll = createFx(wrap, { colors: [tc, tc2], reduce });
   // After Skip the show races to the end: effects stay quiet instead of all firing at once.
-  const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' || k === 'snapFade' ? f : (...a) => { if (!fast) f(...a); }]));
+  const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' ? f : (...a) => { if (!fast) f(...a); }]));
   // Lighting: god rays (two layers turning opposite ways), a white-hot core behind the chest and a
   // lens-flare streak. All are small pre-drawn canvases that the graphics chip scales, spins and fades.
   const rayCount = Math.max(8, lv(14, 18, 22));
@@ -160,6 +160,17 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
 
   // Flash, shake and bump run as Web Animations on one element each: toggling classes on the
   // screen made the browser re-style everything under it on every hit.
+  // Legendary: the whole screen gets brighter and brighter, step by step, from the charge to the loot,
+  // the way the screen floods with light as a big chest opens in Vampire Survivors.
+  let brightNow = 0;
+  function brighten(to, ms) {
+    if (!legendary || reduce || fast || to <= brightNow) return;
+    $('.rw-bright').animate([{ opacity: brightNow }, { opacity: to }], { duration: ms, easing: 'ease-in-out', fill: 'forwards' });
+    brightNow = to;
+  }
+  // Each multiplier makes it a little brighter still.
+  const brightStep = () => brighten(Math.min(0.65, brightNow + 0.07), 500);
+
   function flash(strong = true) {
     if (reduce || fast) return;
     $('.rw-flash').animate([{ opacity: strong ? 0.95 : 0.35 }, { opacity: 0 }], { duration: strong ? 500 + P * 120 : 250, easing: 'ease-out' });
@@ -286,7 +297,8 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         const bottom = Math.max(top + 40, c.top - 30);
         const w = Math.min(innerWidth, 520);
         const x = innerWidth / 2 + (Math.random() - 0.5) * w * 0.75;
-        vfx.snap(x, top + Math.random() * (bottom - top), 34 + Math.random() * 22);
+        // The same rubber-band explosions as when a chest bursts open, only smaller.
+        vfx.burst(x, top + Math.random() * (bottom - top), 14 + hits * 4, ['band', 'band', 'spark', 'star'], 0.8 + hits * 0.1);
       }
       snaps = setTimeout(snapLoop, Math.max(260, 620 - hits * 110) + Math.random() * 260);
     };
@@ -316,7 +328,6 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       chest.addEventListener('click', onTap);
     });
     clearTimeout(snaps);
-    vfx.snapFade();
     if (!alive) return;
 
     // 3. charge up... then BOOM
@@ -325,21 +336,12 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     haptics.buzz([15, 40, 15, 40, 15, 30, 15, 20, 15, 15, 40]);
     // Light swirls in and gets sucked into the chest: longer and denser for better chests.
     const chargeMs = lv(950, 1150, 1400);
-    if (legendary && !reduce && !fast) {
-      // The whole screen lights up as it charges, blazes at the burst and stays bright for the payout.
-      const total = chargeMs + 2600;
-      $('.rw-bright').animate([
-        { opacity: 0, easing: 'cubic-bezier(.5,0,.9,.5)' },
-        { opacity: 0.6, offset: chargeMs / total, easing: 'ease-out' },
-        { opacity: 1, offset: (chargeMs + 120) / total, easing: 'ease-in-out' },
-        { opacity: 0.85, offset: (chargeMs + 1300) / total, easing: 'ease-in-out' },
-        { opacity: 0.32 },
-      ], { duration: total, fill: 'forwards' });
-    }
+    brighten(0.22, chargeMs);
     { const c = centerOf($('.rw-chest')); vfx.implode(c.x, c.y, lv(18, 45, 90), chargeMs); }
     await sleep(chargeMs);
     if (!alive) return;
     flash();
+    brighten(0.38, 400);
     // The chest bursts open where it stands, in the middle of the screen; it moves up afterwards.
     wrap.classList.add('opened', 'party');
     fx.boom();
@@ -383,6 +385,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(380);
     if (!alive) return;
     wrap.classList.add('show-count');
+    brighten(0.45, 1500);
     await countTo(0, rw.base, 1500);
     if (!alive) return;
 
@@ -397,6 +400,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
       pill.className = `rw-mult${m.hot ? ' hot' : ''}`;
       pill.innerHTML = `<span aria-hidden="true" class="ms filled">${m.icon}</span>${esc(m.label)}<b>×${fmtX(m.x)}</b>`;
       ml.appendChild(pill);
+      brightStep();
       fx.slam(m.hot);
       haptics.buzz(m.hot ? [40, 30, 80] : 60);
       shake(m.hot ? P + 1 : P);
@@ -418,6 +422,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     await sleep(200);
     if (!alive) return;
     big.parentElement.classList.add('final');
+    brighten(0.7, 900);
     musicWanted = false;
     fx.musicStop();
     fx.fanfare();
@@ -466,6 +471,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
         </div>
       </div>`;
     wrap.classList.add('show-loot');
+    brighten(0.85, 1200);
     fx.boing();
     haptics.buzz(50);
     { const l = centerOf(loot.querySelector('.rw-critter') || loot); vfx.burst(l.x, l.y, 10 + P * 6, ['heart', 'star', 'spark'], 0.6); }

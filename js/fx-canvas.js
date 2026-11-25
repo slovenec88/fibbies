@@ -93,13 +93,13 @@ export function pillarCanvas(color) {
 }
 
 // ---------- particles ----------
-const NAMES = ['burst', 'fountain', 'ring', 'implode', 'rockets', 'rain', 'magnet', 'twinkles', 'embers', 'snap', 'snapFade'];
+const NAMES = ['burst', 'fountain', 'ring', 'implode', 'rockets', 'rain', 'magnet', 'twinkles', 'embers'];
 const NOOP = () => {};
 const OFF = Object.fromEntries([...NAMES, 'stop'].map((n) => [n, NOOP]));
 
 /**
  * Adds the particle canvas to `host` (fixed, full viewport) and returns the effects:
- * burst, fountain, ring, implode, rockets, rain, magnet, twinkles, embers, snap, snapFade, stop.
+ * burst, fountain, ring, implode, rockets, rain, magnet, twinkles, embers, stop.
  * `colors`: [main, accent] for this chest. No-op effects when motion is reduced.
  */
 export function createFx(host, { colors, reduce }) {

@@ -127,7 +127,6 @@ export function createEngine(canvas, { colors, W: w0, H: h0, dpr: d0 }) {
     p.size = 12; p.rot = 0; p.vr = 0; p.img = null; p.add = false;
     p.fadeIn = 0; p.bounce = 0; p.target = null; p.ring = 0; p.width = 0; p.color = '';
     p.trail = 0; p.boom = 0; p.grow = 0; p.pulse = false; p.elastic = false; p.wob = 0;
-    p.home = null; p.ering = 0; p.out = -1; p.snap = false;
     live.push(p);
     return p;
   };
@@ -242,38 +241,6 @@ export function createEngine(canvas, { colors, W: w0, H: h0, dpr: d0 }) {
       p.img = S.twinkle; p.add = true; p.size = rand(18, 36); p.vr = rand(-2, 2);
     }
   }
-  /**
-   * A rubber-band explosion: a jelly ring pops open with an elastic overshoot and a flower of bands
-   * springs out of the middle, overshoots, snaps back and wobbles until it settles, then fades.
-   * `r`: how far the bands spring out (px).
-   */
-  function snap(x, y, r = 46) {
-    const ring0 = spawn(); if (!ring0) return;
-    ring0.x = x; ring0.y = y; ring0.ering = r * 1.15; ring0.width = 5; ring0.color = pick([main, accent, '#fff3a0']);
-    ring0.life = 0.9; ring0.add = true; ring0.size = 1; ring0.snap = true;
-    const count = n(7 + ((Math.random() * 3) | 0));
-    const turn = rand(0, TAU);
-    for (let i = 0; i < count; i++) {
-      const p = spawn(); if (!p) return;
-      const a = turn + (i / count) * TAU + rand(-0.15, 0.15);
-      const rest = r * rand(0.8, 1.1);
-      p.x = x; p.y = y; p.home = { x: x + Math.cos(a) * rest, y: y + Math.sin(a) * rest, k: rand(230, 300) };
-      const v = rand(450, 650) * (r / 46);
-      p.vx = Math.cos(a) * v; p.vy = Math.sin(a) * v; p.drag = 0.9;
-      p.life = rand(1.05, 1.35); p.snap = true;
-      dress(p, 'band'); p.size = rand(20, 28);
-    }
-    for (let i = n(5); i-- > 0;) { // a few sparks flicked off by the snap
-      const p = spawn(); if (!p) return;
-      const a = rand(0, TAU), v = rand(220, 420);
-      p.x = x; p.y = y; p.vx = Math.cos(a) * v; p.vy = Math.sin(a) * v; p.drag = 0.93; p.g = 220;
-      p.life = rand(0.45, 0.7); p.img = Math.random() < 0.5 ? glowMain : glowAccent; p.add = true; p.size = rand(9, 15); p.snap = true;
-    }
-  }
-  /** Every rubber-band explosion still on screen fades out quickly (the chest is about to open). */
-  function snapFade() {
-    for (const p of live) if (p.snap && p.out < 0) p.out = p.t;
-  }
   /** Slow glowing embers drifting up from the bottom (calm background after the show). */
   function embers(count) {
     for (let i = n(count); i-- > 0;) {
@@ -324,10 +291,6 @@ export function createEngine(canvas, { colors, W: w0, H: h0, dpr: d0 }) {
     p.t += dt;
     if (p.t < 0) return;
     if (p.t >= p.life) { p.dead = true; return; }
-    if (p.out >= 0 && p.t - p.out > 0.35) { p.dead = true; return; }
-    if (p.home) { // a spring pulls it back to where it rests
-      p.vx += (p.home.x - p.x) * p.home.k * dt; p.vy += (p.home.y - p.y) * p.home.k * dt;
-    }
     if (p.target) {
       const dx = p.target.x - p.x, dy = p.target.y - p.y, d = Math.hypot(dx, dy) || 1;
       if (d < p.target.kill) { p.dead = true; p.target.onHit?.(p.x, p.y); return; }
@@ -352,18 +315,6 @@ export function createEngine(canvas, { colors, W: w0, H: h0, dpr: d0 }) {
     const k = p.t / p.life;
     let a = k > 0.75 ? (1 - k) / 0.25 : 1;
     if (p.fadeIn && p.t < p.fadeIn) a *= p.t / p.fadeIn;
-    if (p.out >= 0) a *= Math.max(0, 1 - (p.t - p.out) / 0.35);
-    if (p.ering) {
-      // Jelly ring: opens past its size and springs back, squashing a little side to side as it does.
-      const r = p.ering * (1 - Math.exp(-5 * p.t) * Math.cos(17 * p.t));
-      const sq = 0.18 * Math.exp(-4 * p.t) * Math.sin(23 * p.t);
-      if (r <= 0.5) return;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.globalAlpha = Math.max(0, a * (1 - k * 0.6));
-      ctx.strokeStyle = p.color; ctx.lineWidth = Math.max(0.5, p.width * (1 - k * 0.7));
-      ctx.beginPath(); ctx.ellipse(p.x, p.y, r * (1 + sq), r * (1 - sq), 0, 0, TAU); ctx.stroke();
-      return;
-    }
     if (p.ring) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.globalAlpha = Math.max(0, 1 - k);
@@ -389,7 +340,7 @@ export function createEngine(canvas, { colors, W: w0, H: h0, dpr: d0 }) {
     ctx.setTransform(cos * sx, sin * sx, -sin * sy, cos * sy, p.x * dpr, p.y * dpr);
     ctx.drawImage(p.img, -p.img.width / 2, -p.img.height / 2);
   }
-  const EFFECTS = { burst, fountain, ring, implode, rockets, rain, magnet, twinkles, embers, snap, snapFade };
+  const EFFECTS = { burst, fountain, ring, implode, rockets, rain, magnet, twinkles, embers };
   return {
     run(name, args) {
       if (!alive || !EFFECTS[name]) return;
