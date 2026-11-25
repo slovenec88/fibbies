@@ -379,9 +379,24 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
     fx.musicStart(rw.tier);
 
     // Let the burst play out in the middle, then glide up to make room for the payout.
-    const settle = lv(1000, 1200, 1400);
+    // Legendary stays in the middle 2 s longer, with more bursts going off around it.
+    const settle = lv(1000, 1200, 1400) + (legendary ? 2000 : 0);
     const id = setTimeout(() => { timers.delete(id); if (alive) brighten(1, settle - 400); }, 400);
     timers.add(id);
+    if (legendary) {
+      for (const at of [900, 1400, 1900, 2400, 2900]) {
+        const bid = setTimeout(() => {
+          timers.delete(bid);
+          if (!alive || fast) return;
+          const c = chestPos();
+          const x = c.x + (Math.random() - 0.5) * 160, y = c.y - 40 - Math.random() * 120;
+          fx.pop(); lightPulse(1.1);
+          vfx.ring(x, y, { color: Math.random() < 0.5 ? tc : tc2, speed: 800, width: 8, life: 0.5 });
+          vfx.burst(x, y, 50, ['band', 'star', 'spark', 'gem'], 1.1);
+        }, at);
+        timers.add(bid);
+      }
+    }
     await sleep(settle);
     if (!alive) return;
     moveUp();
