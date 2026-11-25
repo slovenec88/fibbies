@@ -255,8 +255,9 @@ export class Figure {
   fit(pad = 12) {
     const s = this.stretch;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-    const at = s.seq ? s.seq.flatMap((_, i) => [[{ ...s, a: s.seq[i], b: s.seq[(i + 1) % s.seq.length] }, 0.5], [{ ...s, a: s.seq[i], b: s.seq[i] }, 0]]) : [0, 0.5, 1].map((t) => [s, t]);
-    for (const [st, t] of at) {
+    // A move in several steps is drawn still from its first step (see draw), so fit that step.
+    const st = s.seq ? segment(s, 0).st : s;
+    for (const t of [0, 0.5, 1]) {
       const j = solve(pose(st, t), s.view);
       for (const [k, p] of Object.entries(j)) {
         if (k === 'ctrl') continue;

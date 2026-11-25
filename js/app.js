@@ -1014,7 +1014,7 @@ let doneTimer = null;
 let rewardPlayer = null;
 function finish(s) {
   log = readLog(); // re-read, so another open copy of the app (tab, installed app) can't be overwritten
-  const secs = Math.round(s.activeSeconds());
+  const secs = Math.round(Math.min(s.activeSeconds(), s.total)); // going back over moves doesn't add time
   const day = dayKey();
   const ratio = Math.max(0, Math.min(1, s.activeSeconds() / Math.max(1, s.total * 0.9)));
   const priorToday = todaysCats(log, day);

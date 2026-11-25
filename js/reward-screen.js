@@ -82,7 +82,7 @@ export function playReward(root, rw, { stats, onHome, onAgain }) {
   const legendary = rw.tier === 3;
   const fxAll = createFx(wrap, { colors: [tc, tc2], reduce });
   // After Skip the show races to the end: effects stay quiet instead of all firing at once.
-  const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' ? f : (...a) => { if (!fast) f(...a); }]));
+  const vfx = Object.fromEntries(Object.entries(fxAll).map(([k, f]) => [k, k === 'stop' || k === 'snapFade' ? f : (...a) => { if (!fast) f(...a); }]));
   // Lighting: god rays (two layers turning opposite ways), a white-hot core behind the chest and a
   // lens-flare streak. All are small pre-drawn canvases that the graphics chip scales, spins and fades.
   const rayCount = Math.max(8, lv(14, 18, 22));

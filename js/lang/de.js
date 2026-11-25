@@ -675,7 +675,7 @@ export const GUIDES = {
   jumpingJacks: "Füße zusammen, Arme unten. Spring in die Grätsche, während die Arme über den Kopf schwingen, dann zurück. Lande weich auf den Fußballen.",
   stepJacks: "Der leise Hampelmann: Stell einen Fuß zur Seite, während beide Arme über den Kopf schwingen, stell ihn zurück und wechsle die Seite. Zügig, aber ohne Springen.",
   mountainClimbers: "Aus dem hohen Stütz, Hände unter den Schultern, ziehst du ein Knie zur Brust und wechselst schnell die Beine, als würdest du auf der Stelle laufen. Die Hüfte bleibt tief.",
-  burpee: "Geh in die Hocke, Hände auf den Boden, spring oder tritt mit den Füßen zurück in den Stütz und senk die Brust zu einem Liegestütz zum Boden. Drück dich hoch, hol die Füße wieder heran und spring mit den Armen über dem Kopf.",
+  burpee: "Geh in die Hocke, Hände auf den Boden, spring oder tritt mit den Füßen zurück in den Stütz und senk die Brust in einem Liegestütz bis zum Boden. Drück dich hoch, hol die Füße wieder heran und spring mit den Armen über dem Kopf.",
   squatJump: "Geh mit den Armen hinten in die Kniebeuge, schwing sie hoch und spring so hoch du kannst. Lande weich mit gebeugten Knien und geh direkt in die nächste Kniebeuge.",
   skaters: "Spring seitlich von einem Fuß auf den anderen, das freie Bein schwingt hinter dir, die Arme quer, wie beim Eisschnelllauf. Lande weich auf einem gebeugten Knie.",
   punches: "Knie locker, ein Fuß etwas vorn, Fäuste am Kinn. Mit festem Rumpf schlägst du geradeaus, links und rechts, so schnell du kannst.",
